@@ -1,5 +1,24 @@
 # Furniture-Store-Management-FE
 
+## ❔ **How to run the client**
+
+After cloning the repository, follow these steps to run the client in development mode:
+
+1. Navigate to the client directory:
+
+   ```bash
+   cd client
+2. Install the necessary dependencies:
+
+   ```bash
+   npm install
+3. Run the client in development mode:
+
+   ```bash
+   npm run dev
+   
+This will start the development server, and you can access the application in your browser.
+
 ## ❔ **How to name a branch**
 
 - Start the branch name with a prefix `{type}/`
@@ -39,3 +58,6 @@ Description
 |ci| 'Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs) |
 |chore| Other changes that don't modify src or test files |
 |revert| Reverts a previous commit |
+
+
+
