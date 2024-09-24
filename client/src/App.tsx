@@ -1,10 +1,12 @@
-import "./App.css";
-
+import { Route, Routes } from "react-router-dom";
+import ProductPage from "./pages/product/ProductPage";
+import InventoryPage from "./pages/inventory/InventoryPage";
 function App() {
   return (
-    <div className="w-full h-screen bg-blue-950 text-white flex flex-col items-center justify-center">
-      <h1 className="text-3xl">Furniture Store Management</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<ProductPage />} />
+      <Route path="/inventory" element={<InventoryPage />} />
+    </Routes>
   );
 }
 
