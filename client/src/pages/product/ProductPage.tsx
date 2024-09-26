@@ -1,9 +1,10 @@
-import NavBar from "../../components/NavBar";
-import ProductCard from "../../components/ProductCard";
+import React, { useState } from "react";
+import ProductCard from "../../components/productPage/ProductCard";
 import Product from "../../entities/Product";
+import NavBar from "../../components/NavBar";
 export default function ProductPage() {
   // hardcode data
-  const products: Product[] = [
+  const initialProducts: Product[] = [
     {
       id: "1",
       name: "Ghế văn phòng",
@@ -36,7 +37,7 @@ export default function ProductPage() {
     },
     {
       id: "4",
-      name: "Ghế văn phòng",
+      name: "Kệ sách",
       category: "Nội thất",
       originalPrice: 400000,
       productPrice: 450000,
@@ -46,7 +47,7 @@ export default function ProductPage() {
     },
     {
       id: "5",
-      name: "Bàn làm việc",
+      name: "Tủ dép",
       category: "Nội thất",
       originalPrice: 500000,
       productPrice: 550000,
@@ -56,7 +57,7 @@ export default function ProductPage() {
     },
     {
       id: "6",
-      name: "Đèn ngủ",
+      name: "Bình hoa",
       category: "Nội thất",
       originalPrice: 1000000,
       productPrice: 1200000,
@@ -66,17 +67,17 @@ export default function ProductPage() {
     },
     {
       id: "7",
-      name: "Ghế văn phòng",
+      name: "Bàn ăn",
       category: "Nội thất",
       originalPrice: 400000,
       productPrice: 450000,
-      isSelling: true,
+      isSelling: false,
       stock: 10,
       forSale: 5,
     },
     {
       id: "8",
-      name: "Bàn làm việc",
+      name: "Ghế Sofa",
       category: "Nội thất",
       originalPrice: 500000,
       productPrice: 550000,
@@ -86,7 +87,7 @@ export default function ProductPage() {
     },
     {
       id: "9",
-      name: "Đèn ngủ",
+      name: "Đèn trần",
       category: "Nội thất",
       originalPrice: 1000000,
       productPrice: 1200000,
@@ -96,10 +97,74 @@ export default function ProductPage() {
     },
   ];
 
-  // productcard onclick function
-  const handleProductCardClick = (product: Product) => {
-    console.log(product);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+
+  // State for invoice
+  const [invoice, setInvoice] = useState<
+    { product: Product; quantity: number }[]
+  >([]);
+
+  // add product to invoice
+  const handleAddToInvoice = (product: Product) => {
+    setInvoice((prevInvoice) => {
+      const existingProduct = prevInvoice.find(
+        (item) => item.product.id === product.id
+      );
+      if (existingProduct) {
+        return prevInvoice;
+      }
+      return [...prevInvoice, { product, quantity: 1 }];
+    });
   };
+
+  // remove product from invoice
+  const handleRemoveFromInvoice = (product: Product) => {
+    setInvoice((prevInvoice) =>
+      prevInvoice.filter((item) => item.product.id !== product.id)
+    );
+  };
+
+  // handle product quantity change in invoice
+  const handleQuantityChange = (product: Product, quantity: number) => {
+    setInvoice((prevInvoice) =>
+      prevInvoice.map((item) =>
+        item.product.id === product.id
+          ? {
+              ...item,
+              quantity: Math.min(Math.max(quantity, 1), product.forSale),
+            }
+          : item
+      )
+    );
+  };
+
+  // calculate total price
+  const totalPrice = invoice.reduce(
+    (sum, item) => sum + item.product.productPrice * item.quantity,
+    0
+  );
+
+  // handle checkout button click
+  const handleCheckout = () => {
+    // because the products data is hardcoded, i will update the product.forSale right here
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => {
+        const invoiceItem = invoice.find(
+          (item) => item.product.id === product.id
+        );
+        if (invoiceItem) {
+          return {
+            ...product,
+            forSale: product.forSale - invoiceItem.quantity,
+          };
+        }
+        return product;
+      })
+    );
+    // clear invoice
+    setInvoice([]);
+  };
+
   return (
     <div className="bg-gray-50 w-full h-screen max-h-screen flex gap-4 p-8">
       <NavBar />
@@ -108,16 +173,23 @@ export default function ProductPage() {
           <ProductCard
             key={product.id}
             product={product}
-            onClick={() => handleProductCardClick(product)}
+            onClick={() =>
+              invoice.find((item) => item.product.id === product.id)
+                ? handleRemoveFromInvoice(product)
+                : handleAddToInvoice(product)
+            }
+            isInInvoice={
+              !!invoice.find((item) => item.product.id === product.id)
+            }
           />
         ))}
       </div>
-      <div className="receipt-container w-1/4 h-3/4 bg-white p-4">
+      <div className="invoice-container w-1/3 bg-white p-4 ">
         <h3 className="text-2xl font-bold mb-4">Hóa đơn</h3>
-        <div className="receipt-table">
-          <table>
-            <thead>
-              <tr>
+        <div className="invoice-table ">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr className="">
                 <th>STT</th>
                 <th>Sản phẩm</th>
                 <th>Giá</th>
@@ -125,9 +197,55 @@ export default function ProductPage() {
                 <th>Thành tiền</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {invoice.map((item, index) => (
+                <tr key={item.product.id} className="min-h-8">
+                  <td className="text-center">{index + 1}</td>
+                  <td className="text-center">{item.product.name}</td>
+                  <td className="text-center">
+                    {item.product.productPrice.toLocaleString()}đ
+                  </td>
+                  <td className="text-center">
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item.product, item.quantity - 1)
+                      }
+                      disabled={item.quantity <= 1}
+                    >
+                      -
+                    </button>
+                    {item.quantity}
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item.product, item.quantity + 1)
+                      }
+                      disabled={item.quantity >= item.product.forSale}
+                    >
+                      +
+                    </button>
+                  </td>
+                  <td className="text-center">
+                    {(
+                      item.product.productPrice * item.quantity
+                    ).toLocaleString()}
+                    đ
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
+          <div className="invoice-total mt-4 flex justify-between">
+            <p>Tổng tiền:</p>
+            <p className="total">{totalPrice.toLocaleString()}</p>
+          </div>
         </div>
+
+        <button
+          onClick={() => handleCheckout()}
+          className="checkout-button bg-blue-600 text-white w-full py-2 rounded-md mt-4"
+        >
+          Thanh toán
+        </button>
       </div>
     </div>
   );

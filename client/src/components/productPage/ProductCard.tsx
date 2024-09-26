@@ -1,11 +1,13 @@
-import Product from "../entities/Product";
+import Product from "../../entities/Product";
 
 export default function ProductCard({
   product,
   onClick,
+  isInInvoice,
 }: {
   product: Product;
-  onClick: (product: Product) => void;
+  onClick: () => void;
+  isInInvoice: boolean;
 }) {
   return (
     <div className="product-card bg-white rounded-lg shadow-md max-w-64">
@@ -23,15 +25,22 @@ export default function ProductCard({
           </span>
         </div>
         <div className="product-stock text-sm text-gray-500">
-          Còn {product.stock}
+          Còn {product.forSale}
         </div>
       </div>
       <div className="product-action p-4">
         <button
-          onClick={() => onClick(product)}
-          className="add-to-cart bg-blue-600 text-white w-full py-2 rounded-md"
+          onClick={onClick}
+          disabled={product.forSale === 0}
+          // if product is not isSelling, invisible the button
+
+          className={`${
+            isInInvoice ? "bg-red-600" : "bg-blue-600"
+          } text-white w-full py-2 rounded-md ${
+            product.isSelling ? "" : "hidden"
+          }`}
         >
-          Thêm vào hóa đơn
+          {isInInvoice ? "Xóa khỏi hóa đơn" : "Thêm vào hóa đơn"}
         </button>
       </div>
     </div>
