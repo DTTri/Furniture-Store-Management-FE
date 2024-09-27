@@ -1,6 +1,6 @@
 import Product from "../../entities/Product";
 import { useState } from "react";
-export default function ImportFromStockPopup({
+export default function AddProductsToSellPopup({
   onClose,
   products,
 }: {

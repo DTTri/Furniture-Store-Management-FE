@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ProductCard from "../../components/productPage/ProductCard";
 import Product from "../../entities/Product";
 import NavBar from "../../components/NavBar";
-import ImportFromStockPopup from "../../components/productPage/ImportFromStockPopup";
+import AddProductToSellPopup from "../../components/productPage/AddProductsToSellPopup";
 export default function ProductPage() {
   // hardcode data
   const initialProducts: Product[] = [
@@ -167,7 +167,7 @@ export default function ProductPage() {
   };
 
   // open the import products from inventory modal
-  const [isImportFromStockPopupOpen, setIsImportFromStockPopupOpen] =
+  const [isAddProductToSellPopupOpen, setIsAddProductToSellPopupOpen] =
     useState(false);
 
   return (
@@ -183,7 +183,7 @@ export default function ProductPage() {
             />
           </div>
           <button
-            onClick={() => setIsImportFromStockPopupOpen(true)}
+            onClick={() => setIsAddProductToSellPopupOpen(true)}
             className="bg-blue-600 text-white p-2 rounded-md"
           >
             Thêm hàng từ kho
@@ -277,9 +277,9 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
-      {isImportFromStockPopupOpen && (
-        <ImportFromStockPopup
-          onClose={() => setIsImportFromStockPopupOpen(false)}
+      {isAddProductToSellPopupOpen && (
+        <AddProductToSellPopup
+          onClose={() => setIsAddProductToSellPopupOpen(false)}
           products={products}
         />
       )}
