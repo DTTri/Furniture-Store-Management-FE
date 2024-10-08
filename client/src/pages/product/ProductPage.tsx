@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ProductCard from "../../components/productPage/ProductCard";
 import Product from "../../entities/Product";
 import NavBar from "../../components/NavBar";

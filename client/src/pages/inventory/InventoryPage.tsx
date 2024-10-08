@@ -96,7 +96,7 @@ export default function InventoryPage() {
     },
   ];
 
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products] = useState<Product[]>(initialProducts);
 
   const [isImportPopupOpen, setIsImportPopupOpen] = useState(false);
   return (
