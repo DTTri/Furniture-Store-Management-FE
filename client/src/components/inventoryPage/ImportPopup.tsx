@@ -46,7 +46,7 @@ export default function ImportPopup({
         (item) => item.product.id === product.id
       );
       if (importedProduct) {
-        product.stock += importedProduct.quantity;
+        product.available += importedProduct.quantity;
       }
     });
     onClose();
@@ -58,7 +58,7 @@ export default function ImportPopup({
         <button className="absolute top-2 right-2" onClick={onClose}>
           x
         </button>
-        <div className="add-product-to-import w-1/3 border-r-2">
+        {/* <div className="add-product-to-import w-1/3 border-r-2">
           <h2 className="text-center text-xl font-bold">Chọn sản phẩm</h2>
           <form
             className="grid grid-cols-2 gap-4 p-4"
@@ -131,7 +131,7 @@ export default function ImportPopup({
               Nhập hàng
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
