@@ -1,5 +1,5 @@
 import { ProductStatus } from "../../constants";
-import Product from "../../entities/Product";
+import { Product } from "../../entities";
 
 export default function ProductCard({
   product,

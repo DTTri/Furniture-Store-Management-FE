@@ -1,10 +1,10 @@
 import { useState } from "react";
 import ProductCard from "../../components/productPage/ProductCard";
-import Product from "../../entities/Product";
+import { Product, ProductVaraint } from "../../entities";
 import NavBar from "../../components/NavBar";
 import ProductDetailsPopup from "../../components/productPage/ProductDetailsPopup";
 import { ProductStatus } from "../../constants";
-import { products } from "../../data/test";
+import { products, productVariants } from "../../data/test";
 export default function ProductPage() {
   // hardcode data
 
@@ -79,7 +79,8 @@ export default function ProductPage() {
   const [isProductDetailsPopupOpen, setIsProductDetailsPopupOpen] =
     useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
-
+  const [variantsOfSelectedProduct, setVariantsOfSelectedProduct] =
+    useState<ProductVaraint[]>(productVariants);
   return (
     <div className="bg-gray-100 w-full h-screen max-h-screen flex gap-4 p-8">
       <NavBar />
@@ -102,6 +103,11 @@ export default function ProductPage() {
                 onSeeDetailsClick={() => {
                   setSelectedProduct(product);
                   setIsProductDetailsPopupOpen(true);
+                  setVariantsOfSelectedProduct(
+                    productVariants.filter(
+                      (variant) => variant.productId === product.id
+                    )
+                  );
                 }}
               />
             ))}
@@ -181,6 +187,7 @@ export default function ProductPage() {
         <ProductDetailsPopup
           product={selectedProduct}
           onClose={() => setIsProductDetailsPopupOpen(false)}
+          variants={variantsOfSelectedProduct}
         />
       )}
     </div>

@@ -1,10 +1,12 @@
-import Product from "../../entities/Product";
+import { Product, ProductVaraint } from "../../entities";
 
 export default function ProductDetailsPopup({
   product,
+  variants,
   onClose,
 }: {
   product: Product;
+  variants: ProductVaraint[];
   onClose: () => void;
 }) {
   return (
