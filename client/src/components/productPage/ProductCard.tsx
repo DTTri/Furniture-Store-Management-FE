@@ -1,3 +1,4 @@
+import { ProductStatus } from "../../constants";
 import Product from "../../entities/Product";
 
 export default function ProductCard({
@@ -8,7 +9,7 @@ export default function ProductCard({
   onSeeDetailsClick: () => void;
 }) {
   return (
-    <div className="product-card bg-white rounded-lg shadow-md max-w-64">
+    <div className="product-card bg-white rounded-lg shadow-md max-w-72">
       <div className="product-image h-32 overflow-hidden rounded-t-lg">
         <img src="/images/chair.jpg" alt="product" className="object-cover" />
       </div>
@@ -27,15 +28,19 @@ export default function ProductCard({
         <h3 className="product-name text-lg font-semibold">{product.name}</h3>
         <div className="product-price flex items-center justify-between">
           <span className="text-lg font-semibold text-black">
-            {product.productPrice.toLocaleString()}đ
+            {product.price} VND
           </span>
         </div>
         <div
           className={`product-state text-base ${
-            product.forSale ? "text-green-500" : "text-red-500"
+            product.status == ProductStatus.INSTOCK
+              ? "text-green-500"
+              : "text-red-500"
           }`}
         >
-          {product.forSale ? "Đang mở bán" : "Ngừng bán"}
+          {product.status == ProductStatus.INSTOCK
+            ? "Đang mở bán"
+            : "Ngừng bán"}
         </div>
       </div>
     </div>

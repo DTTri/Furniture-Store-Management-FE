@@ -3,100 +3,10 @@ import ProductCard from "../../components/productPage/ProductCard";
 import Product from "../../entities/Product";
 import NavBar from "../../components/NavBar";
 import ProductDetailsPopup from "../../components/productPage/ProductDetailsPopup";
+import { ProductStatus } from "../../constants";
+import { products } from "../../data/test";
 export default function ProductPage() {
   // hardcode data
-  const products: Product[] = [
-    {
-      id: "1",
-      name: "Ghế văn phòng",
-      category: "Nội thất",
-      originalPrice: 400000,
-      productPrice: 450000,
-      isSelling: true,
-      stock: 10,
-      forSale: 5,
-    },
-    {
-      id: "2",
-      name: "Bàn làm việc",
-      category: "Nội thất",
-      originalPrice: 500000,
-      productPrice: 550000,
-      isSelling: true,
-      stock: 5,
-      forSale: 3,
-    },
-    {
-      id: "3",
-      name: "Đèn ngủ",
-      category: "Nội thất",
-      originalPrice: 1000000,
-      productPrice: 1200000,
-      isSelling: true,
-      stock: 3,
-      forSale: 2,
-    },
-    {
-      id: "4",
-      name: "Kệ sách",
-      category: "Nội thất",
-      originalPrice: 400000,
-      productPrice: 450000,
-      isSelling: true,
-      stock: 10,
-      forSale: 5,
-    },
-    {
-      id: "5",
-      name: "Tủ dép",
-      category: "Nội thất",
-      originalPrice: 500000,
-      productPrice: 550000,
-      isSelling: true,
-      stock: 5,
-      forSale: 3,
-    },
-    {
-      id: "6",
-      name: "Bình hoa",
-      category: "Nội thất",
-      originalPrice: 1000000,
-      productPrice: 1200000,
-      isSelling: true,
-      stock: 3,
-      forSale: 2,
-    },
-    {
-      id: "7",
-      name: "Bàn ăn",
-      category: "Nội thất",
-      originalPrice: 400000,
-      productPrice: 450000,
-      isSelling: false,
-      stock: 10,
-      forSale: 5,
-    },
-    {
-      id: "8",
-      name: "Ghế Sofa",
-      category: "Nội thất",
-      originalPrice: 500000,
-      productPrice: 550000,
-      isSelling: true,
-      stock: 5,
-      forSale: 3,
-    },
-    {
-      id: "9",
-      name: "Đèn trần",
-      category: "Nội thất",
-      originalPrice: 1000000,
-      productPrice: 1200000,
-      isSelling: true,
-      stock: 3,
-      forSale: 2,
-    },
-  ];
 
   // State for invoice
   // const [invoice, setInvoice] = useState<
@@ -183,8 +93,8 @@ export default function ProductPage() {
             />
           </div>
         </div>
-        <div className="body w-full flex p-4">
-          <div className="product-gallery w-full h-full overflow-y-auto grid grid-cols-4 gap-4 p-8">
+        <div className="body w-full">
+          <div className="product-gallery w-full h-full overflow-y-auto grid grid-cols-4 gap-4 p-4">
             {products.map((product) => (
               <ProductCard
                 key={product.id}
