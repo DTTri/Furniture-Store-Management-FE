@@ -3,116 +3,214 @@ import { ProductVaraint } from "../entities";
 import Product from "../entities/Product";
 
 const products: Product[] = [
+  // id: string;
+  // name: string;
+  // category: string;
+  // price: string;
+  // status: ProductStatus;
+  // image: string;
+  // description: string;
+  // warranty: number;
+  // available: number;
+  // quantity: number;
+  // defective: number;
+  // sold: number;
+  // catelogueId: string;
   {
     id: "1",
-    name: "Ghế văn phòng",
+    name: "Ghế Sofa",
     category: "Nội thất",
-    price: "500.000 - 550.000",
+    price: "500000 - 600000",
     status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Ghế sofa cao cấp",
+    warranty: 12,
     available: 10,
-    quantity: 20,
-    defective: 10,
+    quantity: 12,
+    defective: 2,
     sold: 0,
     catelogueId: "1",
-    // create more products here
   },
+  // generate 11 more products
   {
     id: "2",
-    name: "Bàn làm việc",
+    name: "Bàn trà",
     category: "Nội thất",
-    price: "1.000.000 - 1.200.000",
+    price: "1000000 - 1200000",
     status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Bàn trà cao cấp",
+    warranty: 12,
     available: 10,
-    quantity: 20,
-    defective: 10,
+    quantity: 12,
+    defective: 2,
     sold: 0,
-    catelogueId: "1",
+    catelogueId: "2",
   },
   {
     id: "3",
-    name: "Tủ sách",
+    name: "Tủ quần áo",
     category: "Nội thất",
-    price: "1.500.000 - 1.700.000",
+    price: "1500000 - 1700000",
     status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Tủ quần áo cao cấp",
+    warranty: 12,
     available: 10,
-    quantity: 20,
-    defective: 10,
+    quantity: 12,
+    defective: 2,
     sold: 0,
-    catelogueId: "1",
+    catelogueId: "3",
   },
   {
     id: "4",
-    name: "Bàn trà",
+    name: "Ghế ăn",
     category: "Nội thất",
-    price: "500.000 - 550.000",
+    price: "500000 - 600000",
     status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Ghế ăn cao cấp",
+    warranty: 12,
     available: 10,
-    quantity: 20,
-    defective: 10,
+    quantity: 12,
+    defective: 2,
     sold: 0,
-    catelogueId: "1",
+    catelogueId: "4",
   },
   {
     id: "5",
     name: "Ghế sofa",
     category: "Nội thất",
-    price: "1.500.000 - 1.700.000",
+    price: "1000000 - 1200000",
     status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Ghế sofa cao cấp",
+    warranty: 12,
     available: 10,
-    quantity: 20,
-    defective: 10,
+    quantity: 12,
+    defective: 2,
     sold: 0,
-    catelogueId: "1",
+    catelogueId: "5",
   },
   {
     id: "6",
-    name: "Ghế ăn",
+    name: "Bàn trà",
     category: "Nội thất",
-    price: "500.000 - 550.000",
+    price: "1500000 - 1700000",
     status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Bàn trà cao cấp",
+    warranty: 12,
     available: 10,
-    quantity: 20,
-    defective: 10,
+    quantity: 12,
+    defective: 2,
     sold: 0,
-    catelogueId: "1",
+    catelogueId: "6",
   },
   {
     id: "7",
     name: "Tủ quần áo",
     category: "Nội thất",
-    price: "1.500.000 - 1.700.000",
+    price: "500000 - 600000",
     status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Tủ quần áo cao cấp",
+    warranty: 12,
     available: 10,
-    quantity: 20,
-    defective: 10,
+    quantity: 12,
+    defective: 2,
     sold: 0,
-    catelogueId: "1",
+    catelogueId: "7",
   },
   {
     id: "8",
-    name: "Tủ giày",
+    name: "Ghế ăn",
     category: "Nội thất",
-    price: "500.000 - 550.000",
+    price: "1000000 - 1200000",
     status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Ghế ăn cao cấp",
+    warranty: 12,
     available: 10,
-    quantity: 20,
-    defective: 10,
+    quantity: 12,
+    defective: 2,
     sold: 0,
-    catelogueId: "1",
+    catelogueId: "8",
   },
   {
     id: "9",
-    name: "Tủ bếp",
+    name: "Ghế sofa",
     category: "Nội thất",
-    price: "1.500.000 - 1.700.000",
+    price: "1500000 - 1700000",
     status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Ghế sofa cao cấp",
+    warranty: 12,
     available: 10,
-    quantity: 20,
-    defective: 10,
+    quantity: 12,
+    defective: 2,
     sold: 0,
-    catelogueId: "1",
+    catelogueId: "9",
+  },
+  {
+    id: "10",
+    name: "Bàn trà",
+    category: "Nội thất",
+    price: "500000 - 600000",
+    status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Bàn trà cao cấp",
+    warranty: 12,
+    available: 10,
+    quantity: 12,
+    defective: 2,
+    sold: 0,
+    catelogueId: "10",
+  },
+  {
+    id: "11",
+    name: "Tủ quần áo",
+    category: "Nội thất",
+    price: "1000000 - 1200000",
+    status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Tủ quần áo cao cấp",
+    warranty: 12,
+    available: 10,
+    quantity: 12,
+    defective: 2,
+    sold: 0,
+    catelogueId: "11",
+  },
+  {
+    id: "12",
+    name: "Ghế ăn",
+    category: "Nội thất",
+    price: "1500000 - 1700000",
+    status: ProductStatus.INSTOCK,
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    description: "Ghế ăn cao cấp",
+    warranty: 12,
+    available: 10,
+    quantity: 12,
+    defective: 2,
+    sold: 0,
+    catelogueId: "12",
   },
 ];
+
 const productVariants: ProductVaraint[] = [
   // id: string;
   // SKU: string;
@@ -131,7 +229,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Đen",
     size: "M",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 400000,
   },
   {
@@ -142,62 +241,68 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Trắng",
     size: "L",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 450000,
   },
   {
     id: "3",
     SKU: "3",
-    productId: "2",
+    productId: "1",
     price: 1000000,
     status: ProductStatus.INSTOCK,
     color: "Xám",
     size: "S",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 800000,
   },
   {
     id: "4",
     SKU: "4",
-    productId: "2",
+    productId: "1",
     price: 1200000,
     status: ProductStatus.INSTOCK,
     color: "Nâu",
     size: "XL",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 1000000,
   },
   {
     id: "5",
     SKU: "5",
-    productId: "3",
+    productId: "1",
     price: 1500000,
     status: ProductStatus.INSTOCK,
     color: "Vàng",
     size: "M",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 1200000,
   },
   {
     id: "6",
     SKU: "6",
-    productId: "3",
+    productId: "2",
     price: 1700000,
     status: ProductStatus.INSTOCK,
     color: "Xanh",
     size: "L",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 1400000,
   },
   {
     id: "7",
     SKU: "7",
-    productId: "4",
+    productId: "3",
     price: 500000,
     status: ProductStatus.INSTOCK,
     color: "Đỏ",
     size: "S",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 400000,
   }, // more variants
   {
@@ -208,7 +313,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Hồng",
     size: "M",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 450000,
   },
   {
@@ -219,7 +325,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Xám",
     size: "L",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 1200000,
   },
   {
@@ -230,7 +337,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Đen",
     size: "XL",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 1400000,
   },
   {
@@ -241,7 +349,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Trắng",
     size: "S",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 400000,
   },
   {
@@ -252,7 +361,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Đen",
     size: "M",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 450000,
   },
   {
@@ -263,7 +373,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Xanh",
     size: "L",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 1200000,
   },
   {
@@ -274,7 +385,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Vàng",
     size: "XL",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 1400000,
   },
   {
@@ -285,7 +397,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Hồng",
     size: "S",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 400000,
   },
   {
@@ -296,7 +409,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Đỏ",
     size: "M",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 450000,
   },
   {
@@ -307,7 +421,8 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Nâu",
     size: "L",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 1200000,
   },
   {
@@ -318,8 +433,82 @@ const productVariants: ProductVaraint[] = [
     status: ProductStatus.INSTOCK,
     color: "Xám",
     size: "XL",
-    image: "https://via.placeholder.com/150",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
     buyingPrice: 1400000,
+  },
+  // generate 6 more variants for product has id 18
+  {
+    id: "19",
+    SKU: "19",
+    productId: "10",
+    price: 500000,
+    status: ProductStatus.INSTOCK,
+    color: "Đen",
+    size: "S",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    buyingPrice: 400000,
+  },
+  {
+    id: "20",
+    SKU: "20",
+    productId: "10",
+    price: 550000,
+    status: ProductStatus.INSTOCK,
+    color: "Trắng",
+    size: "M",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    buyingPrice: 450000,
+  },
+  {
+    id: "21",
+    SKU: "21",
+    productId: "11",
+    price: 1500000,
+    status: ProductStatus.INSTOCK,
+    color: "Xám",
+    size: "L",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    buyingPrice: 1200000,
+  },
+  {
+    id: "22",
+    SKU: "22",
+    productId: "11",
+    price: 1700000,
+    status: ProductStatus.INSTOCK,
+    color: "Đen",
+    size: "XL",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    buyingPrice: 1400000,
+  },
+  {
+    id: "23",
+    SKU: "23",
+    productId: "12",
+    price: 500000,
+    status: ProductStatus.INSTOCK,
+    color: "Trắng",
+    size: "S",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    buyingPrice: 400000,
+  },
+  {
+    id: "24",
+    SKU: "24",
+    productId: "12",
+    price: 550000,
+    status: ProductStatus.INSTOCK,
+    color: "Đen",
+    size: "M",
+    image:
+      "https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg",
+    buyingPrice: 450000,
   },
 ];
 

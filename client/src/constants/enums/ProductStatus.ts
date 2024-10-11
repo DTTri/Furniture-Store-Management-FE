@@ -1,6 +1,6 @@
 enum ProductStatus {
-  INSTOCK = "INSTOCK",
-  SOLDOUT = "SOLDOUT",
-  STOPSELLING = "STOPSELLING",
+  INSTOCK = "Đang mở bán",
+  SOLDOUT = "Hết hàng",
+  STOPSELLING = "Đang ngừng bán",
 }
 export default ProductStatus;

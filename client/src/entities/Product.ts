@@ -6,6 +6,9 @@ type Product = {
   category: string;
   price: string;
   status: ProductStatus;
+  image: string;
+  description: string;
+  warranty: number;
   available: number;
   quantity: number;
   defective: number;
