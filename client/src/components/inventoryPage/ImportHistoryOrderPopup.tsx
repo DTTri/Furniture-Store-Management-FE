@@ -24,7 +24,7 @@ export default function ImprortHistoryOrderPopup({
         >
           <span className="text-[16px] font-bold">x</span>
         </button>
-        <div className="header w-full flex flex-row justify-between pl-4 pr-8 mt-[32px] mb-8">
+        <div className="header w-full flex flex-row justify-between pl-4 pr-8 mt-[32px] mb-5">
           <h3 className="font-semibold text-[28px] ">Lịch sử nhập hàng</h3>
           <div className="buttons flex flex-row items-center gap-5">
             <Button style={{ background: "#D91316" }} variant="contained">
@@ -39,7 +39,7 @@ export default function ImprortHistoryOrderPopup({
             </Button>
           </div>
         </div>
-        <div className="w-full px-1">
+        <div className="w-full px-1 ">
           <table className="w-full">
             <thead>
               <tr>

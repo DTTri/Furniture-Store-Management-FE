@@ -1,5 +1,6 @@
 import ImportPopup from "../../components/inventoryPage/ImportPopup";
 import ImportHistoryOrderPopup from "../../components/inventoryPage/ImportHistoryOrderPopup";
+import DoubleCheckedGoodReceipt from "../../components/inventoryPage/DoubleCheckedGoodReceipt";
 import NavBar from "../../components/NavBar";
 import Product from "../../entities/Product";
 import { useState } from "react";
@@ -103,6 +104,8 @@ export default function InventoryPage() {
   const [isImportPopupOpen, setIsImportPopupOpen] = useState(false);
   const [isPopupImportHistoryOrder, setIsPopupImportHistoryOrder] =
     useState(false);
+  const [isDoubleCheckedGoodReceipt, setIsDoubleCheckedGoodReceipt] =
+    useState(false);
   return (
     <div className="flex gap-8 bg-gray-100">
       <NavBar />
@@ -133,6 +136,14 @@ export default function InventoryPage() {
             className="bg-blue-600 text-white px-2 py-1 rounded-md"
           >
             Lịch sử nhập hàng
+          </button>
+          <button
+            onClick={() => {
+              setIsDoubleCheckedGoodReceipt(true);
+            }}
+            className="bg-blue-600 text-white px-2 py-1 rounded-md"
+          >
+            Nhập hàng check lần 2
           </button>
         </div>
         <div className="table-container w-full px-8 py-4">
@@ -178,6 +189,12 @@ export default function InventoryPage() {
       {isPopupImportHistoryOrder && (
         <ImportHistoryOrderPopup
           onClose={() => setIsPopupImportHistoryOrder(false)}
+          receipts={testGoodReceipt}
+        />
+      )}
+      {isDoubleCheckedGoodReceipt && (
+        <DoubleCheckedGoodReceipt
+          onClose={() => setIsDoubleCheckedGoodReceipt(false)}
           receipts={testGoodReceipt}
         />
       )}
