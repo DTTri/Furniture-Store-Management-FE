@@ -2,10 +2,10 @@ import { useState } from "react";
 import ProductCard from "../../components/productPage/ProductCard";
 import Product from "../../entities/Product";
 import NavBar from "../../components/NavBar";
-import AddProductToSellPopup from "../../components/productPage/AddProductsToSellPopup";
+import ProductDetailsPopup from "../../components/productPage/ProductDetailsPopup";
 export default function ProductPage() {
   // hardcode data
-  const initialProducts: Product[] = [
+  const products: Product[] = [
     {
       id: "1",
       name: "Ghế văn phòng",
@@ -98,77 +98,77 @@ export default function ProductPage() {
     },
   ];
 
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-
   // State for invoice
-  const [invoice, setInvoice] = useState<
-    { product: Product; quantity: number }[]
-  >([]);
+  // const [invoice, setInvoice] = useState<
+  //   { product: Product; quantity: number }[]
+  // >([]);
 
-  // add product to invoice
-  const handleAddToInvoice = (product: Product) => {
-    setInvoice((prevInvoice) => {
-      const existingProduct = prevInvoice.find(
-        (item) => item.product.id === product.id
-      );
-      if (existingProduct) {
-        return prevInvoice;
-      }
-      return [...prevInvoice, { product, quantity: 1 }];
-    });
-  };
+  // // add product to invoice
+  // const handleAddToInvoice = (product: Product) => {
+  //   setInvoice((prevInvoice) => {
+  //     const existingProduct = prevInvoice.find(
+  //       (item) => item.product.id === product.id
+  //     );
+  //     if (existingProduct) {
+  //       return prevInvoice;
+  //     }
+  //     return [...prevInvoice, { product, quantity: 1 }];
+  //   });
+  // };
 
-  // remove product from invoice
-  const handleRemoveFromInvoice = (product: Product) => {
-    setInvoice((prevInvoice) =>
-      prevInvoice.filter((item) => item.product.id !== product.id)
-    );
-  };
+  // // remove product from invoice
+  // const handleRemoveFromInvoice = (product: Product) => {
+  //   setInvoice((prevInvoice) =>
+  //     prevInvoice.filter((item) => item.product.id !== product.id)
+  //   );
+  // };
 
   // handle product quantity change in invoice
-  const handleQuantityChange = (product: Product, quantity: number) => {
-    setInvoice((prevInvoice) =>
-      prevInvoice.map((item) =>
-        item.product.id === product.id
-          ? {
-              ...item,
-              quantity: Math.min(Math.max(quantity, 1), product.forSale),
-            }
-          : item
-      )
-    );
-  };
+  // const handleQuantityChange = (product: Product, quantity: number) => {
+  //   setInvoice((prevInvoice) =>
+  //     prevInvoice.map((item) =>
+  //       item.product.id === product.id
+  //         ? {
+  //             ...item,
+  //             quantity: Math.min(Math.max(quantity, 1), product.forSale),
+  //           }
+  //         : item
+  //     )
+  //   );
+  // };
 
-  // calculate total price
-  const totalPrice = invoice.reduce(
-    (sum, item) => sum + item.product.productPrice * item.quantity,
-    0
-  );
+  // // calculate total price
+  // const totalPrice = invoice.reduce(
+  //   (sum, item) => sum + item.product.productPrice * item.quantity,
+  //   0
+  // );
 
   // handle checkout button click
-  const handleCheckout = () => {
-    // because the products data is hardcoded, i will update the product.forSale right here
-    setProducts((prevProducts) =>
-      prevProducts.map((product) => {
-        const invoiceItem = invoice.find(
-          (item) => item.product.id === product.id
-        );
-        if (invoiceItem) {
-          return {
-            ...product,
-            forSale: product.forSale - invoiceItem.quantity,
-          };
-        }
-        return product;
-      })
-    );
-    // clear invoice
-    setInvoice([]);
-  };
+  // const handleCheckout = () => {
+  //   // because the products data is hardcoded, i will update the product.forSale right here
+  //   setProducts((prevProducts) =>
+  //     prevProducts.map((product) => {
+  //       const invoiceItem = invoice.find(
+  //         (item) => item.product.id === product.id
+  //       );
+  //       if (invoiceItem) {
+  //         return {
+  //           ...product,
+  //           forSale: product.forSale - invoiceItem.quantity,
+  //         };
+  //       }
+  //       return product;
+  //     })
+  //   );
+  //   // clear invoice
+  //   setInvoice([]);
+  // };
 
   // open the import products from inventory modal
-  const [isAddProductToSellPopupOpen, setIsAddProductToSellPopupOpen] =
+
+  const [isProductDetailsPopupOpen, setIsProductDetailsPopupOpen] =
     useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
 
   return (
     <div className="bg-gray-100 w-full h-screen max-h-screen flex gap-4 p-8">
@@ -182,31 +182,21 @@ export default function ProductPage() {
               className="w-full p-2 rounded-md border border-gray-500"
             />
           </div>
-          <button
-            onClick={() => setIsAddProductToSellPopupOpen(true)}
-            className="bg-blue-600 text-white p-2 rounded-md"
-          >
-            Thêm hàng từ kho
-          </button>
         </div>
         <div className="body w-full flex p-4">
-          <div className="product-gallery w-3/5 h-full overflow-y-auto grid grid-cols-3 gap-4 p-8">
+          <div className="product-gallery w-full h-full overflow-y-auto grid grid-cols-4 gap-4 p-8">
             {products.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
-                onClick={() =>
-                  invoice.find((item) => item.product.id === product.id)
-                    ? handleRemoveFromInvoice(product)
-                    : handleAddToInvoice(product)
-                }
-                isInInvoice={
-                  !!invoice.find((item) => item.product.id === product.id)
-                }
+                onSeeDetailsClick={() => {
+                  setSelectedProduct(product);
+                  setIsProductDetailsPopupOpen(true);
+                }}
               />
             ))}
           </div>
-          <div className="invoice-container w-1/3 bg-white p-4 ">
+          {/* <div className="invoice-container w-1/3 bg-white p-4 ">
             <h3 className="text-2xl font-bold mb-4">Hóa đơn</h3>
             <div className="invoice-table ">
               <table className="min-w-full divide-y divide-gray-200">
@@ -274,13 +264,13 @@ export default function ProductPage() {
             >
               Thanh toán
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
-      {isAddProductToSellPopupOpen && (
-        <AddProductToSellPopup
-          onClose={() => setIsAddProductToSellPopupOpen(false)}
-          products={products}
+      {isProductDetailsPopupOpen && (
+        <ProductDetailsPopup
+          product={selectedProduct}
+          onClose={() => setIsProductDetailsPopupOpen(false)}
         />
       )}
     </div>
