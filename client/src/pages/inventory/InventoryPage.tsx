@@ -1,7 +1,9 @@
 import ImportPopup from "../../components/inventoryPage/ImportPopup";
+import ImportHistoryOrderPopup from "../../components/inventoryPage/ImportHistoryOrderPopup";
 import NavBar from "../../components/NavBar";
 import Product from "../../entities/Product";
 import { useState } from "react";
+import testGoodReceipt from "../../data/testGoodReceipt";
 export default function InventoryPage() {
   const initialProducts: Product[] = [
     {
@@ -99,6 +101,8 @@ export default function InventoryPage() {
   const [products] = useState<Product[]>(initialProducts);
 
   const [isImportPopupOpen, setIsImportPopupOpen] = useState(false);
+  const [isPopupImportHistoryOrder, setIsPopupImportHistoryOrder] =
+    useState(false);
   return (
     <div className="flex gap-8 bg-gray-100">
       <NavBar />
@@ -115,7 +119,19 @@ export default function InventoryPage() {
           >
             Nhập hàng
           </button>
-          <button className="bg-blue-600 text-white px-2 py-1 rounded-md">
+          <button
+            onClick={() => setIsImportPopupOpen(true)}
+            className="bg-blue-600 text-white px-2 py-1 rounded-md"
+          >
+            Lịch sử nhập hàng
+          </button>
+          <button
+            onClick={() => {
+              console.log("importHistoryOrder");
+              setIsPopupImportHistoryOrder(true);
+            }}
+            className="bg-blue-600 text-white px-2 py-1 rounded-md"
+          >
             Lịch sử nhập hàng
           </button>
         </div>
@@ -157,6 +173,12 @@ export default function InventoryPage() {
         <ImportPopup
           onClose={() => setIsImportPopupOpen(false)}
           products={products}
+        />
+      )}
+      {isPopupImportHistoryOrder && (
+        <ImportHistoryOrderPopup
+          onClose={() => setIsPopupImportHistoryOrder(false)}
+          receipts={testGoodReceipt}
         />
       )}
     </div>

@@ -78,7 +78,7 @@ export default function ProductPage() {
 
   const [isProductDetailsPopupOpen, setIsProductDetailsPopupOpen] =
     useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
+  const [selectedProduct, setSelectedPrroduct] = useState<Product>(products[0]);
   const [variantsOfSelectedProduct, setVariantsOfSelectedProduct] =
     useState<ProductVaraint[]>(productVariants);
   return (
