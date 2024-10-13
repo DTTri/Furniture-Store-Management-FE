@@ -20,7 +20,9 @@ export default function NavBar() {
         <li className="navbar-menu-item py-1">
           <Link className="flex flex-row items-center " to="/">
             <img className="w-[20px] h-[20px] mr-3" src={product} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Sản phẩm</span>
+            <span className="text-base font-medium text-[#5D6679]">
+              Sản phẩm
+            </span>
           </Link>
         </li>
         <li className="navbar-menu-item">
@@ -32,37 +34,49 @@ export default function NavBar() {
         <li className="navbar-menu-item">
           <Link className="flex flex-row items-center py-1" to="/">
             <img className="w-[20px] h-[20px] mr-3" src={catalogue} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Danh mục</span>
+            <span className="text-base font-medium text-[#5D6679]">
+              Danh mục
+            </span>
+          </Link>
+        </li>
+        <li className="navbar-menu-item">
+          <Link className="flex flex-row items-center py-1" to="/bill">
+            <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
+            <span className="text-base font-medium text-[#5D6679]">
+              Hóa đơn
+            </span>
+          </Link>
+        </li>
+        <li className="navbar-menu-item">
+          <Link className="flex flex-row items-center py-1" to="/">
+            <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
+            <span className="text-base font-medium text-[#5D6679]">
+              Nhà cung cấp
+            </span>
+          </Link>
+        </li>
+        <li className="navbar-menu-item">
+          <Link className="flex flex-row items-center py-1" to="/">
+            <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
+            <span className="text-base font-medium text-[#5D6679]">
+              Khách hàng
+            </span>
+          </Link>
+        </li>
+        <li className="navbar-menu-item">
+          <Link className="flex flex-row items-center py-1" to="/">
+            <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
+            <span className="text-base font-medium text-[#5D6679]">
+              Nhân viên
+            </span>
           </Link>
         </li>
         <li className="navbar-menu-item">
           <Link className="flex flex-row items-center py-1" to="/">
             <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Bảo hành</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Nhà cung cấp</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Khách hàng</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Nhân viên</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Báo cáo</span>
+            <span className="text-base font-medium text-[#5D6679]">
+              Báo cáo
+            </span>
           </Link>
         </li>
       </ul>
@@ -70,7 +84,9 @@ export default function NavBar() {
         <li className="navbar-menu-item py-1">
           <Link className="flex flex-row items-center " to="/">
             <img className="w-[24px] h-[24px] mr-3" src={setting} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Cài đặt</span>
+            <span className="text-base font-medium text-[#5D6679]">
+              Cài đặt
+            </span>
           </Link>
         </li>
         <li className="navbar-menu-item">
@@ -82,7 +98,9 @@ export default function NavBar() {
         <li className="navbar-menu-item">
           <Link className="flex flex-row items-center py-1 px-[3px]" to="/">
             <img className="w-[21px] h-[21px] mr-3" src={logout} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Đăng xuất</span>
+            <span className="text-base font-medium text-[#5D6679]">
+              Đăng xuất
+            </span>
           </Link>
         </li>
       </ul>
