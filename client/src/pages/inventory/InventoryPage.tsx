@@ -1,9 +1,9 @@
 import ImportPopup from "../../components/inventoryPage/ImportPopup";
 import ImportHistoryOrderPopup from "../../components/inventoryPage/ImportHistoryOrderPopup";
-import DoubleCheckedGoodReceipt from "../../components/inventoryPage/DoubleCheckedGoodReceipt";
+import DoubleCheckedGoodsReceipt from "../../components/inventoryPage/DoubleCheckedGoodsReceipt";
 import NavBar from "../../components/NavBar";
 import { useState } from "react";
-import testGoodReceipt from "../../data/testGoodReceipt";
+import  { testGoodReceipt, testGoodsReceiptDetail } from "../../data/testGoodReceipt";
 import { products, productVariants } from "../../data/test";
 import StockTable from "../../components/inventoryPage/StockTable";
 export default function InventoryPage() {
@@ -70,9 +70,19 @@ export default function InventoryPage() {
         />
       )}
       {isDoubleCheckedGoodReceipt && (
-        <DoubleCheckedGoodReceipt
+        <DoubleCheckedGoodsReceipt
           onClose={() => setIsDoubleCheckedGoodReceipt(false)}
-          receipts={testGoodReceipt}
+          goodReciptInfo={
+            {
+              goodReceiptId: "GR001",
+              receiptDate: "2021-10-10",
+              staffId: "ST001",
+              providerId: "PR001",
+              email: "thinh@gmail.com",
+              phone: "0123456789",
+            }
+          }
+          receipts={testGoodsReceiptDetail}
         />
       )}
     </div>

@@ -1,5 +1,6 @@
 import GoodsReceiptStatus from "../constants/enums/GoodReceiptStatus";
 import GoodsReceipt from "../entities/GoodsReceipt";
+import GoodsReceiptDetail from "../entities/GoodsReceiptDetail";
 
 const testGoodReceipt: GoodsReceipt[] = [
     {
@@ -49,4 +50,37 @@ const testGoodReceipt: GoodsReceipt[] = [
     },
 ];
 
-export default testGoodReceipt;
+const testGoodsReceiptDetail: GoodsReceiptDetail[] = [
+    {
+        goodReceiptId: "GR001",
+        quantity: 10,
+        cost: 100.00,
+        variantId: "1",
+    },
+    {
+        goodReceiptId: "GR002",
+        quantity: 20,
+        cost: 50.00,
+        variantId: "2",
+    },
+    {
+        goodReceiptId: "GR003",
+        quantity: 8,
+        cost: 60.00,
+        variantId: "3",
+    },
+    {
+        goodReceiptId: "GR004",
+        quantity: 12,
+        cost: 250.00,
+        variantId: "4",
+    },
+    {
+        goodReceiptId: "GR005",
+        quantity: 25,
+        cost: 80.00,
+        variantId: "5",
+    },
+];
+
+export  { testGoodReceipt, testGoodsReceiptDetail };
