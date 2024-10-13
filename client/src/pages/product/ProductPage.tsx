@@ -3,7 +3,6 @@ import ProductCard from "../../components/productPage/ProductCard";
 import { Product, ProductVaraint } from "../../entities";
 import NavBar from "../../components/NavBar";
 import ProductDetailsPopup from "../../components/productPage/ProductDetailsPopup";
-import { ProductStatus } from "../../constants";
 import { products, productVariants } from "../../data/test";
 export default function ProductPage() {
   // hardcode data
@@ -78,7 +77,7 @@ export default function ProductPage() {
 
   const [isProductDetailsPopupOpen, setIsProductDetailsPopupOpen] =
     useState(false);
-  const [selectedProduct, setSelectedPrroduct] = useState<Product>(products[0]);
+  const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
   const [variantsOfSelectedProduct, setVariantsOfSelectedProduct] =
     useState<ProductVaraint[]>(productVariants);
   return (
