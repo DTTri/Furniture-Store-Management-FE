@@ -1,7 +1,7 @@
 import { ProductStatus } from "../constants";
-import { ProductVaraint } from "../entities";
+import { Bill, ProductVaraint } from "../entities";
 import Product from "../entities/Product";
-
+import { BillStatus } from "../constants";
 const products: Product[] = [
   // id: string;
   // name: string;
@@ -512,4 +512,92 @@ const productVariants: ProductVaraint[] = [
   },
 ];
 
-export { products, productVariants };
+const bills: Bill[] = [
+  // id: string;
+  // totalCost: number;
+  // date: string;
+  // status: BillStatus;
+  // customerId: string;
+  // staffId: string;
+  {
+    id: "1",
+    totalCost: 500000,
+    date: "2021-09-01",
+    status: BillStatus.PAID,
+    customerId: "1",
+    staffId: "1",
+  },
+  {
+    id: "2",
+    totalCost: 1000000,
+    date: "2021-09-02",
+    status: BillStatus.PAID,
+    customerId: "2",
+    staffId: "2",
+  },
+  {
+    id: "3",
+    totalCost: 1500000,
+    date: "2021-09-03",
+    status: BillStatus.PAID,
+    customerId: "3",
+    staffId: "3",
+  },
+  {
+    id: "4",
+    totalCost: 500000,
+    date: "2021-09-04",
+    status: BillStatus.PAID,
+    customerId: "4",
+    staffId: "4",
+  },
+  {
+    id: "5",
+    totalCost: 1000000,
+    date: "2021-09-05",
+    status: BillStatus.PAID,
+    customerId: "5",
+    staffId: "5",
+  },
+  {
+    id: "6",
+    totalCost: 1500000,
+    date: "2021-09-06",
+    status: BillStatus.PAID,
+    customerId: "6",
+    staffId: "6",
+  },
+  {
+    id: "7",
+    totalCost: 500000,
+    date: "2021-09-07",
+    status: BillStatus.PAID,
+    customerId: "7",
+    staffId: "7",
+  },
+  {
+    id: "8",
+    totalCost: 1000000,
+    date: "2021-09-08",
+    status: BillStatus.PAID,
+    customerId: "8",
+    staffId: "8",
+  },
+  {
+    id: "9",
+    totalCost: 1500000,
+    date: "2021-09-09",
+    status: BillStatus.PAID,
+    customerId: "9",
+    staffId: "9",
+  },
+  {
+    id: "10",
+    totalCost: 500000,
+    date: "2021-09-10",
+    status: BillStatus.PAID,
+    customerId: "10",
+    staffId: "10",
+  },
+];
+export { products, productVariants, bills };

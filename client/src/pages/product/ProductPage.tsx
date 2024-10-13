@@ -3,7 +3,6 @@ import ProductCard from "../../components/productPage/ProductCard";
 import { Product, ProductVaraint } from "../../entities";
 import NavBar from "../../components/NavBar";
 import ProductDetailsPopup from "../../components/productPage/ProductDetailsPopup";
-import { ProductStatus } from "../../constants";
 import { products, productVariants } from "../../data/test";
 export default function ProductPage() {
   // hardcode data

@@ -1,3 +1,3 @@
 import ProductStatus from "./enums/ProductStatus";
-
-export { ProductStatus };
+import BillStatus from "./enums/BillStatus";
+export { ProductStatus, BillStatus };
