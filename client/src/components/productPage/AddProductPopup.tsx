@@ -1,11 +1,21 @@
-import { Catalogue } from "../../entities";
+import { Catalogue, Product } from "../../entities";
 import { categories } from "../../constants";
 import { Button } from "@mui/material";
 import AddProductDTO from "./AddProductDTO";
 import { useState } from "react";
 import http from "../../api/http";
 
-export default function AddProductPopup() {
+export default function AddProductPopup({
+  onClose,
+  onProductCreated,
+  product,
+  onProductUpdated,
+}: {
+  onClose: () => void;
+  onProductCreated: (product: Product) => void;
+  product?: Product;
+  onProductUpdated: (product: Product) => void;
+}) {
   const catalogues: Catalogue[] = [
     {
       id: 1,
@@ -16,11 +26,13 @@ export default function AddProductPopup() {
       name: "Bàn ghế sofa",
     },
   ];
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
-  const [catalogueId, setCatalogueId] = useState(1);
-  const [warranty, setWarranty] = useState(1);
+  const [name, setName] = useState(product?.name || "");
+  const [category, setCategory] = useState(product?.category || categories[0]);
+  const [description, setDescription] = useState(product?.description || "");
+  const [catalogueId, setCatalogueId] = useState(
+    product?.catalogueId || catalogues[0].id
+  );
+  const [warranty, setWarranty] = useState(product?.warranty || 1);
   //   type AddProductDTO = {
   //     name: string;
   //     category: string;
@@ -34,7 +46,7 @@ export default function AddProductPopup() {
       alert("Name is required");
       return;
     }
-    const newProduct: AddProductDTO = {
+    const newProductDTO: AddProductDTO = {
       name,
       category,
       description,
@@ -42,13 +54,61 @@ export default function AddProductPopup() {
       warranty,
     };
     try {
-      const response = await http.post("/products/create-product", newProduct);
-      console.log(response);
+      const response = await http.post(
+        "/products/create-product",
+        newProductDTO
+      );
+      if (response.data.EC === 0) {
+        onProductCreated(response.data.DT);
+        onClose();
+      } else {
+        console.error("Failed to add product:", response.data.EM);
+      }
     } catch (error) {
       console.error("Error adding product:", error);
     }
 
     // call api to add product
+  };
+
+  const handleUpdateProduct = async () => {
+    if (
+      name === product?.name &&
+      category === product?.category &&
+      description === product?.description &&
+      catalogueId === product?.catalogueId &&
+      warranty === product?.warranty
+    ) {
+      alert("No change to update");
+      return;
+    }
+    if (!name || name === "") {
+      alert("Name is required");
+      return;
+    }
+    const newProductDTO: AddProductDTO = {
+      name,
+      category,
+      description,
+      catalogueId,
+      warranty,
+    };
+    console.log(newProductDTO);
+    try {
+      const response = await http.put(
+        "/products/update-product/" + product?.id,
+        newProductDTO
+      );
+      if (response.data.EC === 0) {
+        console.log(response.data.DT);
+        onProductUpdated(response.data.DT);
+        onClose();
+      } else {
+        console.error("Failed to update product:", response.data.EM);
+      }
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
   };
 
   return (
@@ -72,6 +132,7 @@ export default function AddProductPopup() {
                 className="border border-gray-300 px-2 py-1 rounded-md"
                 required
                 onChange={(e) => setName(e.target.value)}
+                defaultValue={product?.name}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -79,6 +140,7 @@ export default function AddProductPopup() {
               <select
                 name="category"
                 id="category"
+                defaultValue={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
                 {categories.map((category) => (
@@ -97,6 +159,7 @@ export default function AddProductPopup() {
                   resize: "none",
                 }}
                 onChange={(e) => setDescription(e.target.value)}
+                defaultValue={description}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -105,6 +168,7 @@ export default function AddProductPopup() {
                 name="catalogue"
                 id="catalogue"
                 onChange={(e) => setCatalogueId(Number(e.target.value))}
+                defaultValue={catalogueId}
               >
                 {catalogues.map((catalogue) => (
                   <option value={catalogue.id}>{catalogue.name}</option>
@@ -119,7 +183,7 @@ export default function AddProductPopup() {
                 name="warranty"
                 placeholder="Bảo hành"
                 className="border border-gray-300 px-2 py-1 rounded-md"
-                defaultValue={1}
+                defaultValue={warranty}
                 min={0}
                 onChange={(e) => setWarranty(Number(e.target.value))}
               />
@@ -133,18 +197,31 @@ export default function AddProductPopup() {
               backgroundColor: "red",
               textTransform: "none",
             }}
+            onClick={onClose}
           >
-            Hủy
+            Cancel
           </Button>
-          <Button
-            variant="contained"
-            style={{
-              textTransform: "none",
-            }}
-            onClick={handleAddProduct}
-          >
-            Thêm
-          </Button>
+          {product ? (
+            <Button
+              variant="contained"
+              style={{
+                textTransform: "none",
+              }}
+              onClick={handleUpdateProduct}
+            >
+              Update
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              style={{
+                textTransform: "none",
+              }}
+              onClick={handleAddProduct}
+            >
+              Create
+            </Button>
+          )}
         </div>
       </div>
     </div>

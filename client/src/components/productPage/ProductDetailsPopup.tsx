@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { Product, ProductVariant } from "../../entities";
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import http from "../../api/http";
+import AddVariantPopup from "./AddVariantPopup";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
 export default function ProductDetailsPopup({
   product,
   onClose,
+  onOpenUpdateProductPopup,
 }: {
   product: Product;
   onClose: () => void;
+  onOpenUpdateProductPopup: (product: Product) => void;
 }) {
   const [variants, setVariants] = useState<ProductVariant[]>([]);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
@@ -35,9 +40,57 @@ export default function ProductDetailsPopup({
     fetchProductVariants();
   }, [product.id]);
 
+  const handleUpdateProduct = () => {
+    onOpenUpdateProductPopup(product);
+    onClose();
+  };
+  const handleStopSelling = async () => {
+    try {
+      const response = await http.put(
+        "/products/stop-selling/" + product.id,
+        {}
+      );
+      if (response.data.EC === 0) {
+        alert("Stop selling successfully");
+        onClose();
+      } else {
+        alert("Failed to stop selling: " + response.data.EM);
+      }
+    } catch (error) {
+      console.error("Error stopping selling:", error);
+    }
+  };
+  const [isStopSellingConfirmationOpen, setIsStopSellingConfirmationOpen] =
+    useState(false);
+
+  const [isForUpdateVariant, setIsForUpdateVariant] = useState(false);
+  const [isAddVariantPopupOpen, setIsAddVariantPopupOpen] = useState(false);
+  const [isDeleteVariantConfirmationOpen, setIsDeleteVariantConfirmationOpen] =
+    useState(false);
+
+  const handleDeleteVariant = async () => {
+    try {
+      const response = await http.delete(
+        "/variants/delete-variant/" + selectedVariant?.id
+      );
+      if (response.data.EC === 0) {
+        const updatedVariants = variants.filter(
+          (variant) => variant.id !== selectedVariant?.id
+        );
+        setVariants(updatedVariants);
+        console.log(variants);
+        setSelectedVariant(updatedVariants.length > 0 ? variants[0] : null);
+        console.log(selectedVariant);
+      } else {
+        alert("Failed to delete variant: " + response.data.EM);
+      }
+    } catch (error) {
+      console.error("Error deleting variant:", error);
+    }
+  };
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white flex justify-around relative rounded-xl p-4 pb-8 w-1/2 max-h-[80vh] min-h-[20vh] overflow-hidden">
+      <div className="bg-white flex justify-around relative rounded-xl p-4 w-1/2 min-w-[420px] overflow-hidden">
         <IconButton
           style={{
             position: "absolute",
@@ -48,14 +101,7 @@ export default function ProductDetailsPopup({
         >
           <CloseIcon />
         </IconButton>
-        <div className="buttons-container flex justify-between items-center gap-2 absolute bottom-2 right-2">
-          <button className="bg-blue-600 text-white px-2 py-1 rounded-md">
-            Chỉnh sửa
-          </button>
-          <button className="bg-red-600 text-white px-2 py-1 rounded-md">
-            Xóa
-          </button>
-        </div>
+
         <div className="information-container flex flex-col gap-2 items-start w-1/2 border-r-2 border-r-black">
           <div className="product-information w-full flex flex-col gap-2">
             <p className="title text-black text-2xl font-semibold">
@@ -124,14 +170,54 @@ export default function ProductDetailsPopup({
             </table>
             <table></table>
           </div>
+          <div className="buttons-container flex justify-between items-center gap-2">
+            <button
+              onClick={handleUpdateProduct}
+              className="bg-blue-600 text-white px-2 py-1 rounded-md"
+            >
+              Update
+            </button>
+            <button
+              onClick={() => setIsStopSellingConfirmationOpen(true)}
+              disabled={product.status === "stop selling"}
+              className="bg-red-600 text-white px-2 py-1 rounded-md"
+            >
+              Stop selling
+            </button>
+          </div>
         </div>
-        <div className="variants-container w-1/2 flex flex-col items-center gap-4">
-          <div className="variant-image h-32 w-32 overflow-hidden rounded-lg">
-            <img
-              src="https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg"
-              alt="variant"
-              className="object-cover"
-            />
+        <div className="variants-container w-1/2 flex flex-col items-center gap-4 justify-around">
+          <div className="w-full flex justify-center items-center gap-4">
+            <div className="variant-image h-32 w-32 overflow-hidden rounded-lg">
+              <img
+                src="https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg"
+                alt="variant"
+                className="object-cover"
+              />
+            </div>
+            <div className="buttons-container flex gap-1">
+              <IconButton
+                onClick={() => {
+                  setIsAddVariantPopupOpen(true);
+                  setIsForUpdateVariant(true);
+                }}
+                style={{
+                  // make this button invisible if there is no variant selected
+                  visibility: selectedVariant ? "visible" : "hidden",
+                }}
+              >
+                <ModeEditIcon />
+              </IconButton>
+              <IconButton
+                onClick={() => setIsDeleteVariantConfirmationOpen(true)}
+                style={{
+                  // make this button invisible if there is no variant selected
+                  visibility: selectedVariant ? "visible" : "hidden",
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </div>
           </div>
           <table className="w-5/6 ml-16">
             <tbody>
@@ -169,7 +255,105 @@ export default function ProductDetailsPopup({
               </div>
             ))}
           </div>
+          <Button
+            variant="contained"
+            onClick={() => setIsAddVariantPopupOpen(true)}
+            style={{
+              textTransform: "none",
+            }}
+          >
+            Add variant
+          </Button>
         </div>
+        {isStopSellingConfirmationOpen && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-4 rounded-xl">
+              <p className="text-center">
+                Are you sure that you want to stop selling this product?
+                <br /> This action cannot be undone.
+              </p>
+              <div className="flex justify-around gap-2 mt-4">
+                <Button
+                  variant="contained"
+                  onClick={() => setIsStopSellingConfirmationOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleStopSelling}
+                  style={{
+                    backgroundColor: "#ff0000",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+        {isAddVariantPopupOpen && (
+          <AddVariantPopup
+            productId={product.id}
+            onClose={() => {
+              setIsAddVariantPopupOpen(false);
+              setIsForUpdateVariant(false);
+            }}
+            onVariantCreated={(variant) => {
+              setVariants([...variants, variant]);
+              if (!selectedVariant) {
+                setSelectedVariant(variant);
+              }
+            }}
+            onVariantUpdated={(updatedVariant) => {
+              setVariants(
+                variants.map((variant) =>
+                  variant.id === updatedVariant.id ? updatedVariant : variant
+                )
+              );
+              setSelectedVariant(updatedVariant);
+            }}
+            variant={
+              isForUpdateVariant && selectedVariant
+                ? selectedVariant
+                : undefined
+            }
+          />
+        )}
+        {isDeleteVariantConfirmationOpen && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-4 rounded-xl">
+              <p className="text-center">
+                Are you sure that you want to delete this variant?
+                <br /> This action cannot be undone.
+              </p>
+              <div className="flex justify-around gap-2 mt-4">
+                <Button
+                  variant="contained"
+                  onClick={() => setIsDeleteVariantConfirmationOpen(false)}
+                  style={{
+                    textTransform: "none",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    setIsDeleteVariantConfirmationOpen(false);
+                    handleDeleteVariant();
+                  }}
+                  style={{
+                    backgroundColor: "#ff0000",
+                    textTransform: "none",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

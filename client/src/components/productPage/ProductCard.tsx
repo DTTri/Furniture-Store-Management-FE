@@ -1,4 +1,3 @@
-import { ProductStatus } from "../../constants";
 import { Product } from "../../entities";
 
 export default function ProductCard({
@@ -33,14 +32,12 @@ export default function ProductCard({
         </div>
         <div
           className={`product-state text-base ${
-            product.status == ProductStatus.INSTOCK
-              ? "text-green-500"
-              : "text-red-500"
+            product.status === "stop selling"
+              ? "text-red-500"
+              : "text-green-500"
           }`}
         >
-          {product.status == ProductStatus.INSTOCK
-            ? "Đang mở bán"
-            : "Ngừng bán"}
+          {product.status}
         </div>
       </div>
     </div>

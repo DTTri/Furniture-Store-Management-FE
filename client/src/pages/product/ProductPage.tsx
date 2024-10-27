@@ -15,7 +15,7 @@ export default function ProductPage() {
     const fetchProducts = async () => {
       try {
         const response = await http.get("/products/get-all-products");
-        console.log(response);
+        //console.log(response);
         if (response.data.EC === 0) {
           setProducts(response.data.DT);
         } else {
@@ -31,6 +31,7 @@ export default function ProductPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
 
   const [isAddProductPopupOpen, setIsAddProductPopupOpen] = useState(false);
+  const [isForUpdate, setIsForUpdate] = useState(false);
   return (
     <div className="bg-white w-full h-screen">
       <div className="header w-full flex gap-4 p-4">
@@ -67,9 +68,32 @@ export default function ProductPage() {
         <ProductDetailsPopup
           product={selectedProduct}
           onClose={() => setIsProductDetailsPopupOpen(false)}
+          onOpenUpdateProductPopup={(product) => {
+            setSelectedProduct(product);
+            setIsForUpdate(true);
+            setIsAddProductPopupOpen(true);
+          }}
         />
       )}
-      {isAddProductPopupOpen && <AddProductPopup />}
+      {isAddProductPopupOpen && (
+        <AddProductPopup
+          onClose={() => {
+            setIsAddProductPopupOpen(false);
+            setIsForUpdate(false);
+          }}
+          onProductCreated={(product) => {
+            setProducts([...products, product]);
+          }}
+          product={isForUpdate ? selectedProduct : undefined}
+          onProductUpdated={(updatedProduct) => {
+            setProducts(
+              products.map((product) =>
+                product.id === updatedProduct.id ? updatedProduct : product
+              )
+            );
+          }}
+        />
+      )}
     </div>
   );
 }

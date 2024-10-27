@@ -1,11 +1,9 @@
-import { ProductStatus } from "../constants";
-
 type Product = {
   id: string;
   name: string;
   category: string;
   price: string;
-  status: ProductStatus;
+  status: string;
   image: string;
   description: string;
   warranty: number;
@@ -13,7 +11,7 @@ type Product = {
   quantity: number;
   defective: number;
   sold: number;
-  catelogueId: string;
+  catalogueId: number;
 };
 
 export default Product;
