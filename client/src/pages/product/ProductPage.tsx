@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../../components/productPage/ProductCard";
-import { Product, ProductVaraint } from "../../entities";
+import { Product } from "../../entities";
 import ProductDetailsPopup from "../../components/productPage/ProductDetailsPopup";
-import { productVariants } from "../../data/test";
 import { Button } from "@mui/material";
 import http from "../../api/http";
+import { AddProductPopup } from "../../components";
 
 export default function ProductPage() {
   const [isProductDetailsPopupOpen, setIsProductDetailsPopupOpen] =
     useState(false);
-  const [variantsOfSelectedProduct, setVariantsOfSelectedProduct] =
-    useState<ProductVaraint[]>(productVariants);
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await http.get("/products/get-all-products");
+        console.log(response);
         if (response.data.EC === 0) {
           setProducts(response.data.DT);
         } else {
@@ -26,22 +25,12 @@ export default function ProductPage() {
         console.error("Error fetching products:", error);
       }
     };
-    const fetchProductVariants = async () => {
-      try {
-        const response = await http.get("/products/get-all-product-variants");
-        if (response.data.EC === 0) {
-          setVariantsOfSelectedProduct(response.data.DT);
-        } else {
-          console.error("Failed to fetch product variants:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching product variants:", error);
-      }
-    };
+
     fetchProducts();
   }, []);
   const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
 
+  const [isAddProductPopupOpen, setIsAddProductPopupOpen] = useState(false);
   return (
     <div className="bg-white w-full h-screen">
       <div className="header w-full flex gap-4 p-4">
@@ -52,12 +41,16 @@ export default function ProductPage() {
             className="w-full p-2 rounded-md border border-gray-500"
           />
         </div>
-        <Button variant="contained" color="primary">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setIsAddProductPopupOpen(true)}
+        >
           Thêm sản phẩm
         </Button>
       </div>
 
-      <div className="product-gallery w-full h-full pb-24 overflow-y-auto grid grid-cols-4 gap-4 p-4">
+      <div className="product-gallery w-full h-full pb-24 overflow-y-auto flex flex-wrap gap-4 p-4">
         {products.map((product) => (
           <ProductCard
             key={product.id}
@@ -65,11 +58,6 @@ export default function ProductPage() {
             onSeeDetailsClick={() => {
               setSelectedProduct(product);
               setIsProductDetailsPopupOpen(true);
-              setVariantsOfSelectedProduct(
-                productVariants.filter(
-                  (variant) => variant.productId === product.id
-                )
-              );
             }}
           />
         ))}
@@ -81,6 +69,7 @@ export default function ProductPage() {
           onClose={() => setIsProductDetailsPopupOpen(false)}
         />
       )}
+      {isAddProductPopupOpen && <AddProductPopup />}
     </div>
   );
 }
