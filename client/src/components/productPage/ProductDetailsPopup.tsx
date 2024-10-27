@@ -1,29 +1,54 @@
-import { useState } from "react";
-import { Product, ProductVaraint } from "../../entities";
-
+import { useEffect, useState } from "react";
+import { Product, ProductVariant } from "../../entities";
+import { IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import http from "../../api/http";
 export default function ProductDetailsPopup({
   product,
-  variants,
   onClose,
 }: {
   product: Product;
-  variants: ProductVaraint[];
   onClose: () => void;
 }) {
-  const [selectedVariant, setSelectedVariant] = useState<ProductVaraint>(
-    variants[0]
+  const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
+    null
   );
+  useEffect(() => {
+    const fetchProductVariants = async () => {
+      try {
+        // get variants of the product by id
+        const response = await http.get(
+          "/variants/get-all-variants/" + product.id
+        );
+        console.log(response);
+        if (response.data.EC === 0) {
+          setVariants(response.data.DT);
+          setSelectedVariant(response.data.DT[0]);
+        } else {
+          console.error("Failed to fetch product variants:", response.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching product variants:", error);
+      }
+    };
+    fetchProductVariants();
+  }, [product.id]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white flex justify-around relative rounded-xl p-4 py-10 w-1/2 max-h-[80vh] min-h-[20vh] overflow-hidden">
-        <button
-          className="absolute top-2 right-2 w-6 h-6 text-base bg-black text-white rounded-full"
+      <div className="bg-white flex justify-around relative rounded-xl p-4 pb-8 w-1/2 max-h-[80vh] min-h-[20vh] overflow-hidden">
+        <IconButton
+          style={{
+            position: "absolute",
+            top: "0",
+            right: "0",
+          }}
           onClick={onClose}
         >
-          x
-        </button>
-        <div className="buttons-container flex justify-between items-cente gap-2 absolute bottom-2 right-2">
+          <CloseIcon />
+        </IconButton>
+        <div className="buttons-container flex justify-between items-center gap-2 absolute bottom-2 right-2">
           <button className="bg-blue-600 text-white px-2 py-1 rounded-md">
             Chỉnh sửa
           </button>
@@ -32,14 +57,11 @@ export default function ProductDetailsPopup({
           </button>
         </div>
         <div className="information-container flex flex-col gap-2 items-start w-1/2 border-r-2 border-r-black">
-          <h3 className="product-name text-black text-xl font-semibold">
-            {product.name}
-          </h3>
           <div className="product-information w-full flex flex-col gap-2">
-            <p className="title text-black text-lg font-semibold">
+            <p className="title text-black text-2xl font-semibold">
               Thông tin sản phẩm
             </p>
-            <table>
+            <table className="w-full">
               <tbody>
                 <tr>
                   <td className="title">Tên sản phẩm:</td>
@@ -84,11 +106,11 @@ export default function ProductDetailsPopup({
               </tbody>
             </table>
           </div>
-          <div className="provider-information flex flex-col gap-2 items-start">
-            <p className="title text-black text-lg font-semibold">
+          <div className="provider-information w-full flex flex-col gap-2 items-start">
+            <p className="title text-black text-2xl font-semibold">
               Thông tin nhà cung cấp
             </p>
-            <table>
+            <table className="w-full">
               <tbody>
                 <tr>
                   <td className="title">Tên nhà cung cấp:</td>
@@ -115,19 +137,19 @@ export default function ProductDetailsPopup({
             <tbody>
               <tr>
                 <td className="title">SKU</td>
-                <td>{selectedVariant.SKU}</td>
+                <td>{selectedVariant ? selectedVariant.SKU : ""}</td>
               </tr>
               <tr>
                 <td className="title">Màu</td>
-                <td>{selectedVariant.color}</td>
+                <td>{selectedVariant ? selectedVariant.color : ""}</td>
               </tr>
               <tr>
                 <td className="title">Kích thước</td>
-                <td>{selectedVariant.size}</td>
+                <td>{selectedVariant ? selectedVariant.size : ""}</td>
               </tr>
               <tr>
                 <td className="title">Giá bán</td>
-                <td>{selectedVariant.price}</td>
+                <td>{selectedVariant ? selectedVariant.price : ""}</td>
               </tr>
             </tbody>
           </table>
@@ -139,7 +161,7 @@ export default function ProductDetailsPopup({
                 className="image-container w-16 h-16 overflow-hidden hover:cursor-pointer min-w-16"
               >
                 <img
-                  src={variant.image}
+                  src="https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg"
                   alt="variant"
                   className="object-cover"
                   onClick={() => setSelectedVariant(variant)}

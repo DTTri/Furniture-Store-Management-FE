@@ -11,7 +11,7 @@ import logout from "../assets/logout.svg";
 
 export default function NavBar() {
   return (
-    <nav className="navbar bg-white shadow-md w-[280px] max-h-svh">
+    <nav className="navbar bg-white h-full shadow-md w-[280px]">
       <a href="#" className="w-full flex flex-row items-center p-[16px]">
         <img src={Logo} className="w-[48px] h-[48px] mr-3" alt="" />
         <span className="font-bold text-xl">Nội thất đẹp</span>

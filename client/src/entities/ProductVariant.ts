@@ -1,6 +1,6 @@
 import { ProductStatus } from "../constants";
 
-type ProductVaraint = {
+type ProductVariant = {
   id: string;
   SKU: string;
   productId: string;
@@ -12,4 +12,4 @@ type ProductVaraint = {
   buyingPrice: number;
 };
 
-export default ProductVaraint;
+export default ProductVariant;

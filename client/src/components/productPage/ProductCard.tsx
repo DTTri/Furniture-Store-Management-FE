@@ -9,11 +9,11 @@ export default function ProductCard({
   onSeeDetailsClick: () => void;
 }) {
   return (
-    <div className="product-card bg-white rounded-lg shadow-md max-w-72">
-      <div className="product-image h-32 overflow-hidden rounded-t-lg">
+    <div className="product-card w-[252px] h-[265px] bg-white rounded-lg shadow-md">
+      <div className="product-image w-full h-1/2 overflow-hidden rounded-t-lg">
         <img src="/images/chair.jpg" alt="product" className="object-cover" />
       </div>
-      <div className="product-info p-4">
+      <div className="product-info w-full p-4">
         <div className="flex justify-between items-center">
           <p className="product-category text-xs text-blue-400">
             {product.category}
