@@ -84,13 +84,19 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
     }
   }, [selectedProduct, productVariants]);
   const [shippingCost, setShippingCost] = useState(0);
+  const [showDataGrid, setShowDataGrid] = useState(true); // State to control unmount and mount of DataGrid
+
   const handleDeleteRow = (id: number) => {
     const updatedRows = rows.filter((row) => row.id !== id);
     if (updatedRows.length === 0) {
+      // Tri: because there's a bug in DataGrid which Material-UI team hasn't fixed yet:
+      //when delete the last row, the DataGrid doesn't re-render
+      // solution: unmount and mount the DataGrid
+      setShowDataGrid(false);
       setTimeout(() => {
-        setRows(updatedRows);
+        setRows([]);
+        setShowDataGrid(true);
       }, 0);
-      console.log(rows);
     } else {
       // Update STT (index) for remaining rows
       const reindexedRows = updatedRows.map((row, index) => ({
@@ -206,28 +212,30 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
           <h2 className="text-center text-xl font-bold">Phiếu nhập hàng</h2>
 
           <div className="table-container w-[98%] h-full overflow-hidden">
-            <DataGrid
-              style={{
-                borderRadius: "20px",
-                backgroundColor: "white",
-                height: "100%",
-              }}
-              rows={rows}
-              columns={columns}
-              rowHeight={40}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 6,
+            {showDataGrid && (
+              <DataGrid
+                style={{
+                  borderRadius: "20px",
+                  backgroundColor: "white",
+                  height: "100%",
+                }}
+                rows={rows}
+                columns={columns}
+                rowHeight={40}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 6,
+                    },
                   },
-                },
-              }}
-              pageSizeOptions={
-                rows.length < 6 ? [6, rows.length] : [6, rows.length + 1]
-              }
-              slots={{ toolbar: GridToolbar }}
-              rowSelection={false}
-            />
+                }}
+                pageSizeOptions={
+                  rows.length < 6 ? [6, rows.length] : [6, rows.length + 1]
+                }
+                slots={{ toolbar: GridToolbar }}
+                rowSelection={false}
+              />
+            )}
           </div>
           <div className="flex justify-between w-full px-8">
             <input
