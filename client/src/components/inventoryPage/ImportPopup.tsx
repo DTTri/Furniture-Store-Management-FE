@@ -1,79 +1,164 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductVaraint from "../../entities/ProductVariant";
 import { Product } from "../../entities";
+import http from "../../api/http";
+import { Button } from "@mui/material";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridRowParams,
+  GridToolbar,
+} from "@mui/x-data-grid";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function ImportPopup({
-  onClose,
-  products,
-  productVariants,
-}: {
-  onClose: () => void;
-  products: Product[];
-  productVariants: ProductVaraint[];
-}) {
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+interface ReceiptTableRow {
+  id: number;
+  productName: string;
+  sku: string;
+  quantity: number;
+  buyingPrice: number;
+  cost: number;
+}
+export default function ImportPopup({ onClose }: { onClose: () => void }) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [productVariants, setProductVariants] = useState<ProductVaraint[]>([]);
+  useEffect(() => {
+    const fetchProductsAndVariants = async () => {
+      const response = Promise.all([
+        http.get("/products/get-all-products"),
+        http.get("/variants"),
+      ]);
+      const [productsResponse, variantsResponse] = await response;
+      if (productsResponse.data.EC === 0) {
+        setProducts(productsResponse.data.DT);
+      } else {
+        console.error("Failed to fetch products:", productsResponse.data.EM);
+      }
+      if (variantsResponse.data.EC === 0) {
+        setProductVariants(variantsResponse.data.DT);
+        console.log(variantsResponse.data.DT);
+      } else {
+        console.error("Failed to fetch variants:", variantsResponse.data.EM);
+      }
+    };
+    fetchProductsAndVariants();
+  }, []);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVaraint | null>(
     null
   );
-  const [importedProductVariants, setImportedProductVariants] = useState<
-    { variant: ProductVaraint; quantity: number }[]
+  const [currentQuantity, setCurrentQuantity] = useState(1);
+  const [rows, setRows] = useState<ReceiptTableRow[]>([]);
+  const handleAddRow = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (selectedProduct && selectedVariant) {
+      const newRow: ReceiptTableRow = {
+        id: rows.length + 1, // Assign a unique id
+        productName: selectedProduct.name,
+        sku: selectedVariant.SKU,
+        quantity: currentQuantity,
+        buyingPrice: selectedVariant.buyingPrice,
+        cost: currentQuantity * selectedVariant.buyingPrice,
+      };
+      setRows([...rows, newRow]);
+    }
+  };
+
+  const [filteredProductVariants, setFilteredProductVariants] = useState<
+    ProductVaraint[]
   >([]);
-
-  const handleAddVariantToImport = (
-    variant: ProductVaraint,
-    quantity: number
-  ) => {
-    setImportedProductVariants((prevImportedVariants) => {
-      const existingVariant = prevImportedVariants.find(
-        (item) => item.variant.id === variant.id
+  useEffect(() => {
+    if (selectedProduct) {
+      setFilteredProductVariants(
+        productVariants.filter(
+          (variant) => variant.productId === selectedProduct?.id
+        )
       );
-      if (existingVariant) {
-        return prevImportedVariants;
-      }
-
-      return [...prevImportedVariants, { variant, quantity }];
-    });
+      console.log("Selected product id:", selectedProduct?.id);
+      console.log(
+        productVariants.filter(
+          (variant) => variant.productId === selectedProduct?.id
+        )
+      );
+    }
+  }, [selectedProduct, productVariants]);
+  const [shippingCost, setShippingCost] = useState(0);
+  const handleDeleteRow = (id: number) => {
+    const updatedRows = rows.filter((row) => row.id !== id);
+    if (updatedRows.length === 0) {
+      setTimeout(() => {
+        setRows(updatedRows);
+      }, 0);
+      console.log(rows);
+    } else {
+      // Update STT (index) for remaining rows
+      const reindexedRows = updatedRows.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+      setRows(reindexedRows);
+    }
   };
-
-  const handleFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    const comboBox = document.getElementById(
-      "selectedVariant"
-    ) as HTMLSelectElement;
-    const selectedIndex = comboBox.selectedIndex;
-    handleAddVariantToImport(
-      productVariants[selectedIndex],
-      parseInt(
-        (document.getElementById("importQuantity") as HTMLInputElement).value
-      )
-    );
-  };
-
-  const handleProductChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedProductId(event.target.value);
-  };
-
-  const filteredVariants = productVariants.filter(
-    (variant) => variant.productId === selectedProductId
-  );
-
+  const columns: GridColDef<ReceiptTableRow>[] = [
+    { field: "id", headerName: "STT", flex: 0.5 },
+    { field: "productName", headerName: "Product Name", flex: 2 },
+    {
+      field: "sku",
+      headerName: "SKU",
+      flex: 1,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      flex: 2,
+    },
+    {
+      field: "buyingPrice",
+      headerName: "Buying Price",
+      flex: 2,
+    },
+    {
+      field: "cost",
+      headerName: "Cost",
+      flex: 1,
+    },
+    {
+      field: "actions",
+      type: "actions",
+      flex: 0.5,
+      getActions: (params: GridRowParams) => [
+        <GridActionsCellItem
+          icon={<DeleteIcon />}
+          label="Delete"
+          onClick={() => {
+            handleDeleteRow(params.row.id);
+          }}
+        />,
+      ],
+    },
+  ];
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white flex gap-4 relative rounded-xl p-4 w-1/2 max-h-[80vh] overflow-hidden">
+      <div className="bg-white flex justify-between flex-wrap gap-4 relative rounded-xl p-4 w-2/3 min-w-[420px] h-[80vh] max-h-[80vh] overflow-auto">
         <button className="absolute top-2 right-2" onClick={onClose}>
           x
         </button>
-        <div className="add-variant-to-import w-1/3 border-r-2">
-          <h2 className="text-center text-xl font-bold">
-            Chọn sản phẩm và biến thể
-          </h2>
-          <form
-            className="grid grid-cols-2 gap-4 p-4"
-            onSubmit={handleFormSubmit}
-          >
+        <div className="add-variant-to-import basis-1/3 min-w-96 border-r-2">
+          <h3 className="text-center font-bold">Chọn sản phẩm và biến thể</h3>
+          <form className="flex flex-col gap-4 p-4" onSubmit={handleAddRow}>
             <select
               id="selectedProduct"
               className="border border-gray-300 rounded-md p-1"
-              onChange={handleProductChange}
+              onChange={(e) => {
+                setSelectedVariant(null);
+                const selectedProductId = parseInt(e.target.value);
+                setSelectedProduct(
+                  products.find(
+                    (product) => product.id === selectedProductId
+                  ) ?? null
+                );
+              }}
             >
               <option value="">Chọn sản phẩm</option>
               {products.map((product) => (
@@ -85,12 +170,20 @@ export default function ImportPopup({
             <select
               id="selectedVariant"
               className="border border-gray-300 rounded-md p-1"
-              disabled={!selectedProductId}
+              disabled={!selectedProduct}
+              onChange={(e) => {
+                const selectedVariantId = parseInt(e.target.value);
+                setSelectedVariant(
+                  filteredProductVariants.find(
+                    (variant) => variant.id === selectedVariantId
+                  ) ?? null
+                );
+              }}
             >
               <option value="">Chọn biến thể</option>
-              {filteredVariants.map((variant) => (
+              {filteredProductVariants.map((variant) => (
                 <option key={variant.id} value={variant.id}>
-                  {`${variant.color} - ${variant.size} - ${variant.price}`}
+                  {`${variant.color} - ${variant.size}`}
                 </option>
               ))}
             </select>
@@ -99,44 +192,79 @@ export default function ImportPopup({
               placeholder="Số lượng"
               className="border border-gray-300 rounded-md p-1"
               id="importQuantity"
+              required
+              min={1}
+              defaultValue={currentQuantity}
+              onChange={(e) => setCurrentQuantity(parseInt(e.target.value))}
             />
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-2 py-1 rounded-md"
-            >
+            <Button type="submit" variant="contained">
               Thêm
-            </button>
+            </Button>
           </form>
         </div>
-        <div className="imported-variants w-2/3">
+        <div className="imported-variants basis-[58%] h-full flex flex-col items-center gap-3">
           <h2 className="text-center text-xl font-bold">Phiếu nhập hàng</h2>
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Biến thể</th>
-                <th>Số lượng</th>
-                <th>Giá nhập</th>
-                <th>Thành tiền</th>
-              </tr>
-            </thead>
-            <tbody>
-              {importedProductVariants.map((item, index) => (
-                <tr key={item.variant.id}>
-                  <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{`${item.variant.color} - ${item.variant.size}`}</td>
-                  <td className="text-center">{item.quantity}</td>
-                  <td className="text-center">{item.variant.buyingPrice}</td>
-                  <td className="text-center">
-                    {item.variant.buyingPrice * item.quantity}
-                  </td>
-                  <td className="text-center">
-                    <button className="w-8 h-8 border-2">i</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+          <div className="table-container w-[98%] h-full overflow-hidden">
+            <DataGrid
+              style={{
+                borderRadius: "20px",
+                backgroundColor: "white",
+                height: "100%",
+              }}
+              rows={rows}
+              columns={columns}
+              rowHeight={40}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 6,
+                  },
+                },
+              }}
+              pageSizeOptions={
+                rows.length < 6 ? [6, rows.length] : [6, rows.length + 1]
+              }
+              slots={{ toolbar: GridToolbar }}
+              rowSelection={false}
+            />
+          </div>
+          <div className="flex justify-between w-full px-8">
+            <input
+              type="number"
+              placeholder="Shipping Cost"
+              className="border border-gray-300 rounded-md p-1"
+              min={0}
+              onChange={(e) => setShippingCost(parseInt(e.target.value))}
+            />
+            <h3>
+              Tổng cộng:
+              {rows.reduce((acc, row) => acc + row.cost, 0) + shippingCost}
+            </h3>
+          </div>
+          <div className="buttons-container w-full flex justify-end gap-4">
+            <Button
+              variant="contained"
+              onClick={onClose}
+              color="primary"
+              style={{
+                backgroundColor: "transparent",
+                border: "1px solid #1976d2",
+                color: "#1976d2",
+                textTransform: "none",
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                textTransform: "none",
+              }}
+            >
+              Confirm
+            </Button>
+          </div>
         </div>
       </div>
     </div>

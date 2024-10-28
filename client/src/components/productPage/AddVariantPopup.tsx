@@ -11,7 +11,7 @@ export default function AddVariantPopup({
   variant,
   onVariantUpdated,
 }: {
-  productId: string;
+  productId: number;
   onClose: () => void;
   onVariantCreated: (variant: ProductVariant) => void;
   variant?: ProductVariant;

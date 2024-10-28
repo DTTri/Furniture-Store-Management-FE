@@ -1,9 +1,9 @@
 import { ProductStatus } from "../constants";
 
 type ProductVariant = {
-  id: string;
+  id: number;
   SKU: string;
-  productId: string;
+  productId: number;
   price: number;
   status: ProductStatus;
   color: string;
