@@ -1,86 +1,66 @@
 import ImportPopup from "../../components/inventoryPage/ImportPopup";
 import ImportHistoryOrderPopup from "../../components/inventoryPage/ImportHistoryOrderPopup";
-import DoubleCheckedGoodsReceipt from "../../components/inventoryPage/DoubleCheckedGoodsReceipt";
-import { useState } from "react";
-import {
-  testGoodReceipt,
-  testGoodsReceiptDetail,
-} from "../../data/testGoodReceipt";
-import { products, productVariants } from "../../data/test";
+import { useEffect, useState } from "react";
 import StockTable from "../../components/inventoryPage/StockTable";
+import http from "../../api/http";
+import { Product } from "../../entities";
+import { Button } from "@mui/material";
 export default function InventoryPage() {
   const [isImportPopupOpen, setIsImportPopupOpen] = useState(false);
   const [isPopupImportHistoryOrder, setIsPopupImportHistoryOrder] =
     useState(false);
-  const [isDoubleCheckedGoodReceipt, setIsDoubleCheckedGoodReceipt] =
-    useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await http.get("/products/get-all-products");
+        //console.log(response);
+        if (response.data.EC === 0) {
+          setProducts(response.data.DT);
+        } else {
+          console.error("Failed to fetch products:", response.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
   return (
-    <div className="container bg-white mb-8">
-      <div className="header w-full flex gap-4 p-4">
-        <input
-          type="text"
-          placeholder="Tìm kiếm sản phẩm"
-          className="border border-gray-300 rounded-md p-1 w-1/4"
-        />
-        <button
+    <div className="container bg-white h-full">
+      <div className="header w-full flex gap-4 p-4 pl-8">
+        <Button
+          variant="contained"
           onClick={() => setIsImportPopupOpen(true)}
-          className="bg-blue-600 text-white px-2 py-1 rounded-md"
+          style={{
+            textTransform: "none",
+          }}
         >
-          Nhập hàng
-        </button>
-        <button
-          onClick={() => setIsImportPopupOpen(true)}
-          className="bg-blue-600 text-white px-2 py-1 rounded-md"
-        >
-          Lịch sử nhập hàng
-        </button>
-        <button
+          Import goods
+        </Button>
+        <Button
+          variant="contained"
           onClick={() => {
             console.log("importHistoryOrder");
             setIsPopupImportHistoryOrder(true);
           }}
-          className="bg-blue-600 text-white px-2 py-1 rounded-md"
-        >
-          Lịch sử nhập hàng
-        </button>
-        <button
-          onClick={() => {
-            setIsDoubleCheckedGoodReceipt(true);
+          style={{
+            textTransform: "none",
           }}
-          className="bg-blue-600 text-white px-2 py-1 rounded-md"
         >
-          Nhập hàng check lần 2
-        </button>
+          Import history order
+        </Button>
       </div>
       <div className="table-container w-full px-8 py-4">
         <StockTable products={products} />
       </div>
 
       {isImportPopupOpen && (
-        <ImportPopup
-          onClose={() => setIsImportPopupOpen(false)}
-          productVariants={productVariants}
-          products={products}
-        />
+        <ImportPopup onClose={() => setIsImportPopupOpen(false)} />
       )}
       {isPopupImportHistoryOrder && (
         <ImportHistoryOrderPopup
           onClose={() => setIsPopupImportHistoryOrder(false)}
-          receipts={testGoodReceipt}
-        />
-      )}
-      {isDoubleCheckedGoodReceipt && (
-        <DoubleCheckedGoodsReceipt
-          onClose={() => setIsDoubleCheckedGoodReceipt(false)}
-          goodReciptInfo={{
-            goodReceiptId: "GR001",
-            receiptDate: "2021-10-10",
-            staffId: "ST001",
-            providerId: "PR001",
-            email: "thinh@gmail.com",
-            phone: "0123456789",
-          }}
-          receipts={testGoodsReceiptDetail}
         />
       )}
     </div>

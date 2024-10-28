@@ -1,8 +1,8 @@
 type GoodsReceiptDetail = {
-    goodReceiptId: string;
-    quantity: number;
-    cost: number;
-    variantId: string;   
-}
+  goodReceiptId: number;
+  quantity: number;
+  cost: number;
+  variantId: number;
+};
 
 export default GoodsReceiptDetail;

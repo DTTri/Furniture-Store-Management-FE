@@ -1,105 +1,139 @@
 import GoodsReceipt from "../../entities/GoodsReceipt";
 import GoodsReceiptDetail from "../../entities/GoodsReceiptDetail";
-import Button from "@mui/material/Button";
-import { useState } from "react";
-import  { testGoodReceipt, testGoodsReceiptDetail } from "../../data/testGoodReceipt";
-import  { productVariants } from "../../data/test";
-import { ProductVaraint } from "../../entities";
+import { useEffect, useState } from "react";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import http from "../../api/http";
 
 export default function DoubleCheckedGoodsReceipt({
   onClose,
-  goodReciptInfo,
-  receipts,
+  goodsReceipt,
 }: {
   onClose: () => void;
-  goodReciptInfo: {
-    goodReceiptId: string;
-    receiptDate: string;
-    staffId: string;
-    providerId: string;
-    email: string,
-    phone: string,
-  };
-  receipts: GoodsReceiptDetail[];
+  goodsReceipt: GoodsReceipt;
 }) {
-  const [importedProductVariantsDetails, setImportedProductVariantsDetails] =
-    useState<ProductVaraint[]>(productVariants.filter((productVariant) => {
-      return receipts.some((receipt) => receipt.variantId === productVariant.id);
-    }));
-  const [total, setTotal] =
-    useState<number>(receipts.reduce((acc, receipt) => { acc += receipt.cost * receipt.quantity; return acc; }, 0));
+  const [receiptDetails, setReceiptDetails] = useState<GoodsReceiptDetail[]>(
+    []
+  );
 
+  useEffect(() => {
+    const fetchReceiptDetails = async () => {
+      try {
+        const response = await http.get(
+          "/goods-receipt/get-goods-receipt/" + goodsReceipt.id
+        );
+        console.log(response);
+        if (response.data.EC === 0) {
+          setReceiptDetails(response.data.DT.GoodsReceiptDetails);
+          console.log("Fetched receipt details successfully");
+        } else {
+          console.error("Failed to fetch receipt details:", response);
+        }
+      } catch (error) {
+        console.error("Error fetching receipt details:", error);
+      }
+    };
+    fetchReceiptDetails();
+  }, [goodsReceipt]);
 
-  // const handleAddProductToImport = (product: Product, quantity: number) => {
-  // };
+  const columns: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "STT",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "variantId",
+      headerName: "VariantID",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "buyingPrice",
+      headerName: "Buying Price",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "cost",
+      headerName: "Cost",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+  ];
+  const rows = receiptDetails.map((detail, index) => {
+    return {
+      ...detail,
+      id: index + 1,
+      buyingPrice: detail.cost / detail.quantity,
+    };
+  });
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="header bg-white gap-4 relative rounded-xl p-4 w-2/3 max-h-[80vh] overflow-hidden">
+      <div className="popup flex flex-col gap-4 bg-white relative rounded-xl p-4 w-2/3 h-[80vh] overflow-hidden">
         <button
           className="absolute flex flex-col items-center top-2 right-4 w-7 h-7 bg-black text-white rounded-full"
           onClick={onClose}
         >
           <span className="text-[16px] font-bold">x</span>
         </button>
-        <div className="header w-full flex flex-row justify-between pl-4 pr-8 mt-[32px] mb-[24px]">
-          <h3 className="font-semibold text-[28px] ">Phiếu nhập hàng</h3>
-          <div className="buttons flex flex-row items-center gap-5">
-            <Button style={{ background: "#D91316" }} variant="contained">
-              Đóng
-            </Button>
-            <Button style={{ background: "#1366D9" }} variant="contained">
-              Xác nhận lập phiếu
-            </Button>
-          </div>
+        <div className="header w-full flex flex-row justify-between pl-4">
+          <h3 className="font-semibold text-[28px] ">Goods Receipt</h3>
         </div>
-        <div className="w-full px-4 flex flex-row mb-[15px]">
+        <div className="w-full px-4 flex flex-row">
           <div className="col-1 mr-[250px]">
-            <p>Ngày lập phiếu: {}</p>
-            <p>Mã lập phiếu: {}</p>
-            <p>Mã nhà cung cấp: {}</p>
+            <p>Created Date: {goodsReceipt.receiptDate}</p>
+            <p>Receipt ID: {goodsReceipt.id}</p>
+            <p>Provider ID: {goodsReceipt.providerId}</p>
           </div>
           <div className="col-2 w-fit">
-            <p>Mã người lập phiếu: {}</p>
-            <p>Số điện thoại: {}</p>
-            <p>Email: {}</p>
+            <p>Staff ID: {goodsReceipt.staffId}</p>
           </div>
         </div>
-        <div className="w-full px-1 mb-[15px]">
-          <table className="w-full">
-            <thead>
-              <tr>
-              <th>STT</th>
-                <th>Mã sản phẩm</th>
-                <th>Tên sản phẩm</th>
-                <th>Đơn giá</th>
-                <th>Đơn vị</th>
-                <th>Số lượng</th>
-                <th>Chiết khấu</th>
-                <th>Ghi chú</th>
-              </tr>
-            </thead>
-            <tbody>
-              {receipts.map((item, index: number) => {
-                return (
-                  <tr key={item.variantId}>
-                    <td className="text-center">{index + 1}</td>
-                    <td className="text-center">{importedProductVariantsDetails[index].productId}</td>
-                    <td className="text-center">Tên sản phẩm</td>
-                    <td className="text-center">{item.cost}</td>
-                    <td className="text-center">"Đơn vị"</td>
-                    <td className="text-center">{item.quantity}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="w-full">
+          <DataGrid
+            style={{
+              borderRadius: "20px",
+              backgroundColor: "white",
+              height: "100%",
+            }}
+            rows={rows}
+            columns={columns}
+            rowHeight={40}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 4,
+                },
+              },
+            }}
+            pageSizeOptions={
+              rows.length < 4 ? [4, rows.length] : [4, rows.length + 1]
+            }
+            slots={{ toolbar: GridToolbar }}
+            rowSelection={false}
+          />
         </div>
         <div className="w-full px-4 flex flex-row mb-1">
           <div className="col-1 mr-[250px]">
-            <p className="font-semibold text-[18px] text-nowrap">Thành tiền: {total}đ</p>
-            <p className="font-semibold text-[18px] text-nowrap">Phương thức thanh toán: {}</p>
-            <p className="font-semibold text-[18px] text-nowrap">Mã nhà cung cấp: {}</p>
+            <p className="font-semibold text-[18px] text-nowrap">
+              Total Cost: {goodsReceipt.totalCost}
+            </p>
+            <p className="font-semibold text-[18px] text-nowrap">
+              Shipping: {goodsReceipt.shipping}
+            </p>
           </div>
         </div>
       </div>
