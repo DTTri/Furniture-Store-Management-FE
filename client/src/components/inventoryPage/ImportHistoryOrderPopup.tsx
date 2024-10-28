@@ -1,5 +1,4 @@
 import GoodsReceipt from "../../entities/GoodsReceipt";
-import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import DoubleCheckedGoodsReceipt from "./DoubleCheckedGoodsReceipt";
 import http from "../../api/http";
@@ -18,6 +17,7 @@ export default function ImprortHistoryOrderPopup({
         );
         if (response.data.EC === 0) {
           setReceipts(response.data.DT);
+          console.log("Fetched goods receipts successfully");
         } else {
           console.error("Failed to fetch goods receipts:", response.data.EM);
         }

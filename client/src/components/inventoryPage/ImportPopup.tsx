@@ -144,6 +144,51 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       ],
     },
   ];
+  const [totalCost, setTotalCost] = useState(0);
+  useEffect(() => {
+    const newTotalCost = rows.reduce((acc, row) => acc + row.cost, 0);
+    setTotalCost(newTotalCost);
+  }, [rows]);
+  const handleImport = async () => {
+    // type CreateGoodsReceiptDTO = {
+    //   shipping: number;
+    //   GoodsReceiptDetailsData: GoodsReceiptDetailsData[];
+    //   totalCost: number;
+    // };
+
+    // type GoodsReceiptDetailsData = {
+    //   variantId: number;
+    //   quantity: number;
+    //   cost: number;
+    // };
+    // map rows and fields to CreateGoodsReceiptDTO
+    const goodsReceiptDetailsData = rows.map((row) => ({
+      variantId: productVariants.find((variant) => variant.SKU === row.sku)?.id,
+      quantity: row.quantity,
+      cost: row.cost,
+    }));
+    const newGoodsReceipt = {
+      shipping: shippingCost,
+      GoodsReceiptDetailsData: goodsReceiptDetailsData,
+      totalCost: totalCost,
+    };
+    console.log(newGoodsReceipt);
+    try {
+      const response = await http.post(
+        "/goods-receipt/create-goods-receipt",
+        newGoodsReceipt
+      );
+      if (response.data.EC === 0) {
+        alert("Import successfully");
+        onClose();
+      } else {
+        alert("Import failed");
+        console.error("Failed to import goods receipt:", response);
+      }
+    } catch (error) {
+      console.error("Error importing goods receipt:", error);
+    }
+  };
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white flex justify-between flex-wrap gap-4 relative rounded-xl p-4 w-2/3 min-w-[420px] h-[80vh] max-h-[80vh] overflow-auto">
@@ -247,7 +292,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
             />
             <h3>
               Tổng cộng:
-              {rows.reduce((acc, row) => acc + row.cost, 0) + shippingCost}
+              {totalCost}
             </h3>
           </div>
           <div className="buttons-container w-full flex justify-end gap-4">
@@ -269,6 +314,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               style={{
                 textTransform: "none",
               }}
+              onClick={handleImport}
             >
               Confirm
             </Button>

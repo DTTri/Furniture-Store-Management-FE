@@ -1,3 +1,4 @@
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { Product } from "../../entities";
 
 export default function StockTable({ products }: { products: Product[] }) {
@@ -16,56 +17,118 @@ export default function StockTable({ products }: { products: Product[] }) {
   //     sold: number;
   //     catelogueId: string;
   //   };
+  const columns: GridColDef[] = [
+    {
+      field: "index",
+      headerName: "STT",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "name",
+      headerName: "Name",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "category",
+      headerName: "Category",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "price",
+      headerName: "Price",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "warranty",
+      headerName: "Warranty",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "available",
+      headerName: "Available",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "defective",
+      headerName: "Defective",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "sold",
+      headerName: "Sold",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "catelogueId",
+      headerName: "Catelogue ID",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+  ];
+  const rows = products.map((product, index) => ({
+    ...product,
+    index: index + 1,
+  }));
   return (
-    <div className="w-full h-[27rem] overflow-y-auto">
-      <table className="w-full h-10 overflow-y-auto">
-        <thead>
-          <tr>
-            <th className="py-1 border border-gray-400">STT</th>
-            <th className="py-1 border border-gray-400">Tên sản phẩm</th>
-            <th className="py-1 border border-gray-400">Danh mục</th>
-            <th className="py-1 border border-gray-400">Khoảng giá</th>
-            <th className="py-1 border border-gray-400">Trạng thái</th>
-            <th className="py-1 border border-gray-400">Tổng số lượng</th>
-            <th className="py-1 border border-gray-400">Đang bán</th>
-            <th className="py-1 border border-gray-400">Hỏng</th>
-            <th className="py-1 border border-gray-400">Đã bán</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product, index) => (
-            <tr key={product.id}>
-              <td className="text-center py-1 border border-gray-300">
-                {index + 1}
-              </td>
-              <td className="text-center py-1 border border-gray-300">
-                {product.name}
-              </td>
-              <td className="text-center py-1 border border-gray-300">
-                {product.category}
-              </td>
-              <td className="text-center py-1 border border-gray-300">
-                {product.price}
-              </td>
-              <td className="text-center py-1 border border-gray-300">
-                {product.status}
-              </td>
-              <td className="text-center py-1 border border-gray-300">
-                {product.quantity}
-              </td>
-              <td className="text-center py-1 border border-gray-300">
-                {product.available}
-              </td>
-              <td className="text-center py-1 border border-gray-300">
-                {product.defective}
-              </td>
-              <td className="text-center py-1 border border-gray-300">
-                {product.sold}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <DataGrid
+      style={{
+        borderRadius: "20px",
+        backgroundColor: "white",
+        height: "100%",
+      }}
+      rows={rows}
+      columns={columns}
+      rowHeight={40}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: 8,
+          },
+        },
+      }}
+      pageSizeOptions={
+        rows.length < 8 ? [8, rows.length] : [8, rows.length + 1]
+      }
+      slots={{ toolbar: GridToolbar }}
+      rowSelection={false}
+    />
   );
 }
