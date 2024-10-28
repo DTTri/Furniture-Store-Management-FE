@@ -32,27 +32,43 @@ export default function ProductPage() {
 
   const [isAddProductPopupOpen, setIsAddProductPopupOpen] = useState(false);
   const [isForUpdate, setIsForUpdate] = useState(false);
+
+  const [searchValue, setSearchValue] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter((product) =>
+        product.name.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+  }, [searchValue, products]);
   return (
     <div className="bg-white w-full h-screen">
       <div className="header w-full flex gap-4 p-4">
         <div className="search-bar w-2/5">
           <input
             type="text"
-            placeholder="Tìm sản phẩm"
+            placeholder="Search product"
             className="w-full p-2 rounded-md border border-gray-500"
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
           />
         </div>
         <Button
           variant="contained"
           color="primary"
           onClick={() => setIsAddProductPopupOpen(true)}
+          style={{
+            textTransform: "none",
+          }}
         >
-          Thêm sản phẩm
+          Add product
         </Button>
       </div>
 
       <div className="product-gallery w-full h-full pb-24 overflow-y-auto flex flex-wrap gap-4 p-4">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard
             key={product.id}
             product={product}

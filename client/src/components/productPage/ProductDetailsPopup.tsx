@@ -90,7 +90,7 @@ export default function ProductDetailsPopup({
   };
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white flex justify-around relative rounded-xl p-4 w-1/2 min-w-[420px] overflow-hidden">
+      <div className="popup bg-white flex justify-around relative rounded-xl p-4 w-1/2 min-w-[420px] overflow-hidden">
         <IconButton
           style={{
             position: "absolute",
@@ -105,88 +105,112 @@ export default function ProductDetailsPopup({
         <div className="information-container flex flex-col gap-2 items-start w-1/2 border-r-2 border-r-black">
           <div className="product-information w-full flex flex-col gap-2">
             <p className="title text-black text-2xl font-semibold">
-              Thông tin sản phẩm
+              Product information
             </p>
             <table className="w-full">
               <tbody>
                 <tr>
-                  <td className="title">Tên sản phẩm:</td>
+                  <td className="title">Name:</td>
                   <td>{product.name}</td>
                 </tr>
                 <tr>
-                  <td className="title">Danh mục:</td>
+                  <td
+                    className="title"
+                    style={{
+                      verticalAlign: "top",
+                    }}
+                  >
+                    Mô tả:
+                  </td>
+                  <td>
+                    <textarea
+                      style={{
+                        width: "100%",
+                        resize: "none",
+                      }}
+                      value={product.description}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="title">Category:</td>
                   <td>{product.category}</td>
                 </tr>
                 <tr>
-                  <td className="title">Khoảng giá:</td>
+                  <td className="title">Price:</td>
                   <td>{product.price}</td>
                 </tr>
                 <tr>
-                  <td className="title">Trạng thái:</td>
+                  <td className="title">Status:</td>
                   <td>{product.status}</td>
                 </tr>
                 <tr>
-                  <td className="title">Thời gian bảo hành:</td>
+                  <td className="title">Warranty:</td>
                   <td>{product.warranty} tháng</td>
                 </tr>
                 <tr>
-                  <td className="title">Tổng sản phẩm:</td>
+                  <td className="title">Total quantity:</td>
                   <td>{product.quantity}</td>
                 </tr>
                 <tr>
-                  <td className="title">Số lượng còn lại:</td>
+                  <td className="title">Available quantity:</td>
                   <td>{product.available}</td>
                 </tr>
                 <tr>
-                  <td className="title">Số lượng đã bán:</td>
+                  <td className="title">Sold quantity:</td>
                   <td>{product.sold}</td>
                 </tr>
                 <tr>
-                  <td className="title">Số lượng bị lỗi:</td>
+                  <td className="title">Defective quantity:</td>
                   <td>{product.defective}</td>
-                </tr>
-                <tr>
-                  <td className="title">Mô tả:</td>
-                  <td>{product.description}</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div className="provider-information w-full flex flex-col gap-2 items-start">
             <p className="title text-black text-2xl font-semibold">
-              Thông tin nhà cung cấp
+              Provider information
             </p>
             <table className="w-full">
               <tbody>
                 <tr>
-                  <td className="title">Tên nhà cung cấp:</td>
+                  <td className="title">Name:</td>
                   <td>Ronald Martin</td>
                 </tr>
                 <tr>
-                  <td className="title">Số điện thoại:</td>
+                  <td className="title">Phone number:</td>
                   <td>0987654321</td>
                 </tr>
               </tbody>
             </table>
-            <table></table>
           </div>
           <div className="buttons-container flex justify-between items-center gap-2">
-            <button
+            <Button
               onClick={handleUpdateProduct}
-              className="bg-blue-600 text-white px-2 py-1 rounded-md"
+              variant="contained"
+              style={{
+                textTransform: "none",
+              }}
             >
               Update
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setIsStopSellingConfirmationOpen(true)}
               disabled={product.status === "stop selling"}
-              className="bg-red-600 text-white px-2 py-1 rounded-md"
+              variant="contained"
+              style={{
+                textTransform: "none",
+                backgroundColor: "#ff0000",
+              }}
             >
               Stop selling
-            </button>
+            </Button>
           </div>
         </div>
-        <div className="variants-container w-1/2 flex flex-col items-center gap-4 justify-around">
+        <div className="variants-container w-1/2 flex flex-col items-center gap-4 justify-between">
+          <p className="title text-black text-2xl font-semibold w-full px-4">
+            Variants
+          </p>
           <div className="w-full flex justify-center items-center gap-4">
             <div className="variant-image h-32 w-32 overflow-hidden rounded-lg">
               <img
@@ -219,23 +243,39 @@ export default function ProductDetailsPopup({
               </IconButton>
             </div>
           </div>
-          <table className="w-5/6 ml-16">
+          <table className="w-5/6 ml-16 border-collapse">
             <tbody>
-              <tr>
-                <td className="title">SKU</td>
-                <td>{selectedVariant ? selectedVariant.SKU : ""}</td>
+              <tr className="border border-gray-400">
+                <td className="title font-semibold px-2 text-gray-700 border-r border-gray-400">
+                  SKU
+                </td>
+                <td className="px-2">
+                  {selectedVariant ? selectedVariant.SKU : ""}
+                </td>
               </tr>
-              <tr>
-                <td className="title">Màu</td>
-                <td>{selectedVariant ? selectedVariant.color : ""}</td>
+              <tr className="border border-gray-400">
+                <td className="title font-semibold px-2 text-gray-700 border-r border-gray-400">
+                  Color
+                </td>
+                <td className="px-2">
+                  {selectedVariant ? selectedVariant.color : ""}
+                </td>
               </tr>
-              <tr>
-                <td className="title">Kích thước</td>
-                <td>{selectedVariant ? selectedVariant.size : ""}</td>
+              <tr className="border border-gray-400">
+                <td className="title font-semibold px-2 text-gray-700 border-r border-gray-400">
+                  Size
+                </td>
+                <td className="px-2">
+                  {selectedVariant ? selectedVariant.size : ""}
+                </td>
               </tr>
-              <tr>
-                <td className="title">Giá bán</td>
-                <td>{selectedVariant ? selectedVariant.price : ""}</td>
+              <tr className="border border-gray-400">
+                <td className="title font-semibold px-2 text-gray-700 border-r border-gray-400">
+                  Price
+                </td>
+                <td className="px-2">
+                  {selectedVariant ? selectedVariant.price : ""}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -244,7 +284,11 @@ export default function ProductDetailsPopup({
             {variants.map((variant) => (
               <div
                 key={variant.id}
-                className="image-container w-16 h-16 overflow-hidden hover:cursor-pointer min-w-16"
+                className={`image-container w-16 h-16 overflow-hidden hover:cursor-pointer min-w-16 ${
+                  selectedVariant?.id === variant.id
+                    ? "border-2 border-black"
+                    : ""
+                }`}
               >
                 <img
                   src="https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg"

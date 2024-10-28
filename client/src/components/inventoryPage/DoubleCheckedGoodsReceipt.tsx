@@ -82,7 +82,7 @@ export default function DoubleCheckedGoodsReceipt({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="header flex flex-col gap-4 bg-white relative rounded-xl p-4 w-2/3 h-[80vh] overflow-hidden">
+      <div className="popup flex flex-col gap-4 bg-white relative rounded-xl p-4 w-2/3 h-[80vh] overflow-hidden">
         <button
           className="absolute flex flex-col items-center top-2 right-4 w-7 h-7 bg-black text-white rounded-full"
           onClick={onClose}
@@ -90,7 +90,7 @@ export default function DoubleCheckedGoodsReceipt({
           <span className="text-[16px] font-bold">x</span>
         </button>
         <div className="header w-full flex flex-row justify-between pl-4">
-          <h3 className="font-semibold text-[28px] ">Phiếu nhập hàng</h3>
+          <h3 className="font-semibold text-[28px] ">Goods Receipt</h3>
         </div>
         <div className="w-full px-4 flex flex-row">
           <div className="col-1 mr-[250px]">

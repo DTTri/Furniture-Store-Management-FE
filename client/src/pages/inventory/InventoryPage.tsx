@@ -29,7 +29,13 @@ export default function InventoryPage() {
   return (
     <div className="container bg-white h-full">
       <div className="header w-full flex gap-4 p-4 pl-8">
-        <Button variant="contained" onClick={() => setIsImportPopupOpen(true)}>
+        <Button
+          variant="contained"
+          onClick={() => setIsImportPopupOpen(true)}
+          style={{
+            textTransform: "none",
+          }}
+        >
           Import goods
         </Button>
         <Button
@@ -37,6 +43,9 @@ export default function InventoryPage() {
           onClick={() => {
             console.log("importHistoryOrder");
             setIsPopupImportHistoryOrder(true);
+          }}
+          style={{
+            textTransform: "none",
           }}
         >
           Import history order

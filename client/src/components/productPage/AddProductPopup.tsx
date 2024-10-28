@@ -113,7 +113,7 @@ export default function AddProductPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-xl p-4 w-1/2 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
+      <div className="popup bg-white rounded-xl p-4 w-1/2 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
         <div className="container w-full flex justify-around ">
           <div className="image-container basis-[45%] flex justify-center items-center">
             <img

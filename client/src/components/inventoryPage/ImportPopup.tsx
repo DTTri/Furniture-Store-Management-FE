@@ -191,12 +191,12 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
   };
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white flex justify-between flex-wrap gap-4 relative rounded-xl p-4 w-2/3 min-w-[420px] h-[80vh] max-h-[80vh] overflow-auto">
+      <div className="popup bg-white flex justify-between flex-wrap gap-4 relative rounded-xl p-4 w-2/3 min-w-[420px] h-[80vh] max-h-[80vh] overflow-auto">
         <button className="absolute top-2 right-2" onClick={onClose}>
           x
         </button>
         <div className="add-variant-to-import basis-1/3 min-w-96 border-r-2">
-          <h3 className="text-center font-bold">Chọn sản phẩm và biến thể</h3>
+          <h3 className="text-center font-bold">Choose variant</h3>
           <form className="flex flex-col gap-4 p-4" onSubmit={handleAddRow}>
             <select
               id="selectedProduct"
@@ -211,7 +211,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
                 );
               }}
             >
-              <option value="">Chọn sản phẩm</option>
+              <option value="">Choose product</option>
               {products.map((product) => (
                 <option key={product.id} value={product.id}>
                   {product.name}
@@ -231,7 +231,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
                 );
               }}
             >
-              <option value="">Chọn biến thể</option>
+              <option value="">Choose variant</option>
               {filteredProductVariants.map((variant) => (
                 <option key={variant.id} value={variant.id}>
                   {`${variant.color} - ${variant.size}`}
@@ -248,13 +248,19 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               defaultValue={currentQuantity}
               onChange={(e) => setCurrentQuantity(parseInt(e.target.value))}
             />
-            <Button type="submit" variant="contained">
-              Thêm
+            <Button
+              type="submit"
+              variant="contained"
+              style={{
+                textTransform: "none",
+              }}
+            >
+              Add
             </Button>
           </form>
         </div>
         <div className="imported-variants basis-[58%] h-full flex flex-col items-center gap-3">
-          <h2 className="text-center text-xl font-bold">Phiếu nhập hàng</h2>
+          <h2 className="text-center text-xl font-bold">Goods Receipt</h2>
 
           <div className="table-container w-[98%] h-full overflow-hidden">
             {showDataGrid && (
@@ -290,10 +296,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               min={0}
               onChange={(e) => setShippingCost(parseInt(e.target.value))}
             />
-            <h3>
-              Tổng cộng:
-              {totalCost}
-            </h3>
+            <h3 className="text-lg font-semibold">Total cost: {totalCost}</h3>
           </div>
           <div className="buttons-container w-full flex justify-end gap-4">
             <Button
