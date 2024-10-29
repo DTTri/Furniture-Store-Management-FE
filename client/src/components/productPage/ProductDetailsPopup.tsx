@@ -10,10 +10,12 @@ export default function ProductDetailsPopup({
   product,
   onClose,
   onOpenUpdateProductPopup,
+  onStopSellingProduct,
 }: {
   product: Product;
   onClose: () => void;
   onOpenUpdateProductPopup: (product: Product) => void;
+  onStopSellingProduct: () => void;
 }) {
   const [variants, setVariants] = useState<ProductVariant[]>([]);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
@@ -51,10 +53,10 @@ export default function ProductDetailsPopup({
         {}
       );
       if (response.data.EC === 0) {
-        alert("Stop selling successfully");
+        onStopSellingProduct();
         onClose();
       } else {
-        alert("Failed to stop selling: " + response.data.EM);
+        console.error("Failed to stop selling:", response.data.EM);
       }
     } catch (error) {
       console.error("Error stopping selling:", error);
@@ -314,7 +316,7 @@ export default function ProductDetailsPopup({
         </div>
         {isStopSellingConfirmationOpen && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-4 rounded-xl">
+            <div className="confirmStopSellingPopup bg-white p-4 rounded-xl">
               <p className="text-center">
                 Are you sure that you want to stop selling this product?
                 <br /> This action cannot be undone.
@@ -323,6 +325,7 @@ export default function ProductDetailsPopup({
                 <Button
                   variant="contained"
                   onClick={() => setIsStopSellingConfirmationOpen(false)}
+                  id="cancelStopSellingButton"
                 >
                   Cancel
                 </Button>
@@ -332,6 +335,7 @@ export default function ProductDetailsPopup({
                   style={{
                     backgroundColor: "#ff0000",
                   }}
+                  id="confirmStopSellingButton"
                 >
                   Confirm
                 </Button>

@@ -93,6 +93,15 @@ export default function ProductPage() {
             setIsForUpdate(true);
             setIsAddProductPopupOpen(true);
           }}
+          onStopSellingProduct={() => {
+            setProducts(
+              products.map((product) =>
+                product.id === selectedProduct.id
+                  ? { ...product, status: "stop selling" }
+                  : product
+              )
+            );
+          }}
         />
       )}
       {isAddProductPopupOpen && (
