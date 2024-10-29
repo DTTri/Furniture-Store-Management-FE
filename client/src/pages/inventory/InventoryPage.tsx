@@ -35,6 +35,7 @@ export default function InventoryPage() {
           style={{
             textTransform: "none",
           }}
+          id="openImportPopupButton"
         >
           Import goods
         </Button>
@@ -47,6 +48,7 @@ export default function InventoryPage() {
           style={{
             textTransform: "none",
           }}
+          id="openImportHistoryOrderPopupButton"
         >
           Import history order
         </Button>

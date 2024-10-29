@@ -134,7 +134,7 @@ export default function AddVariantPopup({
             <div className="flex flex-col gap-2">
               <label htmlFor="sku">SKU</label>
               <input
-                id="sku"
+                id="addVariantSKUInput"
                 name="sku"
                 placeholder="SKU"
                 className="border border-gray-300 px-2 py-1 rounded-md"
@@ -147,7 +147,7 @@ export default function AddVariantPopup({
               <label htmlFor="buyingPrice">Buying Price</label>
               <input
                 type="number"
-                id="buyingPrice"
+                id="addVariantBuyingPriceInput"
                 name="buyingPrice"
                 placeholder="Buying Price"
                 className="border border-gray-300 px-2 py-1 rounded-md"
@@ -164,7 +164,7 @@ export default function AddVariantPopup({
               <label htmlFor="price">Price</label>
               <input
                 type="number"
-                id="price"
+                id="addVariantPriceInput"
                 name="price"
                 placeholder="Price"
                 className="border border-gray-300 px-2 py-1 rounded-md"
@@ -177,7 +177,7 @@ export default function AddVariantPopup({
             <div className="flex flex-col gap-2">
               <label htmlFor="color">Color</label>
               <input
-                id="color"
+                id="addVariantColorInput"
                 name="color"
                 placeholder="Color"
                 className="border border-gray-300 px-2 py-1 rounded-md"
@@ -189,7 +189,7 @@ export default function AddVariantPopup({
             <div className="flex flex-col gap-2">
               <label htmlFor="size">Size</label>
               <input
-                id="size"
+                id="addVariantSizeInput"
                 name="size"
                 placeholder="Size"
                 className="border border-gray-300 px-2 py-1 rounded-md"
@@ -208,6 +208,7 @@ export default function AddVariantPopup({
               textTransform: "none",
             }}
             onClick={onClose}
+            id="cancelAddVariantButton"
           >
             Cancel
           </Button>
@@ -218,6 +219,7 @@ export default function AddVariantPopup({
                 textTransform: "none",
               }}
               onClick={handleUpdateVariant}
+              id="confirmUpdateVariantButton"
             >
               Update
             </Button>
@@ -228,6 +230,7 @@ export default function AddVariantPopup({
                 textTransform: "none",
               }}
               onClick={handleAddVariant}
+              id="confirmAddVariantButton"
             >
               Create
             </Button>

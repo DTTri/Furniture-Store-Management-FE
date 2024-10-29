@@ -234,6 +234,7 @@ export default function ProductDetailsPopup({
                   // make this button invisible if there is no variant selected
                   visibility: selectedVariant ? "visible" : "hidden",
                 }}
+                id="updateVariantButton"
               >
                 <ModeEditIcon />
               </IconButton>
@@ -243,6 +244,7 @@ export default function ProductDetailsPopup({
                   // make this button invisible if there is no variant selected
                   visibility: selectedVariant ? "visible" : "hidden",
                 }}
+                id="deleteVariantButton"
               >
                 <DeleteIcon />
               </IconButton>
@@ -254,7 +256,7 @@ export default function ProductDetailsPopup({
                 <td className="title font-semibold px-2 text-gray-700 border-r border-gray-400">
                   SKU
                 </td>
-                <td className="px-2">
+                <td id="variantInfoSKU" className="px-2">
                   {selectedVariant ? selectedVariant.SKU : ""}
                 </td>
               </tr>
@@ -262,7 +264,7 @@ export default function ProductDetailsPopup({
                 <td className="title font-semibold px-2 text-gray-700 border-r border-gray-400">
                   Color
                 </td>
-                <td className="px-2">
+                <td id="variantInfoColor" className="px-2">
                   {selectedVariant ? selectedVariant.color : ""}
                 </td>
               </tr>
@@ -270,7 +272,7 @@ export default function ProductDetailsPopup({
                 <td className="title font-semibold px-2 text-gray-700 border-r border-gray-400">
                   Size
                 </td>
-                <td className="px-2">
+                <td id="variantInfoSize" className="px-2">
                   {selectedVariant ? selectedVariant.size : ""}
                 </td>
               </tr>
@@ -278,8 +280,8 @@ export default function ProductDetailsPopup({
                 <td className="title font-semibold px-2 text-gray-700 border-r border-gray-400">
                   Price
                 </td>
-                <td className="px-2">
-                  {selectedVariant ? selectedVariant.price : ""}
+                <td id="variantInfoPrice" className="px-2">
+                  {selectedVariant ? Number(selectedVariant.buyingPrice) : ""}
                 </td>
               </tr>
             </tbody>
@@ -300,6 +302,7 @@ export default function ProductDetailsPopup({
                   alt="variant"
                   className="object-cover"
                   onClick={() => setSelectedVariant(variant)}
+                  id="variantSelector"
                 />
               </div>
             ))}
@@ -310,13 +313,14 @@ export default function ProductDetailsPopup({
             style={{
               textTransform: "none",
             }}
+            id="addVariantButton"
           >
             Add variant
           </Button>
         </div>
         {isStopSellingConfirmationOpen && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="confirmStopSellingPopup bg-white p-4 rounded-xl">
+            <div className="confirmStopSellingPopup popup bg-white p-4 rounded-xl">
               <p className="text-center">
                 Are you sure that you want to stop selling this product?
                 <br /> This action cannot be undone.
@@ -373,7 +377,7 @@ export default function ProductDetailsPopup({
         )}
         {isDeleteVariantConfirmationOpen && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-4 rounded-xl">
+            <div className="confirmDeleteVariantPopup popup bg-white p-4 rounded-xl">
               <p className="text-center">
                 Are you sure that you want to delete this variant?
                 <br /> This action cannot be undone.
@@ -385,6 +389,7 @@ export default function ProductDetailsPopup({
                   style={{
                     textTransform: "none",
                   }}
+                  id="cancelDeleteVariantButton"
                 >
                   Cancel
                 </Button>
@@ -398,6 +403,7 @@ export default function ProductDetailsPopup({
                     backgroundColor: "#ff0000",
                     textTransform: "none",
                   }}
+                  id="confirmDeleteVariantButton"
                 >
                   Confirm
                 </Button>
