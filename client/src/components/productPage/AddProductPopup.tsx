@@ -32,7 +32,7 @@ export default function AddProductPopup({
   const [catalogueId, setCatalogueId] = useState(
     product?.catalogueId || catalogues[0].id
   );
-  const [warranty, setWarranty] = useState(product?.warranty || 1);
+  const [warranty, setWarranty] = useState(product?.warranty || 0);
   //   type AddProductDTO = {
   //     name: string;
   //     category: string;
@@ -126,7 +126,7 @@ export default function AddProductPopup({
             <div className="flex flex-col gap-2">
               <label htmlFor="name">Name</label>
               <input
-                id="name"
+                id="newProductNameInput"
                 name="name"
                 placeholder="Tên"
                 className="border border-gray-300 px-2 py-1 rounded-md"
@@ -139,7 +139,7 @@ export default function AddProductPopup({
               <label htmlFor="category">Category</label>
               <select
                 name="category"
-                id="category"
+                id="newProductCategoryInput"
                 defaultValue={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
@@ -151,7 +151,7 @@ export default function AddProductPopup({
             <div className="flex flex-col gap-2">
               <label htmlFor="description">Description</label>
               <textarea
-                id="description"
+                id="newProductDescriptionInput"
                 name="description"
                 placeholder="Mô tả"
                 className="border border-gray-300 px-2 py-1 rounded-md h-24"
@@ -166,7 +166,7 @@ export default function AddProductPopup({
               <label htmlFor="catalogue">Catalogue</label>
               <select
                 name="catalogue"
-                id="catalogue"
+                id="newProductCatalogueInput"
                 onChange={(e) => setCatalogueId(Number(e.target.value))}
                 defaultValue={catalogueId}
               >
@@ -179,13 +179,13 @@ export default function AddProductPopup({
               <label htmlFor="warranty">Warranty</label>
               <input
                 type="number"
-                id="warranty"
+                id="newProductWarrantyInput"
                 name="warranty"
                 placeholder="Bảo hành"
                 className="border border-gray-300 px-2 py-1 rounded-md"
-                defaultValue={warranty}
                 min={0}
                 onChange={(e) => setWarranty(Number(e.target.value))}
+                defaultValue={warranty}
               />
             </div>
           </div>
@@ -198,6 +198,7 @@ export default function AddProductPopup({
               textTransform: "none",
             }}
             onClick={onClose}
+            id="cancelAddProductButton"
           >
             Cancel
           </Button>
@@ -208,6 +209,7 @@ export default function AddProductPopup({
                 textTransform: "none",
               }}
               onClick={handleUpdateProduct}
+              id="confirmUpdateProductButton"
             >
               Update
             </Button>
@@ -218,6 +220,7 @@ export default function AddProductPopup({
                 textTransform: "none",
               }}
               onClick={handleAddProduct}
+              id="confirmAddProductButton"
             >
               Create
             </Button>

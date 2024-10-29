@@ -62,12 +62,16 @@ export default function ProductPage() {
           style={{
             textTransform: "none",
           }}
+          id="addProductButton"
         >
           Add product
         </Button>
       </div>
 
-      <div className="product-gallery w-full h-full pb-24 overflow-y-auto flex flex-wrap gap-4 p-4">
+      <div
+        id="productGallery"
+        className="product-gallery w-full h-full pb-24 overflow-y-auto flex flex-wrap gap-4 p-4"
+      >
         {filteredProducts.map((product) => (
           <ProductCard
             key={product.id}
