@@ -111,7 +111,7 @@ export default function ProductDetailsPopup({
               <tbody>
                 <tr>
                   <td className="title">Name:</td>
-                  <td>{product.name}</td>
+                  <td id="productDetailsName">{product.name}</td>
                 </tr>
                 <tr>
                   <td
@@ -124,6 +124,7 @@ export default function ProductDetailsPopup({
                   </td>
                   <td>
                     <textarea
+                      id="productDetailsDescription"
                       style={{
                         width: "100%",
                         resize: "none",
@@ -134,35 +135,35 @@ export default function ProductDetailsPopup({
                 </tr>
                 <tr>
                   <td className="title">Category:</td>
-                  <td>{product.category}</td>
+                  <td id="productDetailsCategory">{product.category}</td>
                 </tr>
                 <tr>
                   <td className="title">Price:</td>
-                  <td>{product.price}</td>
+                  <td id="productDetailsPrice">{product.price}</td>
                 </tr>
                 <tr>
                   <td className="title">Status:</td>
-                  <td>{product.status}</td>
+                  <td id="productDetailsStatus">{product.status}</td>
                 </tr>
                 <tr>
                   <td className="title">Warranty:</td>
-                  <td>{product.warranty} tháng</td>
+                  <td id="productDetailsWarranty">{product.warranty}</td>
                 </tr>
                 <tr>
                   <td className="title">Total quantity:</td>
-                  <td>{product.quantity}</td>
+                  <td id="productDetailsTotalQuantity">{product.quantity}</td>
                 </tr>
                 <tr>
                   <td className="title">Available quantity:</td>
-                  <td>{product.available}</td>
+                  <td id="productDetailsaAvailable">{product.available}</td>
                 </tr>
                 <tr>
                   <td className="title">Sold quantity:</td>
-                  <td>{product.sold}</td>
+                  <td id="productDetailsSold">{product.sold}</td>
                 </tr>
                 <tr>
                   <td className="title">Defective quantity:</td>
-                  <td>{product.defective}</td>
+                  <td id="productDetailsDefective">{product.defective}</td>
                 </tr>
               </tbody>
             </table>
@@ -191,6 +192,7 @@ export default function ProductDetailsPopup({
               style={{
                 textTransform: "none",
               }}
+              id="updateProductButton"
             >
               Update
             </Button>
@@ -202,6 +204,7 @@ export default function ProductDetailsPopup({
                 textTransform: "none",
                 backgroundColor: "#ff0000",
               }}
+              id="stopSellingButton"
             >
               Stop selling
             </Button>
