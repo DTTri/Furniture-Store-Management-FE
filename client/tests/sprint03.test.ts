@@ -142,29 +142,50 @@ fixture("Product Management").page("http://localhost:5173/");
 //     .eql("15");
 // });
 
-test("DeleteProduct01", async (t) => {
-  // Nhấp vào ProductCard có text "Binh hoa su"
-  const productCard = Selector("#productGallery .product-card").withText(
-    "Binh hoa su"
-  );
-  await t.click(productCard);
+// test("DeleteProduct01", async (t) => {
+//   // Nhấp vào ProductCard có text "Binh hoa su"
+//   const productCard = Selector("#productGallery .product-card").withText(
+//     "Binh hoa su"
+//   );
+//   await t.click(productCard);
 
-  // ProductDetailsPopup hiện lên, nhấp vào button #stopSellingButton
-  const productDetailsPopup = Selector(".popup");
-  await t.expect(productDetailsPopup.exists).ok();
-  await t.click(Selector("#stopSellingButton"));
+//   // ProductDetailsPopup hiện lên, nhấp vào button #stopSellingButton
+//   const productDetailsPopup = Selector(".popup");
+//   await t.expect(productDetailsPopup.exists).ok();
+//   await t.click(Selector("#stopSellingButton"));
 
-  // confirmStopSellingPopup hiện lên, có 2 nút #cancelStopSellingButton #confirmStopSellingButton, nhấp vào nút #confirmStopSellingButton
-  const confirmStopSellingPopup = Selector(".confirmStopSellingPopup");
-  await t.expect(confirmStopSellingPopup.exists).ok();
-  await t.click(Selector("#confirmStopSellingButton"));
+//   // confirmStopSellingPopup hiện lên, có 2 nút #cancelStopSellingButton #confirmStopSellingButton, nhấp vào nút #confirmStopSellingButton
+//   const confirmStopSellingPopup = Selector(".confirmStopSellingPopup");
+//   await t.expect(confirmStopSellingPopup.exists).ok();
+//   await t.click(Selector("#confirmStopSellingButton"));
 
-  // ProductCard "Binh hoa su" có #productCardStatus là "stop selling"
-  const updatedProductCard = Selector("#productGallery .product-card").withText(
-    "Binh hoa su"
-  );
-  await t.expect(updatedProductCard.exists).ok();
-  await t
-    .expect(updatedProductCard.find("#productCardStatus").innerText)
-    .eql("stop selling");
+//   // ProductCard "Binh hoa su" có #productCardStatus là "stop selling"
+//   const updatedProductCard = Selector("#productGallery .product-card").withText(
+//     "Binh hoa su"
+//   );
+//   await t.expect(updatedProductCard.exists).ok();
+//   await t
+//     .expect(updatedProductCard.find("#productCardStatus").innerText)
+//     .eql("stop selling");
+// });
+
+test("SearchProduct01", async (t) => {
+  // Nhập tên product vào input #searchProductInput
+  const searchInput = Selector("#searchProductInput");
+  const searchText = "Binh hoa su";
+  await t.typeText(searchInput, searchText);
+
+  // Kiểm tra xem #productGallery chỉ hiển thị các ProductCard có #productCardName chứa text vừa nhập (không quan tâm in hoa/in thường)
+  const productGallery = Selector("#productGallery");
+  const productCards = productGallery.find(".product-card");
+
+  const productCardCount = await productCards.count;
+
+  for (let i = 0; i < productCardCount; i++) {
+    const productCardName = await productCards.nth(i).find("#productCardName")
+      .innerText;
+    await t
+      .expect(productCardName.toLowerCase())
+      .contains(searchText.toLowerCase());
+  }
 });

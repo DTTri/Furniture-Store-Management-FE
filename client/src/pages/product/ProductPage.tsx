@@ -53,6 +53,7 @@ export default function ProductPage() {
             onChange={(e) => {
               setSearchValue(e.target.value);
             }}
+            id="searchProductInput"
           />
         </div>
         <Button
