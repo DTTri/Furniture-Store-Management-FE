@@ -53,6 +53,7 @@ export default function ProductPage() {
             onChange={(e) => {
               setSearchValue(e.target.value);
             }}
+            id="searchProductInput"
           />
         </div>
         <Button
@@ -92,6 +93,15 @@ export default function ProductPage() {
             setSelectedProduct(product);
             setIsForUpdate(true);
             setIsAddProductPopupOpen(true);
+          }}
+          onStopSellingProduct={() => {
+            setProducts(
+              products.map((product) =>
+                product.id === selectedProduct.id
+                  ? { ...product, status: "stop selling" }
+                  : product
+              )
+            );
           }}
         />
       )}

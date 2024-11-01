@@ -197,7 +197,11 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
         </button>
         <div className="add-variant-to-import basis-1/3 min-w-96 border-r-2">
           <h3 className="text-center font-bold">Choose variant</h3>
-          <form className="flex flex-col gap-4 p-4" onSubmit={handleAddRow}>
+          <form
+            id="addRowForm"
+            className="flex flex-col gap-4 p-4"
+            onSubmit={handleAddRow}
+          >
             <select
               id="selectedProduct"
               className="border border-gray-300 rounded-md p-1"
@@ -254,6 +258,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               style={{
                 textTransform: "none",
               }}
+              id="addRowButton"
             >
               Add
             </Button>
@@ -295,6 +300,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               className="border border-gray-300 rounded-md p-1"
               min={0}
               onChange={(e) => setShippingCost(parseInt(e.target.value))}
+              id="shippingCostInput"
             />
             <h3 className="text-lg font-semibold">Total cost: {totalCost}</h3>
           </div>
@@ -309,6 +315,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
                 color: "#1976d2",
                 textTransform: "none",
               }}
+              id="cancelImportButton"
             >
               Cancel
             </Button>
@@ -318,6 +325,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
                 textTransform: "none",
               }}
               onClick={handleImport}
+              id="confirmImportButton"
             >
               Confirm
             </Button>
