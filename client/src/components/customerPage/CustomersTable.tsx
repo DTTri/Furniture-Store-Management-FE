@@ -1,4 +1,3 @@
-import { Provider } from "../../entities";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -6,26 +5,25 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
+import { Customer } from "../../entities";
 import InfoIcon from "@mui/icons-material/Info";
 
-export default function ProvidersTable({
-  providers,
+export default function CustomersTable({
+  customers,
 }: {
-  providers: Provider[];
+  customers: Customer[];
 }) {
-  // type Provider = {
+  // type Customer = {
   //     id: number;
   //     name: string;
-  //     address: string;
   //     phone: string;
   //     email: string;
-  //     president: string;
-  //     status: ProviderStatus;
+  //     point: number;
   //   };
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "INDEX", // use English
+      headerName: "INDEX",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
@@ -45,13 +43,6 @@ export default function ProvidersTable({
       align: "center",
     },
     {
-      field: "address",
-      headerName: "Address",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
       field: "phone",
       headerName: "Phone",
       flex: 1,
@@ -66,15 +57,8 @@ export default function ProvidersTable({
       align: "center",
     },
     {
-      field: "president",
-      headerName: "President",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "status",
-      headerName: "Status",
+      field: "point",
+      headerName: "Point",
       flex: 1,
       headerAlign: "center",
       align: "center",
@@ -92,8 +76,8 @@ export default function ProvidersTable({
       ],
     },
   ];
-  const rows = providers.map((provider, index) => ({
-    ...provider,
+  const rows = customers.map((customer, index) => ({
+    ...customer,
     index: index + 1,
   }));
   return (

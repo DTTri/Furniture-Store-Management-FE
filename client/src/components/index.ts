@@ -9,6 +9,10 @@ import StockTable from "./inventoryPage/StockTable";
 
 import ProvidersTable from "./providerPage/ProvidersTable";
 import NavBar from "./NavBar";
+
+import CustomersTable from "./customerPage/CustomersTable";
+import AddCustomerPopup from "./customerPage/AddCustomerPopup";
+
 export {
   NavBar,
   AddProductPopup,
@@ -19,4 +23,6 @@ export {
   ImportPopup,
   StockTable,
   ProvidersTable,
+  CustomersTable,
+  AddCustomerPopup,
 };
