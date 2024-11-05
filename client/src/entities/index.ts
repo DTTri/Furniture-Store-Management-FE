@@ -4,6 +4,8 @@ import Bill from "./Bill";
 import GoodsReceipt from "./GoodsReceipt";
 import GoodsReceiptDetail from "./GoodsReceiptDetail";
 import Catalogue from "./Catalogue";
+import Provider from "./Provider";
+import Customer from "./Customer";
 export type {
   Product,
   ProductVariant,
@@ -11,4 +13,6 @@ export type {
   GoodsReceipt,
   GoodsReceiptDetail,
   Catalogue,
+  Provider,
+  Customer,
 };

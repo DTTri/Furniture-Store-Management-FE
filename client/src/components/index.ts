@@ -7,6 +7,7 @@ import ImprortHistoryOrderPopup from "./inventoryPage/ImportHistoryOrderPopup";
 import ImportPopup from "./inventoryPage/ImportPopup";
 import StockTable from "./inventoryPage/StockTable";
 
+import ProvidersTable from "./providerPage/ProvidersTable";
 import NavBar from "./NavBar";
 export {
   NavBar,
@@ -17,4 +18,5 @@ export {
   ImprortHistoryOrderPopup,
   ImportPopup,
   StockTable,
+  ProvidersTable,
 };
