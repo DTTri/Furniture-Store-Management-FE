@@ -1,4 +1,3 @@
-import MakeInvoicePopup from "./bill/MakeInvoicePopup";
 import AddProductPopup from "./productPage/AddProductPopup";
 import ProductCard from "./productPage/ProductCard";
 import ProductDetailsPopup from "./productPage/ProductDetailsPopup";
@@ -11,7 +10,6 @@ import StockTable from "./inventoryPage/StockTable";
 import NavBar from "./NavBar";
 export {
   NavBar,
-  MakeInvoicePopup,
   AddProductPopup,
   ProductCard,
   ProductDetailsPopup,

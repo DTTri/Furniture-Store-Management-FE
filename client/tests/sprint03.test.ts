@@ -4,7 +4,7 @@ fixture("Product Management").page("http://localhost:5173/");
 
 test("AddNewProduct01", async (t) => {
   await t.click(Selector("#addProductButton"));
-  await t.typeText(Selector("#newProductNameInput"), "Binh hoa go");
+  await t.typeText(Selector("#newProductNameInput"), "Binh hoa da");
   await t.click(Selector("#newProductCategoryInput"));
   await t.click(
     Selector("#newProductCategoryInput option").withText("Bàn ghế")
@@ -26,7 +26,7 @@ test("AddNewProduct01", async (t) => {
   await t.expect(newProductCard.exists).ok();
   await t
     .expect(newProductCard.find("#productCardName").innerText)
-    .eql("Binh hoa go");
+    .eql("Binh hoa da");
   await t
     .expect(newProductCard.find("#productCardCategory").innerText)
     .eql("Bàn ghế");
@@ -39,7 +39,7 @@ test("AddNewProduct01", async (t) => {
   await t.expect(productDetailsPopup.exists).ok();
   await t
     .expect(productDetailsPopup.find("#productDetailsName").innerText)
-    .eql("Binh hoa go");
+    .eql("Binh hoa da");
   await t
     .expect(productDetailsPopup.find("#productDetailsDescription").value)
     .eql("Sản phẩm được sản xuất ở nước Ý, chất liệu tự nhiên, ...");
@@ -52,7 +52,7 @@ test("AddNewProduct01", async (t) => {
 });
 test("AddNewProduct02", async (t) => {
   await t.click(Selector("#addProductButton"));
-  await t.typeText(Selector("#newProductNameInput"), "Bàn mặt đá Ceramic");
+  await t.typeText(Selector("#newProductNameInput"), "Bàn mặt đá Ceramiccc");
   await t.click(Selector("#newProductCategoryInput"));
   await t.click(
     Selector("#newProductCategoryInput option").withText("Bàn ghế")
@@ -69,12 +69,12 @@ test("AddNewProduct02", async (t) => {
   await t.typeText(Selector("#newProductWarrantyInput"), "12");
   await t.click(Selector("#confirmAddProductButton"));
   const newProductCard = Selector("#productGallery .product-card").withText(
-    "Bàn mặt đá Ceramic"
+    "Bàn mặt đá Ceramiccc"
   );
   await t.expect(newProductCard.exists).ok();
   await t
     .expect(newProductCard.find("#productCardName").innerText)
-    .eql("Bàn mặt đá Ceramic");
+    .eql("Bàn mặt đá Ceramiccc");
   await t
     .expect(newProductCard.find("#productCardCategory").innerText)
     .eql("Bàn ghế");
@@ -87,7 +87,7 @@ test("AddNewProduct02", async (t) => {
   await t.expect(productDetailsPopup.exists).ok();
   await t
     .expect(productDetailsPopup.find("#productDetailsName").innerText)
-    .eql("Bàn mặt đá Ceramic");
+    .eql("Bàn mặt đá Ceramiccc");
   await t
     .expect(productDetailsPopup.find("#productDetailsDescription").value)
     .eql("New Product Description");
@@ -100,7 +100,7 @@ test("AddNewProduct02", async (t) => {
 });
 test("AddNewProduct03", async (t) => {
   await t.click(Selector("#addProductButton"));
-  await t.typeText(Selector("#newProductNameInput"), "Bộ bàn 6 ghế Monet");
+  await t.typeText(Selector("#newProductNameInput"), "Bộ bàn 6 ghế Mon");
   await t.click(Selector("#newProductCategoryInput"));
   await t.click(
     Selector("#newProductCategoryInput option").withText("Bàn ghế")
@@ -114,12 +114,12 @@ test("AddNewProduct03", async (t) => {
   await t.typeText(Selector("#newProductWarrantyInput"), "12");
   await t.click(Selector("#confirmAddProductButton"));
   const newProductCard = Selector("#productGallery .product-card").withText(
-    "Bộ bàn 6 ghế Monet"
+    "Bộ bàn 6 ghế Mon"
   );
   await t.expect(newProductCard.exists).ok();
   await t
     .expect(newProductCard.find("#productCardName").innerText)
-    .eql("Bộ bàn 6 ghế Monet");
+    .eql("Bộ bàn 6 ghế Mon");
   await t
     .expect(newProductCard.find("#productCardCategory").innerText)
     .eql("Bàn ghế");
@@ -132,7 +132,7 @@ test("AddNewProduct03", async (t) => {
   await t.expect(productDetailsPopup.exists).ok();
   await t
     .expect(productDetailsPopup.find("#productDetailsName").innerText)
-    .eql("Bộ bàn 6 ghế Monet");
+    .eql("Bộ bàn 6 ghế Mon");
   await t
     .expect(productDetailsPopup.find("#productDetailsDescription").value)
     .eql("");
@@ -189,7 +189,7 @@ test("AddNewProduct04", async (t) => {
 });
 test("UpdateProduct01", async (t) => {
   const productCard = Selector("#productGallery .product-card").withText(
-    "Ghế gỗ cao cấp"
+    "Bộ bàn 6 ghế Mon"
   );
   await t.click(productCard);
   const productDetailsPopup = Selector(".popup");
@@ -216,7 +216,7 @@ test("UpdateProduct01", async (t) => {
   await t
     .selectText(Selector("#newProductNameInput"))
     .pressKey("delete")
-    .typeText(Selector("#newProductNameInput"), "Ghế gỗ bình thường");
+    .typeText(Selector("#newProductNameInput"), "Bộ bàn 6 ghế MonMon");
   await t
     .selectText(Selector("#newProductDescriptionInput"))
     .pressKey("delete")
@@ -234,14 +234,14 @@ test("UpdateProduct01", async (t) => {
     .typeText(Selector("#newProductWarrantyInput"), "15");
   await t.click(Selector("#confirmUpdateProductButton"));
   const updatedProductCard = Selector("#productGallery .product-card").withText(
-    "Ghế gỗ bình thường"
+    "Bộ bàn 6 ghế MonMon"
   );
   await t.expect(updatedProductCard.exists).ok();
   await t.click(updatedProductCard);
   await t.expect(productDetailsPopup.exists).ok();
   await t
     .expect(productDetailsPopup.find("#productDetailsName").innerText)
-    .eql("Ghế gỗ bình thường");
+    .eql("Bộ bàn 6 ghế MonMon");
   await t
     .expect(productDetailsPopup.find("#productDetailsDescription").value)
     .eql("Được sản xuất ở Mỹ, màu sắc abc…");
@@ -255,7 +255,7 @@ test("UpdateProduct01", async (t) => {
 
 test("DeleteProduct01", async (t) => {
   const productCard = Selector("#productGallery .product-card").withText(
-    "Bàn mặt đá Ceramic"
+    "Bàn mặt đá Ceramiccc"
   );
   await t.click(productCard);
 
@@ -268,7 +268,7 @@ test("DeleteProduct01", async (t) => {
   await t.click(Selector("#confirmStopSellingButton"));
 
   const updatedProductCard = Selector("#productGallery .product-card").withText(
-    "Bàn mặt đá Ceramic"
+    "Bàn mặt đá Ceramiccc"
   );
   await t.expect(updatedProductCard.exists).ok();
   await t
@@ -278,7 +278,7 @@ test("DeleteProduct01", async (t) => {
 
 test("FindProduct01", async (t) => {
   const searchInput = Selector("#searchProductInput");
-  const searchText = "Bàn mặt đá Ceramic";
+  const searchText = "Bộ bàn 6 ghế MonMon";
   await t.typeText(searchInput, searchText);
 
   const productGallery = Selector("#productGallery");
@@ -370,7 +370,7 @@ fixture("Product Variant Management").page("http://localhost:5173/");
 
 test("CreateProductVariant01", async (t) => {
   const productCard = Selector("#productGallery .product-card").withText(
-    "Bàn mặt đá Ceramic"
+    "Bàn mặt đá Ceramiccc"
   );
   await t.click(productCard);
 
@@ -403,7 +403,7 @@ test("CreateProductVariant01", async (t) => {
 });
 test("CreateProductVariant02", async (t) => {
   const productCard = Selector("#productGallery .product-card").withText(
-    "Bàn mặt đá Ceramic"
+    "Bộ bàn 6 ghế MonMon"
   );
   await t.click(productCard);
 
@@ -436,7 +436,7 @@ test("CreateProductVariant02", async (t) => {
 });
 test("CreateProductVariant03", async (t) => {
   const productCard = Selector("#productGallery .product-card").withText(
-    "Bàn mặt đá Ceramic"
+    "Bàn mặt đá Ceramiccc"
   );
   await t.click(productCard);
 
@@ -470,7 +470,7 @@ test("CreateProductVariant03", async (t) => {
 
 test("UpdateProductVariant01", async (t) => {
   const productCard = Selector("#productGallery .product-card").withText(
-    "Bàn mặt đá Ceramic"
+    "Bàn mặt đá Ceramiccc"
   );
   await t.click(productCard);
 
@@ -522,7 +522,7 @@ test("UpdateProductVariant01", async (t) => {
 
 test("DeleteProductVariant01", async (t) => {
   const productCard = Selector("#productGallery .product-card").withText(
-    "Bàn mặt đá Ceramic"
+    "Bàn mặt đá Ceramiccc"
   );
   await t.click(productCard);
 
