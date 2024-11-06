@@ -6,6 +6,7 @@ import DoubleCheckedGoodsReceipt from "./inventoryPage/DoubleCheckedGoodsReceipt
 import ImprortHistoryOrderPopup from "./inventoryPage/ImportHistoryOrderPopup";
 import ImportPopup from "./inventoryPage/ImportPopup";
 import StockTable from "./inventoryPage/StockTable";
+import InvoiceTable from "./invoicePage/InvoiceTable";
 
 import NavBar from "./NavBar";
 export {
@@ -17,4 +18,5 @@ export {
   ImprortHistoryOrderPopup,
   ImportPopup,
   StockTable,
+  InvoiceTable
 };

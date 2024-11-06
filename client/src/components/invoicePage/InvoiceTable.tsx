@@ -1,7 +1,42 @@
-import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
-import React from 'react'
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridRowParams,
+  GridToolbar,
+} from "@mui/x-data-grid";
+import React, { useEffect, useState } from "react";
+import Invoice from "../../entities/Invoice";
+import InfoIcon from "@mui/icons-material/Info";
+import http from "../../api/http";
+import { format } from "date-fns";
+import InvoiceDetailTable from "./InvoiceDetailTable";
 
 export default function InvoiceTable() {
+  const [invoiceList, setInvoiceList] = useState<Invoice[]>([]);
+
+  useEffect(() => {
+    const fetchInvoices = async () => {
+      try {
+        const response = await http.get("/invoices/get-all-invoices");
+        if (response.data.EC === 0) {
+          setInvoiceList(response.data.DT);
+        } else {
+          console.log("Failed to fetch invoices:", response.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      }
+    };
+    fetchInvoices();
+  }, [invoiceList]);
+
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+
+  const [isInvoiceDetailPopupOpen, setIsInvoiceDetailPopupOpen] =
+    useState(false);
+  const handleOnClose = () => { setIsInvoiceDetailPopupOpen(false); };
+
   const columns: GridColDef[] = [
     {
       field: "index",
@@ -9,12 +44,19 @@ export default function InvoiceTable() {
       flex: 0.5,
       headerAlign: "center",
       align: "center",
-      width: 15
+      width: 15,
     },
     {
       field: "createdAt",
       headerName: "Ngày tạo",
       flex: 1,
+      valueFormatter: (params) => {
+        const dateTime = format(
+          new Date(params),
+          "dd/MM/yyyy '--' HH:mm:ss"
+        );
+        return dateTime;
+      },
       headerAlign: "center",
       align: "center",
     },
@@ -46,81 +88,57 @@ export default function InvoiceTable() {
       headerAlign: "center",
       align: "center",
     },
+    {
+      field: "actions",
+      type: "actions",
+      flex: 0.5,
+      getActions: (params: GridRowParams) => [
+        <GridActionsCellItem
+          icon={<InfoIcon />}
+          label="Delete"
+          onClick={() => {
+            setSelectedInvoice(params.row as Invoice);
+            setIsInvoiceDetailPopupOpen(true);
+          }}
+        />,
+      ],
+    },
   ];
-  const rows = [
-    {
-      id: "1",
-      createdAt: "2021-10-10",
-      customerId: "1",
-      staffId: "1",
-    },
-    {
-      id: "2",
-      createdAt: "2021-10-10",
-      customerId: "1",
-      staffId: "1",
-    },
-    {
-      id: "3",
-      createdAt: "2021-10-10",
-      customerId: "1",
-      staffId: "1",
-    },
-    {
-      id: "4",
-      createdAt: "2021-10-10",
-      customerId: "1",
-      staffId: "1",
-    },
-    {
-      id: "5",
-      createdAt: "2021-10-10",
-      customerId: "1",
-      staffId: "1",
-    },
-    {
-      id: "6",
-      createdAt: "2021-10-10",
-      customerId: "1",
-      staffId: "1",
-    },
-    {
-      id: "7",
-      createdAt: "2021-10-10",
-      customerId: "1",
-      staffId: "1",
-    },
-    {
-      id: "8",
-      createdAt: "2021-10-10",
-      customerId: "1",
-      staffId: "1",
-    }
-  ]
+  const rows = invoiceList.map((invoiceItem, index) => {
+    return {
+      ...invoiceItem,
+      index: index + 1,
+    };
+  });
   return (
     <div>
       <DataGrid
-      style={{
-        borderRadius: "10px",
-        backgroundColor: "white",
-        height: "100%",
-      }}
-      columns={columns}
-      rows={rows}
-      rowHeight={40}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 8,
+        style={{
+          borderRadius: "10px",
+          backgroundColor: "white",
+          height: "100%",
+        }}
+        columns={columns}
+        rows={rows}
+        rowHeight={40}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 8,
+            },
           },
-        },
-      }}
-      pageSizeOptions={
-        rows.length < 8 ? [8, rows.length] : [8, rows.length + 1]
+        }}
+        pageSizeOptions={
+          rows.length < 10 ? [10, rows.length] : [10, rows.length + 1]
+        }
+        slots={{ toolbar: GridToolbar }}
+        rowSelection={false}
+      />
+      {
+        isInvoiceDetailPopupOpen && selectedInvoice && (
+          <InvoiceDetailTable invoice={selectedInvoice} onClose={handleOnClose}/>
+        ) 
       }
-      slots={{ toolbar: GridToolbar }}
-      rowSelection={false}
-    />
     </div>
-  )
+  );
 }
