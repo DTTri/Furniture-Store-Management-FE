@@ -6,6 +6,12 @@ import http from "../../api/http";
 import AddVariantPopup from "./AddVariantPopup";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridToolbar,
+} from "@mui/x-data-grid";
 export default function ProductDetailsPopup({
   product,
   onClose,
@@ -90,9 +96,49 @@ export default function ProductDetailsPopup({
       console.error("Error deleting variant:", error);
     }
   };
+
+  const rows = variants.map((variant, index) => {
+    return {
+      ...variant,
+      index: index + 1,
+    };
+  });
+  const columns: GridColDef[] = [
+    { field: "index", headerName: "STT", flex: 0.5 },
+    { field: "id", headerName: "ID", flex: 0.5 },
+    { field: "SKU", headerName: "SKU", flex: 0.5 },
+    { field: "color", headerName: "Color", flex: 1 },
+    { field: "size", headerName: "Size", flex: 1 },
+    { field: "buyingPrice", headerName: "Buying Price", flex: 1 },
+    { field: "price", headerName: "Price", flex: 1 },
+    {
+      field: "actions",
+      type: "actions",
+      flex: 0.5,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<ModeEditIcon />}
+          label="Edit"
+          onClick={() => {
+            setSelectedVariant(params.row as ProductVariant);
+            setIsAddVariantPopupOpen(true);
+            setIsForUpdateVariant(true);
+          }}
+        />,
+        <GridActionsCellItem
+          icon={<DeleteIcon />}
+          label="Delete"
+          onClick={() => {
+            setSelectedVariant(params.row as ProductVariant);
+            setIsDeleteVariantConfirmationOpen(true);
+          }}
+        />,
+      ],
+    },
+  ];
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white flex justify-around relative rounded-xl p-4 w-1/2 min-w-[420px] overflow-hidden">
+      <div className="popup bg-white flex justify-around relative rounded-xl p-4 w-2/3 min-w-[420px] overflow-hidden">
         <IconButton
           style={{
             position: "absolute",
@@ -104,7 +150,7 @@ export default function ProductDetailsPopup({
           <CloseIcon />
         </IconButton>
 
-        <div className="information-container flex flex-col gap-2 items-start w-1/2 border-r-2 border-r-black">
+        <div className="information-container flex flex-col gap-2 items-start w-1/3 border-r-2 border-r-black">
           <div className="product-information w-full flex flex-col gap-2">
             <p className="title text-black text-2xl font-semibold">
               Product information
@@ -212,11 +258,8 @@ export default function ProductDetailsPopup({
             </Button>
           </div>
         </div>
-        <div className="variants-container w-1/2 flex flex-col items-center gap-4 justify-between">
-          <p className="title text-black text-2xl font-semibold w-full px-4">
-            Variants
-          </p>
-          <div className="w-full flex justify-center items-center gap-4">
+        <div className="variants-container w-2/3 flex flex-col items-center justify-between gap-4">
+          {/* <div className="w-full flex justify-center items-center gap-4">
             <div className="variant-image h-32 w-32 overflow-hidden rounded-lg">
               <img
                 src="https://i.pinimg.com/enabled_lo/564x/e9/b6/a9/e9b6a90559732efe97ce9883edd99841.jpg"
@@ -286,7 +329,6 @@ export default function ProductDetailsPopup({
               </tr>
             </tbody>
           </table>
-          {/* slider for selecting variant */}
           <div className="variant-slider w-5/6 flex gap-1 overflow-x-auto">
             {variants.map((variant) => (
               <div
@@ -306,6 +348,35 @@ export default function ProductDetailsPopup({
                 />
               </div>
             ))}
+          </div>
+           */}
+          <div className="w-full px-4 flex flex-col gap-2">
+            <p className="title text-black text-2xl font-semibold w-full">
+              Variants
+            </p>
+            <DataGrid
+              style={{
+                borderRadius: "20px",
+                backgroundColor: "white",
+                height: "100%",
+              }}
+              rows={rows}
+              columns={columns}
+              rowHeight={40}
+              disableDensitySelector
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 5,
+                  },
+                },
+              }}
+              pageSizeOptions={
+                rows.length < 5 ? [5, rows.length] : [5, rows.length + 1]
+              }
+              slots={{ toolbar: GridToolbar }}
+              rowSelection={false}
+            />
           </div>
           <Button
             variant="contained"
