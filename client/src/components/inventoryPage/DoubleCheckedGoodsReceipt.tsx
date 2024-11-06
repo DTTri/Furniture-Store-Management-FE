@@ -111,6 +111,7 @@ export default function DoubleCheckedGoodsReceipt({
             }}
             rows={rows}
             columns={columns}
+            disableDensitySelector
             rowHeight={40}
             initialState={{
               pagination: {

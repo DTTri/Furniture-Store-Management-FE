@@ -89,6 +89,7 @@ export default function CustomersTable({
       }}
       rows={rows}
       columns={columns}
+      disableDensitySelector
       rowHeight={40}
       initialState={{
         pagination: {

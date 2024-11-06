@@ -277,6 +277,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
                 }}
                 rows={rows}
                 columns={columns}
+                disableDensitySelector
                 rowHeight={40}
                 initialState={{
                   pagination: {

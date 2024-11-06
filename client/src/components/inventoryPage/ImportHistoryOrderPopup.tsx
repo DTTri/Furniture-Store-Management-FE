@@ -101,6 +101,7 @@ export default function ImprortHistoryOrderPopup({
             }}
             rows={rows}
             columns={columns}
+            disableDensitySelector
             rowHeight={40}
             initialState={{
               pagination: {

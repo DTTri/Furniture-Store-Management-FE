@@ -105,6 +105,7 @@ export default function ProvidersTable({
       }}
       rows={rows}
       columns={columns}
+      disableDensitySelector
       rowHeight={40}
       initialState={{
         pagination: {
