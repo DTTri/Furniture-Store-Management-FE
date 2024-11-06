@@ -6,12 +6,16 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { Customer } from "../../entities";
-import InfoIcon from "@mui/icons-material/Info";
-
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
 export default function CustomersTable({
   customers,
+  onEditCustomer,
+  onDeleteCustomer,
 }: {
   customers: Customer[];
+  onEditCustomer: (customer: Customer) => void;
+  onDeleteCustomer: (customer: Customer) => void;
 }) {
   // type Customer = {
   //     id: number;
@@ -69,9 +73,26 @@ export default function CustomersTable({
       flex: 0.5,
       getActions: (params: GridRowParams) => [
         <GridActionsCellItem
-          icon={<InfoIcon />}
-          label="Info"
-          onClick={() => {}}
+          icon={<ModeEditIcon />}
+          label="Edit"
+          onClick={() => {
+            const customerID = params.id as number;
+            const customer = customers.find((c) => c.id === customerID);
+            if (customer) {
+              onEditCustomer(customer);
+            }
+          }}
+        />,
+        <GridActionsCellItem
+          icon={<DeleteIcon />}
+          label="Delete"
+          onClick={() => {
+            const customerID = params.id as number;
+            const customer = customers.find((c) => c.id === customerID);
+            if (customer) {
+              onDeleteCustomer(customer);
+            }
+          }}
         />,
       ],
     },

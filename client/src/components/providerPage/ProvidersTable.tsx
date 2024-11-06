@@ -7,11 +7,14 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import InfoIcon from "@mui/icons-material/Info";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
 export default function ProvidersTable({
   providers,
+  onEditProvider,
 }: {
   providers: Provider[];
+  onEditProvider: (provider: Provider) => void;
 }) {
   // type Provider = {
   //     id: number;
@@ -84,6 +87,17 @@ export default function ProvidersTable({
       type: "actions",
       flex: 0.5,
       getActions: (params: GridRowParams) => [
+        <GridActionsCellItem
+          icon={<ModeEditIcon />}
+          label="Edit"
+          onClick={() => {
+            const providerID = params.id as number;
+            const provider = providers.find((p) => p.id === providerID);
+            if (provider) {
+              onEditProvider(provider);
+            }
+          }}
+        />,
         <GridActionsCellItem
           icon={<InfoIcon />}
           label="Info"
