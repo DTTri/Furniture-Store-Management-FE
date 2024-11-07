@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import InvoiceTable from '../../components/invoicePage/InvoiceTable'
 import SearchIcon from '@mui/icons-material/Search';
 import { Button } from '@mui/material'
 import CreateInvoicePopup from '../../components/invoicePage/CreateInvoicePopup';
 
 export default function InvoicePage() {
+  const [isCreateInvoicePopupOpen, setIsCreateInvoicePopupOpen] = useState<boolean>(false);
   return (
     <div className='bg-white w-full h-screen py-6 px-7'>
-        <div className="header buttons flex flex-row bg-white mb-4">
+        <div className="header buttons flex flex-row items-center bg-white mb-4">
             <div className="search-bar w-[20%] px-1 mr-4 flex flex-row items-center border border-slate-400 rounded-xl overflow-hidden">
                 <input
                     type="text"
@@ -28,12 +29,13 @@ export default function InvoicePage() {
                 textTransform: "none",
             }}
             id="addProductButton"
+            onClick={() => setIsCreateInvoicePopupOpen(true)}
             >
             Add Invoice
             </Button>
         </div>
         <InvoiceTable/>
-        <CreateInvoicePopup/>
+        { isCreateInvoicePopupOpen && <CreateInvoicePopup onClose={() => setIsCreateInvoicePopupOpen(false)}/>}
     </div>
   )
 }

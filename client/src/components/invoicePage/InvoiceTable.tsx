@@ -29,7 +29,7 @@ export default function InvoiceTable() {
       }
     };
     fetchInvoices();
-  }, [invoiceList]);
+  }, []);
 
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
