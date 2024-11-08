@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import InvoiceDetail from "../../entities/InvoiceDetail";
 import http from "../../api/http";
 import Customer from "../../entities/Customer";
+import { Button } from "@mui/material";
 
 export default function InvoiceDetailTable({
   onClose,
@@ -111,8 +112,12 @@ export default function InvoiceDetailTable({
         >
           <span className="text-[16px] font-bold">x</span>
         </button>
-        <div className="header w-full flex flex-row justify-between pl-4">
+        <div className="header w-full flex flex-row justify-between px-3 pt-7">
           <h3 className="font-semibold text-[28px] ">Invoice Details</h3>
+          <div className="flex flex-row items-center gap-3">
+            <Button variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px" }}>Xem phiếu bảo hành</Button>
+            <Button variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px" }}>In hóa đơn</Button>
+          </div>
         </div>
         <div className="w-full px-4 flex flex-row">
           <div className="col-1 mr-[250px]">
