@@ -44,22 +44,22 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
   // const [staffList, setStaffList] = useState<Staff[]>([]);
   // useEffect(() => {
   //   const fetchStaffs = async () => {
-  //     try {
-  //       const response = await http.get("/staffs/get-all-staffs");
-  //       if (response.data.EC === 0) {
-  //         setStaffList(response.data.DT);
-  //       } else {
-  //         console.log("Failed to fetch customers:", response.data.EM);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching customers:", error);
-  //     }
-  //   }
-  //   fetchStaffs()
-  // }, [staffList]);
-
-  const [variantList, setVariantList] = useState<ProductVariant[]>([]);
-  useEffect(() => {
+    //     try {
+      //       const response = await http.get("/staffs/get-all-staffs");
+      //       if (response.data.EC === 0) {
+        //         setStaffList(response.data.DT);
+        //       } else {
+          //         console.log("Failed to fetch customers:", response.data.EM);
+          //       }
+          //     } catch (error) {
+            //       console.error("Error fetching customers:", error);
+            //     }
+            //   }
+            //   fetchStaffs()
+            // }, [staffList]);
+            
+    const [variantList, setVariantList] = useState<ProductVariant[]>([]);
+    useEffect(() => {
     const fetchVariants = async () => {
       try {
         const response = await http.get("/variants");
@@ -85,6 +85,7 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
   const [variantSelected, setVariantSelected] = useState<number>();
   const [promotionSelected, setPromotionSelected] = useState<number>(1);
   const [quatanty, setQuantanty] = useState<number>(0);
+  const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
   const [note, setNote] = useState<string>("");
   const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
 
@@ -168,11 +169,18 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
           icon={<DeleteOutlineIcon />}
           label="Delete"
           onClick={() => {
-            if(rows.length === 1) {
-              setRows([])
-            } else {
-              setRows(rows.filter((row) => row.variantId !== params.row.variantId));
-            }
+            const updatedRows = rows.filter((row) => row.variantId !== params.row.variantId);
+            if (updatedRows.length === 0) {
+              // Tri: because there's a bug in DataGrid which Material-UI team hasn't fixed yet:
+              //when delete the last row, the DataGrid doesn't re-render
+              // solution: unmount and mount the DataGrid
+              setShowDataGrid(false);
+              setTimeout(() => {
+                setRows([]);
+                setShowDataGrid(true);
+              }, 0);
+            } 
+            setRows(updatedRows);
           }}
         />,
       ],
@@ -330,29 +338,32 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
           </div>
         </div>
         <div className="">
-          <DataGrid
-            style={{
-              padding: "10px",
-              border: "none",
-              backgroundColor: "white",
-              height: "100%",
-            }}
-            rows={rows.map((row, index) => ({ ...row, id: index + 1 }))}
-            columns={columns}
-            rowHeight={40}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 4,
+          {showDataGrid && (
+            <DataGrid
+            className="data-grid"
+              style={{
+                padding: "10px",
+                border: "none",
+                backgroundColor: "white",
+                height: "100%",
+              }}
+              rows={rows.map((row, index) => ({ ...row, id: index + 1 }))} 
+              columns={columns}
+              rowHeight={40}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 4,
+                  },
                 },
-              },
-            }}
-            pageSizeOptions={
-              rows.length < 4 ? [4, rows.length] : [4, rows.length + 1]
-            }
-            slots={{ toolbar: GridToolbar }}
-            rowSelection={false}
-          />
+              }}
+              pageSizeOptions={
+                rows.length < 4 ? [4, rows.length] : [4, rows.length + 1]
+              }
+              slots={{ toolbar: GridToolbar }}
+              rowSelection={false}
+            />
+          )}
         </div>
       </div>
     </div>
