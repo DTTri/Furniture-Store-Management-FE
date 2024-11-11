@@ -24,7 +24,7 @@ export {
   StockTable,
   InvoiceTable,
   CreateInvoicePopup,
-  InvoiceDetailTable
+  InvoiceDetailTable,
   ProvidersTable,
   CustomersTable,
   AddCustomerPopup,

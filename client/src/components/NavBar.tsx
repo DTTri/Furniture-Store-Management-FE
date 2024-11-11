@@ -34,10 +34,10 @@ export default function NavBar() {
           </Link>
         </li>
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
-          <Link className="flex flex-row items-center py-1" to="/catalogue">
+          <Link className="flex flex-row items-center py-1" to="/category">
             <img className="w-[20px] h-[20px] mr-3" src={catalogue} alt="" />
             <span className="text-base font-medium text-[#5D6679]">
-              Catalogue
+             Category
             </span>
           </Link>
         </li>

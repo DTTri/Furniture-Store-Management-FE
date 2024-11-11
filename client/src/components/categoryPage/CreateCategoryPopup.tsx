@@ -37,10 +37,26 @@ export default function CreateCategoryPopup({
   }, []);
 
   const [selectedProduct, setSelectedProduct] = useState<Product[]>([]);
+  const [showDataGrid, setShowDataGrid] = useState(true);
   const categoryName = useRef<string>("");
 
-  const handleAddProduct = () => {
-    selectedProduct.forEach(async (product) => {});
+  const handleCreateCategory = async () => {
+    try {
+      const response = await http.post("/catalogues/create-catalogue", {
+        name: categoryName.current,
+      });
+      if (response.data.EC === 0) {
+        setProducts(response.data.DT);
+      } else {
+        console.log("Failed to create category in Category:", response.data.EM);
+      }
+    } catch (error) {
+      console.error("Error create category:", error);
+    }
+    setShowDataGrid(false);
+    setTimeout(() => {
+      setShowDataGrid(true);
+    }, 0);
   };
 
   const columns: GridColDef[] = [
@@ -138,44 +154,51 @@ export default function CreateCategoryPopup({
           />
         </div>
         <div className="w-full flex flex-row items-center gap-2 ">
-            <span className="text-[#383E49] font-semibold block">Category Name:</span>
-            <input
-              type="text"
-              placeholder="Input Category Name"
-              className="w-[30%] border border-slate-400 overflow-hidden p-1 rounded-md"
-              style={{ border: "0", outline: "none" }}
-              onChange={(e) => {
-                categoryName.current = e.target.value;
-              }}
-              id="searchProductInput"
-            ></input>
+          <span className="text-[#383E49] font-semibold block">
+            Category Name:
+          </span>
+          <input
+            type="text"
+            placeholder="Input Category Name"
+            className="w-[30%] border border-slate-400 overflow-hidden p-1 rounded-md"
+            style={{ border: "0", outline: "none" }}
+            onChange={(e) => {
+              categoryName.current = e.target.value;
+            }}
+            id="searchProductInput"
+          ></input>
         </div>
-        <DataGrid
-          style={{
-            borderRadius: "10px",
-            backgroundColor: "white",
-            height: "100%",
-            maxWidth: "860px",
-          }}
-          columns={columns}
-          rows={products.map((product, index) => ({
-            ...product,
-            index: index + 1,
-          }))}
-          rowHeight={40}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 8,
+        {showDataGrid && (
+          <DataGrid
+            style={{
+              borderRadius: "10px",
+              backgroundColor: "white",
+              height: "100%",
+              maxWidth: "860px",
+            }}
+            columns={columns}
+            rows={products.map((product, index) => ({
+              ...product,
+              index: index + 1,
+            }))}
+            rowHeight={40}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 8,
+                },
               },
-            },
-          }}
-          pageSizeOptions={
-            products.length < 10 ? [10, products.length] : [10, products.length + 1]
-          }
-          slots={{ toolbar: GridToolbar }}
-          rowSelection={false}
-        />
+            }}
+            pageSizeOptions={
+              products.length < 10
+                ? [10, products.length]
+                : [10, products.length + 1]
+            }
+            slots={{ toolbar: GridToolbar }}
+            rowSelection={false}
+          />
+        )}
+
         <div className="buttons flex flex-row justify-end items-center gap-2">
           <Button
             variant="contained"
@@ -186,7 +209,7 @@ export default function CreateCategoryPopup({
             }}
             id="addProductButton"
             onClick={() => {
-              handleAddProduct();
+              handleCreateCategory();
               alert("Add product successfully");
             }}
           >
