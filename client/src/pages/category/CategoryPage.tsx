@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import CategoryTable from "../../components/categoryPage/CategoryTable";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button } from "@mui/material";
-import DetailCategory from "../../components/categoryPage/CategoryDetail";
+import DetailCategory from "../../components/categoryPage/CategoryDetailPopup";
 import Category from "../../entities/Category";
 import CreateCategoryPopup from "../../components/categoryPage/CreateCategoryPopup";
 
 export default function CategoryPage() {
-  const[isCreateCategoryPopupOpen, setIsCreateCategoryPopupOpen] = useState(false);
+  const [isCreateCategoryPopupOpen, setIsCreateCategoryPopupOpen] =
+    useState(false);
   return (
     <div className="bg-white w-full h-screen py-6 px-7">
       <div className="header buttons flex flex-row justify-between items-center bg-white mb-4">
@@ -32,13 +33,21 @@ export default function CategoryPage() {
             textTransform: "none",
           }}
           id="addProductButton"
-          onClick={() => { setIsCreateCategoryPopupOpen(true); }}
+          onClick={() => {
+            setIsCreateCategoryPopupOpen(true);
+          }}
         >
           Add Category
         </Button>
       </div>
       <CategoryTable />
-      { isCreateCategoryPopupOpen && <CreateCategoryPopup  onClose={() => { setIsCreateCategoryPopupOpen(false) }}/> }
+      {isCreateCategoryPopupOpen && (
+        <CreateCategoryPopup
+          onClose={() => {
+            setIsCreateCategoryPopupOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -15,7 +15,7 @@ import { Product } from "../../entities";
 import { Button, Select } from "@mui/material";
 import { addProductIntoCategory } from "./CategoryService";
 
-export default function AddProduct({
+export default function AddProductToCategoryPopup({
   category,
   onClose,
 }: {

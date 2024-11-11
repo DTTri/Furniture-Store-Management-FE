@@ -10,10 +10,10 @@ import Category from "../../entities/Category";
 import InfoIcon from "@mui/icons-material/Info";
 import http from "../../api/http";
 import { format } from "date-fns";
-import DetailCategory from "./CategoryDetail";
+import DetailCategory from "./CategoryDetailPopup";
 import { useNavigate } from "react-router-dom";
-import AddProduct from "./AddProduct";
-import CategoryDetail from "./CategoryDetail";
+import AddProduct from "./AddProductToCategoryPopup";
+import CategoryDetail from "./CategoryDetailPopup";
 
 export default function CategoryTable() {
   const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -115,7 +115,10 @@ export default function CategoryTable() {
         rowSelection={false}
       />
       {isDetailCategoryOpen && selectedCategory && (
-        <CategoryDetail onClose={() => setIsDetailCategoryOpen(false)} category={selectedCategory} />
+        <CategoryDetail
+          onClose={() => setIsDetailCategoryOpen(false)}
+          category={selectedCategory}
+        />
       )}
     </div>
   );

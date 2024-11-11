@@ -3,7 +3,7 @@ import ProductVariant from "./ProductVariant";
 import Bill from "./Bill";
 import GoodsReceipt from "./GoodsReceipt";
 import GoodsReceiptDetail from "./GoodsReceiptDetail";
-import Catalogue from "./Category";
+import Category from "./Category";
 import Provider from "./Provider";
 import Customer from "./Customer";
 export type {
@@ -12,7 +12,7 @@ export type {
   Bill,
   GoodsReceipt,
   GoodsReceiptDetail,
-  Catalogue,
+  Category,
   Provider,
   Customer,
 };

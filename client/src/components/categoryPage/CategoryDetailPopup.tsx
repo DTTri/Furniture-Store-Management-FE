@@ -7,14 +7,14 @@ import {
 } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import Category from "../../entities/Category";
-import CloseIcon from '@mui/icons-material/Close';
-import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import http from "../../api/http";
 import { Product } from "../../entities";
 import { Button } from "@mui/material";
-import AddProduct from "./AddProduct";
+import AddProduct from "./AddProductToCategoryPopup";
 
-export default function CategoryDetail({
+export default function CategoryDetailPopup({
   category,
   onClose,
 }: {
@@ -23,7 +23,8 @@ export default function CategoryDetail({
 }) {
   console.log("CategoryDetail", category);
   const [productInCategory, setProductInCategory] = useState<Product[]>([]);
-  const[isOpenAddProductIntoCategory, setIsOpenAddProductIntoCategory] = useState(false);
+  const [isOpenAddProductIntoCategory, setIsOpenAddProductIntoCategory] =
+    useState(false);
 
   useEffect(() => {
     const fetchProductInCategory = async () => {
@@ -122,7 +123,7 @@ export default function CategoryDetail({
           }}
         />,
       ],
-    }
+    },
   ];
   const rows = productInCategory.map((product, index) => ({
     ...product,
@@ -132,49 +133,57 @@ export default function CategoryDetail({
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="relative popup bg-white flex flex-col justify-between flex-wrap gap-4 rounded-xl px-4 py-4 pt-11 w-2/3 min-w-[600px] h-[100vh] max-h-[90vh] overflow-auto">
         <div className="header flex flex-row justify-between items-center bg-white mb-2">
-          <h2 className="text-2xl text-[#383E49] font-bold flex-1 uppercase">{category.name}</h2>
-          <CloseIcon sx={ { width: 27, height: 27 } } className="absolute top-2 right-[14px] hover:bg-slate-100 rounded-full cursor-pointer" onClick={onClose}/>
+          <h2 className="text-2xl text-[#383E49] font-bold flex-1 uppercase">
+            {category.name}
+          </h2>
+          <CloseIcon
+            sx={{ width: 27, height: 27 }}
+            className="absolute top-2 right-[14px] hover:bg-slate-100 rounded-full cursor-pointer"
+            onClick={onClose}
+          />
           <div className="buttons flex flex-row items-center gap-2">
-          <Button
-            variant="contained"
-            color="primary"
-            style={{
-              textTransform: "none",
-              fontSize: "14px"
-            }}
-            id="addProductButton"
-            onClick={() => { setIsOpenAddProductIntoCategory(true); }}
-          >
-            Add Product Into Category
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            style={{
-              textTransform: "none",
-              fontSize: "14px",
-              color: "#5D6679",
-              border: "1px solid #5D6679"
-            }}
-            id=""
-            onClick={() => {}}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            style={{
-              textTransform: "none",
-              fontSize: "14px",
-              color: "#5D6679",
-              border: "1px solid #5D6679"
-            }}
-            id=""
-            onClick={() => {}}
-          >
-            Update
-          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{
+                textTransform: "none",
+                fontSize: "14px",
+              }}
+              id="addProductButton"
+              onClick={() => {
+                setIsOpenAddProductIntoCategory(true);
+              }}
+            >
+              Add Product Into Category
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              style={{
+                textTransform: "none",
+                fontSize: "14px",
+                color: "#5D6679",
+                border: "1px solid #5D6679",
+              }}
+              id=""
+              onClick={() => {}}
+            >
+              Delete
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              style={{
+                textTransform: "none",
+                fontSize: "14px",
+                color: "#5D6679",
+                border: "1px solid #5D6679",
+              }}
+              id=""
+              onClick={() => {}}
+            >
+              Update
+            </Button>
           </div>
         </div>
         <DataGrid
@@ -200,10 +209,19 @@ export default function CategoryDetail({
           rowSelection={false}
         />
         <div className="">
-          <p className="text-[18px] font-semibold">Number of Products: {productInCategory.length}</p>
+          <p className="text-[18px] font-semibold">
+            Number of Products: {productInCategory.length}
+          </p>
         </div>
       </div>
-      {isOpenAddProductIntoCategory && (<AddProduct category={category} onClose={() => { setIsOpenAddProductIntoCategory(false); }} />)}
+      {isOpenAddProductIntoCategory && (
+        <AddProduct
+          category={category}
+          onClose={() => {
+            setIsOpenAddProductIntoCategory(false);
+          }}
+        />
+      )}
     </div>
   );
 }
