@@ -12,6 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import http from "../../api/http";
 import { Product } from "../../entities";
 import { Button } from "@mui/material";
+import AddProduct from "./AddProduct";
 
 export default function CategoryDetail({
   category,
@@ -20,7 +21,9 @@ export default function CategoryDetail({
   category: Category;
   onClose: () => void;
 }) {
+  console.log("CategoryDetail", category);
   const [productInCategory, setProductInCategory] = useState<Product[]>([]);
+  const[isOpenAddProductIntoCategory, setIsOpenAddProductIntoCategory] = useState(false);
 
   useEffect(() => {
     const fetchProductInCategory = async () => {
@@ -140,7 +143,7 @@ export default function CategoryDetail({
               fontSize: "14px"
             }}
             id="addProductButton"
-            onClick={() => {}}
+            onClick={() => { setIsOpenAddProductIntoCategory(true); }}
           >
             Add Product Into Category
           </Button>
@@ -200,6 +203,7 @@ export default function CategoryDetail({
           <p className="text-[18px] font-semibold">Number of Products: {productInCategory.length}</p>
         </div>
       </div>
+      {isOpenAddProductIntoCategory && (<AddProduct category={category} onClose={() => { setIsOpenAddProductIntoCategory(false); }} />)}
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import DetailCategory from "./CategoryDetail";
 import { useNavigate } from "react-router-dom";
 import AddProduct from "./AddProduct";
+import CategoryDetail from "./CategoryDetail";
 
 export default function CategoryTable() {
   const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -114,7 +115,7 @@ export default function CategoryTable() {
         rowSelection={false}
       />
       {isDetailCategoryOpen && selectedCategory && (
-        <AddProduct onClose={() => setIsDetailCategoryOpen(false)} category={selectedCategory} />
+        <CategoryDetail onClose={() => setIsDetailCategoryOpen(false)} category={selectedCategory} />
       )}
     </div>
   );
