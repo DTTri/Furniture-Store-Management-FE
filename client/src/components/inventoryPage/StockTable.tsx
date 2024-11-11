@@ -117,6 +117,7 @@ export default function StockTable({ products }: { products: Product[] }) {
       rows={rows}
       columns={columns}
       rowHeight={40}
+      disableDensitySelector
       initialState={{
         pagination: {
           paginationModel: {

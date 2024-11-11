@@ -65,7 +65,7 @@ export default function ImprortHistoryOrderPopup({
       getActions: (params: GridRowParams) => [
         <GridActionsCellItem
           icon={<InfoIcon />}
-          label="Delete"
+          label="Info"
           onClick={() => {
             setSelectedGoodReceipt(params.row as GoodsReceipt);
             setIsDoubleCheckedGoodReceiptPopupOpen(true);
@@ -101,6 +101,7 @@ export default function ImprortHistoryOrderPopup({
             }}
             rows={rows}
             columns={columns}
+            disableDensitySelector
             rowHeight={40}
             initialState={{
               pagination: {
