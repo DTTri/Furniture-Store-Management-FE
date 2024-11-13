@@ -6,7 +6,6 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { useEffect, useRef, useState } from "react";
-import Category from "../../entities/Category";
 import CloseIcon from "@mui/icons-material/Close";
 import http from "../../api/http";
 import { Product } from "../../entities";
@@ -59,90 +58,9 @@ export default function CreateCategoryPopup({
     }, 0);
   };
 
-  const columns: GridColDef[] = [
-    {
-      field: "index",
-      headerName: "STT",
-      flex: 0.5,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "id",
-      headerName: "ID",
-      flex: 0.5,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "name",
-      headerName: "Name",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "category",
-      headerName: "Category",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "available",
-      headerName: "Available",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "quantity",
-      headerName: "Quantity",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "actions",
-      type: "actions",
-      flex: 0.5,
-      getActions: (params: GridRowParams) => [
-        <GridActionsCellItem
-          icon={
-            <input
-              type="checkbox"
-              name="addedProduct"
-              className="w-4 h-4"
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setSelectedProduct([
-                    ...selectedProduct,
-                    params.row as Product,
-                  ]);
-                } else {
-                  const updateSelectedProduct = selectedProduct.filter(
-                    (product) => product.id !== (params.row as Product).id
-                  );
-                  setSelectedProduct(updateSelectedProduct);
-                }
-              }}
-            />
-          }
-          label="Delete"
-        />,
-      ],
-    },
-  ];
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="relative popup bg-white flex flex-col justify-between flex-wrap gap-4 rounded-xl px-4 py-4 pt-11 w-2/3 max-w-[900px] h-[100vh] min-h-[80vh] max-h-[65vh] overflow-auto">
+      <div className="relative popup bg-white flex flex-col justify-between flex-wrap gap-4 rounded-xl px-4 py-4 pt-11 w-2/3 max-w-[700px] h-[50vh]  max-h-[65vh] overflow-auto">
         <div className="header flex flex-row justify-between items-center bg-white mb-2">
           <h2 className="text-2xl text-[#383E49] font-bold flex-1 uppercase">
             Create new Category
@@ -168,36 +86,6 @@ export default function CreateCategoryPopup({
             id="searchProductInput"
           ></input>
         </div>
-        {showDataGrid && (
-          <DataGrid
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "white",
-              height: "100%",
-              maxWidth: "860px",
-            }}
-            columns={columns}
-            rows={products.map((product, index) => ({
-              ...product,
-              index: index + 1,
-            }))}
-            rowHeight={40}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 8,
-                },
-              },
-            }}
-            pageSizeOptions={
-              products.length < 10
-                ? [10, products.length]
-                : [10, products.length + 1]
-            }
-            slots={{ toolbar: GridToolbar }}
-            rowSelection={false}
-          />
-        )}
 
         <div className="buttons flex flex-row justify-end items-center gap-2">
           <Button

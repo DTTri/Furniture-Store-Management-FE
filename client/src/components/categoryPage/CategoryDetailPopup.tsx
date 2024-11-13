@@ -13,6 +13,7 @@ import http from "../../api/http";
 import { Product } from "../../entities";
 import { Button } from "@mui/material";
 import AddProduct from "./AddProductToCategoryPopup";
+import { deleteProductFromCategory } from "./CategoryService";
 
 export default function CategoryDetailPopup({
   category,
@@ -21,30 +22,29 @@ export default function CategoryDetailPopup({
   category: Category;
   onClose: () => void;
 }) {
-  console.log("CategoryDetail", category);
   const [productInCategory, setProductInCategory] = useState<Product[]>([]);
   const [isOpenAddProductIntoCategory, setIsOpenAddProductIntoCategory] =
     useState(false);
 
-  useEffect(() => {
-    const fetchProductInCategory = async () => {
-      try {
-        const response = await http.get("/products/get-all-products");
-        if (response.data.EC === 0) {
-          const products: Product[] = response.data.DT;
-          const filterdProductInCategory = products.filter(
-            (product: Product) => product.catalogueId === category.id
-          );
-          setProductInCategory(filterdProductInCategory);
-        } else {
-          console.log("Failed to fetch product in Category:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
+  const fetchProductInCategory = async () => {
+    try {
+      const response = await http.get("/products/get-all-products");
+      if (response.data.EC === 0) {
+        const products: Product[] = response.data.DT;
+        const filterdProductInCategory = products.filter(
+          (product: Product) => product.catalogueId === category.id
+        );
+        setProductInCategory(filterdProductInCategory);
+      } else {
+        console.log("Failed to fetch product in Category:", response.data.EM);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+  useEffect(() => {
     fetchProductInCategory();
-  }, []);
+  }, [isOpenAddProductIntoCategory]);
 
   const columns: GridColDef[] = [
     {
@@ -119,7 +119,13 @@ export default function CategoryDetailPopup({
           icon={<DeleteIcon />}
           label="Delete"
           onClick={() => {
-            console.log("Delete product", params.row);
+            deleteProductFromCategory(params.row as Product).then((data) => {
+              if (data) {
+                console.log("Successfully delete product from category");
+                setProductInCategory(data.data.DT);
+              }
+            });
+            fetchProductInCategory(); 
           }}
         />,
       ],

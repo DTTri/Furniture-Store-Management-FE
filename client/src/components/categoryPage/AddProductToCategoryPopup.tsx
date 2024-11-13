@@ -22,36 +22,36 @@ export default function AddProductToCategoryPopup({
   category: Category;
   onClose: () => void;
 }) {
-  const [productInCategory, setProductInCategory] = useState<Product[]>([]);
+  const [productInCategory, setProductInCategory] = useState<Product[]>([]);      
+  const[selectedProduct, setSelectedProduct] = useState<Product[]>([]);
+
+  const fetchProductInCategory = async () => {
+    try {
+      const response = await http.get("/products/get-all-products");
+      if (response.data.EC === 0) {
+        const products: Product[] = response.data.DT;
+        const filterdProductInCategory = products.filter(
+          (product: Product) => product.catalogueId !== category.id
+        );
+        setProductInCategory(filterdProductInCategory);
+      } else {
+        console.log("Failed to fetch product in Category:", response.data.EM);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchProductInCategory = async () => {
-      try {
-        const response = await http.get("/products/get-all-products");
-        if (response.data.EC === 0) {
-          const products: Product[] = response.data.DT;
-          const filterdProductInCategory = products.filter(
-            (product: Product) => product.catalogueId !== category.id
-          );
-          setProductInCategory(filterdProductInCategory);
-        } else {
-          console.log("Failed to fetch product in Category:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
     fetchProductInCategory();
-  }, []);
+  }, [selectedProduct]);
 
-  const[selectedProduct, setSelectedProduct] = useState<Product[]>([]);
   console.log("selectedProduct", selectedProduct);
   const handleAddProduct = () => {
     selectedProduct.forEach(async (product) => {
-      console.log("product id", product.id);
-      console.log("category id", category.id);
-      addProductIntoCategory(product, category.id);
+      await addProductIntoCategory(product, category.id);
     })
+    setSelectedProduct([]);
   }
 
 
@@ -118,11 +118,9 @@ export default function AddProductToCategoryPopup({
                   }else{
                     const updateSelectedProduct = selectedProduct.filter((product) => product.id !== (params.row as Product).id);
                     setSelectedProduct(updateSelectedProduct);
-                    
                   }
                 }}/>}
                 label="Delete"
-                
         />,
       ],
     },
@@ -192,6 +190,7 @@ export default function AddProductToCategoryPopup({
             id="addProductButton"
             onClick={() => {
               handleAddProduct();
+              fetchProductInCategory();
               alert("Add product successfully");
             }}
           >
