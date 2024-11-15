@@ -2,9 +2,9 @@ import ImportPopup from "../../components/inventoryPage/ImportPopup";
 import ImportHistoryOrderPopup from "../../components/inventoryPage/ImportHistoryOrderPopup";
 import { useEffect, useState } from "react";
 import StockTable from "../../components/inventoryPage/StockTable";
-import http from "../../api/http";
 import { Product } from "../../entities";
 import { Button } from "@mui/material";
+import { productService } from "../../services";
 export default function InventoryPage() {
   const [isImportPopupOpen, setIsImportPopupOpen] = useState(false);
   const [isPopupImportHistoryOrder, setIsPopupImportHistoryOrder] =
@@ -13,7 +13,7 @@ export default function InventoryPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await http.get("/products/get-all-products");
+        const response = await productService.getAllProducts();
         //console.log(response);
         if (response.data.EC === 0) {
           setProducts(response.data.DT);

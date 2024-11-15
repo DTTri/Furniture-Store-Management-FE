@@ -1,9 +1,8 @@
 import { Button } from "@mui/material";
 import { Customer } from "../../entities";
 import { useState } from "react";
-import http from "../../api/http";
 import AddCustomerDTO from "./AddCustomerDTO";
-
+import { customerService } from "../../services";
 export default function AddCustomerPopup({
   onClose,
   onCustomerCreated,
@@ -41,7 +40,7 @@ export default function AddCustomerPopup({
         phone,
         email,
       };
-      const res = await http.post("/customers/create-customer", newCustomer);
+      const res = await customerService.createCustomer(newCustomer);
       if (res.data.EC === 0) {
         onCustomerCreated(res.data.DT);
         onClose();
@@ -53,8 +52,8 @@ export default function AddCustomerPopup({
     }
   };
   const handleUpdateCustomer = async () => {
-    if (!validateInputs()) {
-      alert("Invalid input");
+    if (!validateInputs() || !customer) {
+      alert("Invalid input or customer not found");
       return;
     }
     try {
@@ -63,8 +62,8 @@ export default function AddCustomerPopup({
         phone,
         email,
       };
-      const res = await http.put(
-        "/customers/update-customer/" + customer?.id,
+      const res = await customerService.updateCustomer(
+        customer?.id,
         updatedCustomer
       );
       if (res.data.EC === 0) {

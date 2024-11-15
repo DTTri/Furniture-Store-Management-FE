@@ -2,7 +2,7 @@ import GoodsReceipt from "../../entities/GoodsReceipt";
 import GoodsReceiptDetail from "../../entities/GoodsReceiptDetail";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
-import http from "../../api/http";
+import { goodsReceiptService } from "../../services";
 
 export default function DoubleCheckedGoodsReceipt({
   onClose,
@@ -18,8 +18,8 @@ export default function DoubleCheckedGoodsReceipt({
   useEffect(() => {
     const fetchReceiptDetails = async () => {
       try {
-        const response = await http.get(
-          "/goods-receipt/get-goods-receipt/" + goodsReceipt.id
+        const response = await goodsReceiptService.getGoodsReceipt(
+          goodsReceipt.id
         );
         console.log(response);
         if (response.data.EC === 0) {

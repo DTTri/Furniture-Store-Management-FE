@@ -1,7 +1,6 @@
 import GoodsReceipt from "../../entities/GoodsReceipt";
 import { useEffect, useState } from "react";
 import DoubleCheckedGoodsReceipt from "./DoubleCheckedGoodsReceipt";
-import http from "../../api/http";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -10,6 +9,7 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import InfoIcon from "@mui/icons-material/Info";
+import { goodsReceiptService } from "../../services";
 export default function ImprortHistoryOrderPopup({
   onClose,
 }: {
@@ -19,9 +19,7 @@ export default function ImprortHistoryOrderPopup({
   useEffect(() => {
     const fetchGoodsReceipts = async () => {
       try {
-        const response = await http.get(
-          "/goods-receipt/get-all-goods-receipts"
-        );
+        const response = await goodsReceiptService.getAllGoodsReceipts();
         if (response.data.EC === 0) {
           setReceipts(response.data.DT);
           console.log("Fetched goods receipts successfully");
