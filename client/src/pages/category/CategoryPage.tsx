@@ -148,7 +148,8 @@ export default function CategoryPage() {
         style={{
           borderRadius: "10px",
           backgroundColor: "white",
-          maxHeight: "70%",
+          minHeight: "466px",
+          height: "fit-content",
         }}
         columns={columns}
         rows={categoryList}
@@ -184,7 +185,18 @@ export default function CategoryPage() {
             setIsUpdateCategoryPopupOpen(false);
           }}
           onCategoryUpdated={(category: Category) => {
-            setCategoryList([...categoryList, category]);
+            setCategoryList(categoryList.map((itemCategory, index) => {
+              if (itemCategory.id === category.id) {
+                return {
+                  ...category,
+                  index: index + 1,
+                }
+              }
+              return {
+                ...itemCategory,
+                index: index + 1,
+              }
+            }))
           }}
           updatedCategory={updatedCategory || categoryList[0]}
         />

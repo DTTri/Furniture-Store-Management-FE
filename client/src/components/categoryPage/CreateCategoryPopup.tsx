@@ -32,7 +32,7 @@ export default function CreateCategoryPopup({
       const createdCategoryDTO = { name: categoryName.current}
       const response = await categoryService.createCategory(createdCategoryDTO);
       if (response.EC === 0) {
-        onCategoryCreated(response.data.DT);
+        onCategoryCreated(response.DT);
         onClose();
       } else {
         console.log("Failed to create category in Category:", response.EM);
