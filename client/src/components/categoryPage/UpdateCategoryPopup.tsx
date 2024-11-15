@@ -1,38 +1,37 @@
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridColDef,
-  GridRowParams,
-  GridToolbar,
-} from "@mui/x-data-grid";
 import { useEffect, useRef, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import http from "../../api/http";
-import { Product } from "../../entities";
+import { Category, Product } from "../../entities";
 import { Button, Select } from "@mui/material";
 import categoryService from "../../services/categoryService";
 
-export default function CreateCategoryPopup({
+export default function UpdateCategoryPopup({
   onClose,
-  onCategoryCreated,
+  onCategoryUpdated,
+  updatedCategory,
 }: {
   onClose: () => void;
-  onCategoryCreated: (category: Product) => void;
+  onCategoryUpdated: (category: Product) => void;
+  updatedCategory: Category;
 }) {
   const [showDataGrid, setShowDataGrid] = useState(true);
-  const categoryName = useRef<string>("");
+  const [categoryName, setCategoryName] = useState<string>(
+    updatedCategory.name
+  );
 
-  const handleCreateCategory = async () => {
+  const handleUpdateategory = async () => {
     try {
-      if(categoryName.current === "") {
-        alert("Category name is required!");
+      if (categoryName === "" || categoryName === updatedCategory.name) {
+        alert("Category name is required or must be changed!");
         onClose();
         return;
       }
-      const createdCategoryDTO = { name: categoryName.current}
-      const response = await categoryService.createCategory(createdCategoryDTO);
+      const response = await categoryService.updateCategory(
+        updatedCategory.id,
+        { name: categoryName }
+      );
       if (response.EC === 0) {
-        onCategoryCreated(response.data.DT);
+        onCategoryUpdated(response.DT);
         onClose();
       } else {
         console.log("Failed to create category in Category:", response.EM);
@@ -51,7 +50,7 @@ export default function CreateCategoryPopup({
       <div className="relative popup bg-white flex flex-col flex-wrap gap-2 rounded-xl px-4 py-4 pt-11 w-2/3 max-w-[600px] max-h-[40vh] overflow-auto">
         <div className="header flex flex-row justify-between items-center mb-4 bg-white">
           <h2 className="text-2xl text-[#383E49] font-bold flex-1 uppercase">
-            Create new Category
+            Update Category
           </h2>
           <CloseIcon
             sx={{ width: 27, height: 27 }}
@@ -68,8 +67,10 @@ export default function CreateCategoryPopup({
             placeholder="Input Category Name"
             className="w-[50%] border border-slate-400 overflow-hidden p-1 rounded-md"
             style={{ border: "0", outline: "none" }}
+            value={categoryName}
             onChange={(e) => {
-              categoryName.current = e.target.value;
+              setCategoryName(e.target.value);
+              console.log(categoryName);
             }}
             id="searchProductInput"
           ></input>
@@ -98,10 +99,10 @@ export default function CreateCategoryPopup({
             }}
             id="addProductButton"
             onClick={() => {
-              handleCreateCategory();
+              handleUpdateategory();
             }}
           >
-            Create
+            Update
           </Button>
         </div>
       </div>
