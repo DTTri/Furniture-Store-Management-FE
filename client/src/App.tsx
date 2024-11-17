@@ -4,7 +4,8 @@ import InventoryPage from "./pages/inventory/InventoryPage";
 import Layout from "./pages/Layout";
 import ProviderPage from "./pages/provider/ProviderPage";
 import CustomerPage from "./pages/customer/CustomerPage";
-import Login from "./components/auth/Login";
+import LoginPage from "./pages/auth/Login";
+import ForgotPasswordPage from "./pages/auth/ForgotPassword";
 function App() {
   return (
     <Routes>
@@ -13,8 +14,8 @@ function App() {
         <Route path="/inventory" element={<InventoryPage />} />
         <Route path="/provider" element={<ProviderPage />} />
         <Route path="/customer" element={<CustomerPage />} />
-        <Route path="/login" element={<Login />} />
-
+        <Route path="/loginpage" element={<LoginPage />} />
+        <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
       </Route>
       {/* <Route path="/login" element={<div>Login</div>} /> */}
     </Routes>
