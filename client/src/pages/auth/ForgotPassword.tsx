@@ -25,15 +25,15 @@ const ForgotPasswordPage: React.FC = () => {
 
             {/* Bố cục chính */}
             <div className="relative flex min-h-screen">
+                {/* Phần bên phải (ảnh nền hoặc màu nền) */}
+                <div className="w-3/5"></div>
+
                 {/* Phần bên trái: Component ForgotPassword */}
                 <div className="w-2/5 flex justify-center items-center bg-white">
                     <div className="w-full max-w-lg p-8 rounded-2xl shadow-2xl bg-white">
                         <ForgotPassword />
                     </div>
                 </div>
-
-                {/* Phần bên phải (ảnh nền hoặc màu nền) */}
-                <div className="w-3/5"></div>
             </div>
         </div>
     );
