@@ -1,9 +1,9 @@
-import { Catalogue, Product } from "../../entities";
+import { Product } from "../../entities";
 import { categories } from "../../constants";
 import { Button } from "@mui/material";
 import AddProductDTO from "./AddProductDTO";
 import { useState } from "react";
-import http from "../../api/http";
+import { productService } from "../../services";
 
 export default function AddProductPopup({
   onClose,
@@ -16,7 +16,7 @@ export default function AddProductPopup({
   product?: Product;
   onProductUpdated: (product: Product) => void;
 }) {
-  const catalogues: Catalogue[] = [
+  const catalogues = [
     {
       id: 1,
       name: "Bàn ghế gỗ",
@@ -54,10 +54,7 @@ export default function AddProductPopup({
       warranty,
     };
     try {
-      const response = await http.post(
-        "/products/create-product",
-        newProductDTO
-      );
+      const response = await productService.createProduct(newProductDTO);
       if (response.data.EC === 0) {
         onProductCreated(response.data.DT);
         onClose();
@@ -67,11 +64,12 @@ export default function AddProductPopup({
     } catch (error) {
       console.error("Error adding product:", error);
     }
-
-    // call api to add product
   };
 
   const handleUpdateProduct = async () => {
+    if (!product) {
+      return;
+    }
     if (
       name === product?.name &&
       category === product?.category &&
@@ -95,8 +93,8 @@ export default function AddProductPopup({
     };
     console.log(newProductDTO);
     try {
-      const response = await http.put(
-        "/products/update-product/" + product?.id,
+      const response = await productService.updateProduct(
+        product?.id,
         newProductDTO
       );
       if (response.data.EC === 0) {

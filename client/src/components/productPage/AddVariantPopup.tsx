@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ProductVariant } from "../../entities";
 import { Button } from "@mui/material";
 import AddVariantDTO from "./AddVariantDTO";
-import http from "../../api/http";
+import { variantService } from "../../services";
 
 export default function AddVariantPopup({
   productId,
@@ -57,8 +57,8 @@ export default function AddVariantPopup({
       size,
     };
     try {
-      const response = await http.post(
-        "/variants/create-variant/" + productId,
+      const response = await variantService.createVariant(
+        productId,
         newVariant
       );
       console.log(response);
@@ -75,6 +75,9 @@ export default function AddVariantPopup({
   };
 
   const handleUpdateVariant = async () => {
+    if (!variant) {
+      return;
+    }
     if (!sku || sku === "") {
       alert("SKU is required");
       return;
@@ -103,8 +106,8 @@ export default function AddVariantPopup({
       size,
     };
     try {
-      const response = await http.put(
-        "/variants/update-variant/" + variant?.id,
+      const response = await variantService.updateVariant(
+        variant?.id,
         updatedVariant
       );
       console.log(response);

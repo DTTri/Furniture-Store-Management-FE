@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Product, ProductVariant } from "../../entities";
 import { Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import http from "../../api/http";
 import AddVariantPopup from "./AddVariantPopup";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -12,6 +11,7 @@ import {
   GridColDef,
   GridToolbar,
 } from "@mui/x-data-grid";
+import { productService, variantService } from "../../services";
 export default function ProductDetailsPopup({
   product,
   onClose,
@@ -31,9 +31,7 @@ export default function ProductDetailsPopup({
     const fetchProductVariants = async () => {
       try {
         // get variants of the product by id
-        const response = await http.get(
-          "/variants/get-all-variants/" + product.id
-        );
+        const response = await variantService.getVariantsOfProduct(product.id);
         console.log(response);
         if (response.data.EC === 0) {
           setVariants(response.data.DT);
@@ -54,10 +52,8 @@ export default function ProductDetailsPopup({
   };
   const handleStopSelling = async () => {
     try {
-      const response = await http.put(
-        "/products/stop-selling/" + product.id,
-        {}
-      );
+      const response = await productService.stopSellingProduct(product.id);
+
       if (response.data.EC === 0) {
         onStopSellingProduct();
         onClose();
@@ -78,9 +74,10 @@ export default function ProductDetailsPopup({
 
   const handleDeleteVariant = async () => {
     try {
-      const response = await http.delete(
-        "/variants/delete-variant/" + selectedVariant?.id
-      );
+      if (!selectedVariant) {
+        return;
+      }
+      const response = await variantService.deleteVariant(selectedVariant?.id);
       if (response.data.EC === 0) {
         const updatedVariants = variants.filter(
           (variant) => variant.id !== selectedVariant?.id

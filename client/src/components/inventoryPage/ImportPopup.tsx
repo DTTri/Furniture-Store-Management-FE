@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ProductVaraint from "../../entities/ProductVariant";
 import { Product } from "../../entities";
-import http from "../../api/http";
 import { Button } from "@mui/material";
 import {
   DataGrid,
@@ -11,6 +10,12 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  goodsReceiptService,
+  productService,
+  variantService,
+} from "../../services";
+import CreateGoodsReceiptDTO from "./CreateGoodsReceiptDTO";
 
 interface ReceiptTableRow {
   id: number;
@@ -26,8 +31,8 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     const fetchProductsAndVariants = async () => {
       const response = Promise.all([
-        http.get("/products/get-all-products"),
-        http.get("/variants"),
+        productService.getAllProducts(),
+        variantService.getAllVariants(),
       ]);
       const [productsResponse, variantsResponse] = await response;
       if (productsResponse.data.EC === 0) {
@@ -54,7 +59,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     if (selectedProduct && selectedVariant) {
       const newRow: ReceiptTableRow = {
-        id: rows.length + 1, // Assign a unique id
+        id: selectedVariant.id, // Assign a unique id
         productName: selectedProduct.name,
         sku: selectedVariant.SKU,
         quantity: currentQuantity,
@@ -163,19 +168,19 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
     // };
     // map rows and fields to CreateGoodsReceiptDTO
     const goodsReceiptDetailsData = rows.map((row) => ({
-      variantId: productVariants.find((variant) => variant.SKU === row.sku)?.id,
+      // if productVariant is not found, return null
+      variantId: row.id,
       quantity: row.quantity,
       cost: row.cost,
     }));
-    const newGoodsReceipt = {
+    const newGoodsReceipt: CreateGoodsReceiptDTO = {
       shipping: shippingCost,
       GoodsReceiptDetailsData: goodsReceiptDetailsData,
       totalCost: totalCost,
     };
     console.log(newGoodsReceipt);
     try {
-      const response = await http.post(
-        "/goods-receipt/create-goods-receipt",
+      const response = await goodsReceiptService.createGoodsReceipt(
         newGoodsReceipt
       );
       if (response.data.EC === 0) {

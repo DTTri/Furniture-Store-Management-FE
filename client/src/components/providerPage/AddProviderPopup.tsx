@@ -1,9 +1,8 @@
 import { Button } from "@mui/material";
 import { Provider } from "../../entities";
 import { useState } from "react";
-import http from "../../api/http";
 import AddProviderDTO from "./AddProviderDTO";
-
+import { providerService } from "../../services";
 export default function AddProviderPopup({
   onClose,
   onProviderCreated,
@@ -48,10 +47,7 @@ export default function AddProviderPopup({
         email,
         president,
       };
-      const response = await http.post(
-        "/providers/create-provider",
-        newProvider
-      );
+      const response = await providerService.createProvider(newProvider);
       if (response.data.EC === 0) {
         onProviderCreated(response.data.DT);
         onClose();
@@ -63,8 +59,8 @@ export default function AddProviderPopup({
     }
   };
   const handleUpdateProvider = async () => {
-    if (!validateInputs()) {
-      alert("Invalid input");
+    if (!validateInputs() || !provider) {
+      alert("Invalid input or provider not found");
       return;
     }
     try {
@@ -75,8 +71,8 @@ export default function AddProviderPopup({
         email,
         president,
       };
-      const response = await http.put(
-        `/providers/update-provider/${provider?.id}`,
+      const response = await providerService.updateProvider(
+        provider?.id,
         updatedProvider
       );
       if (response.data.EC === 0) {
