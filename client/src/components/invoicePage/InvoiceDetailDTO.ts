@@ -1,5 +1,6 @@
 type InvoiceDetailDTO = {
-    variantId: number, 
+    id: number,  // variantId
+    SKU: string, 
     quantity: number, 
     cost: number,
     buyingPrice: number,

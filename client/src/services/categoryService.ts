@@ -17,10 +17,10 @@ class categoryService {
         return http.post(this.getURI("create-catalogue"), createCategory);
     }
     async updateCategory(id: number, updateCategory: CategoryDTO) {
-        console.log("updateCategory", updateCategory);
-        console.log("id", id);
-        console.log("this.getURI(`update-catalogue/${id}`)", this.getURI(`update-catalogue/${id}`));
         return http.put(this.getURI(`update-catalogue/${id}`), updateCategory);
+    }
+    async deleteCategory(id: number) {
+        return http.delete(this.getURI(`delete-catalogue/${id}`));
     }
 }
 

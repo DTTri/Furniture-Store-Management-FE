@@ -23,110 +23,141 @@ import Customer from "../../entities/Customer";
 import http from "../../api/http";
 import { ProductVariant } from "../../entities";
 import InvoiceDetail from "../../entities/InvoiceDetail";
+import CreateInvoiceDTO, { CreateInvoiceDetailDTO } from "../../entities/DTO/CreateInvoiceDTO";
+import invoiceService from "../../services/invoiceService";
 
-export default function CreateInvoicePopup( { onClose }: { onClose: () => void }) {
+export default function CreateInvoicePopup({
+  onClose,
+  onInvoiceCreated,
+}: {
+  onClose: () => void;
+  onInvoiceCreated: (invoice: CreateInvoiceDTO) => void;
+}) {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
+  const [variantList, setVariantList] = useState<ProductVariant[]>([]);
+    // const [staffList, setStaffList] = useState<Staff[]>([]);
+
   useEffect(() => {
-    const fetchCustomers = async () => {
+    const fetchData = async () => {
       try {
-        const response = await http.get("/customers/get-all-customers");
-        if (response.data.EC === 0) {
-          setCustomerList(response.data.DT);
+        const [customersResponse, variantsResponse] = await Promise.all([
+          http.get("/customers/get-all-customers"),
+          http.get("/variants"),
+        ]);
+
+        if (customersResponse.data.EC === 0) {
+          setCustomerList(customersResponse.data.DT);
         } else {
-          console.log("Failed to fetch customers:", response.data.EM);
+          console.log("Failed to fetch customers:", customersResponse.data.EM);
+        }
+
+        if (variantsResponse.data.EC === 0) {
+          setVariantList(variantsResponse.data.DT);
+        } else {
+          console.log("Failed to fetch variants:", variantsResponse.data.EM);
         }
       } catch (error) {
-        console.error("Error fetching customers:", error);
+        console.error("Error fetching data:", error);
       }
     };
-    fetchCustomers();
+    fetchData();
   }, []);
-  // const [staffList, setStaffList] = useState<Staff[]>([]);
   // useEffect(() => {
   //   const fetchStaffs = async () => {
-    //     try {
-      //       const response = await http.get("/staffs/get-all-staffs");
-      //       if (response.data.EC === 0) {
-        //         setStaffList(response.data.DT);
-        //       } else {
-          //         console.log("Failed to fetch customers:", response.data.EM);
-          //       }
-          //     } catch (error) {
-            //       console.error("Error fetching customers:", error);
-            //     }
-            //   }
-            //   fetchStaffs()
-            // }, [staffList]);
-            
-    const [variantList, setVariantList] = useState<ProductVariant[]>([]);
-    useEffect(() => {
-    const fetchVariants = async () => {
-      try {
-        const response = await http.get("/variants");
-        if (response.data.EC === 0) {
-          setVariantList(response.data.DT);
-        } else {
-          console.log("Failed to fetch variants:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching variants:", error);
-      }
-    };
-    fetchVariants();
-  }, []);
+  //     try {
+  //       const response = await http.get("/staffs/get-all-staffs");
+  //       if (response.data.EC === 0) {
+  //         setStaffList(response.data.DT);
+  //       } else {
+  //         console.log("Failed to fetch customers:", response.data.EM);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching customers:", error);
+  //     }
+  //   }
+  //   fetchStaffs()
+  // }, [staffList]);
+
 
   const [createdDate, setCreatedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
+  //customer and staff information
   const [staffId, setStaffId] = useState<string>("");
   const [customerId, setCustomerId] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("");
 
-  const [variantSelected, setVariantSelected] = useState<number>();
+  const [variantSelected, setVariantSelected] = useState<number>(0);
   const [promotionSelected, setPromotionSelected] = useState<number>(1);
   const [quatanty, setQuantanty] = useState<number>(0);
-  const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
   const [note, setNote] = useState<string>("");
+  const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
   const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
+  const [totalCost, setTotalCost] = useState<number>(0);
 
   const handleAddProduct = () => {
-    if (!variantSelected) {
-      alert("Please select a variant");
-      return;
-    }
     if (quatanty == 0) {
       alert("Please set quatanty");
       return;
     }
-    if (rows.find((row) => row.variantId === variantList[variantSelected].id)) {
+    if (rows.find((row) => row.id === variantList[variantSelected].id)) {
       alert("This variant already exists");
       return;
     }
     const newRow: InvoiceDetailDTO = {
-      variantId: variantList[variantSelected].id,
+      id: variantList[variantSelected].id,
+      SKU: variantList[variantSelected].SKU,
       buyingPrice: variantList[variantSelected].buyingPrice,
       promotion: promotionSelected,
       quantity: quatanty,
       cost: variantList[variantSelected].buyingPrice * quatanty,
     };
+    console.log(newRow);
     setRows([...rows, newRow]);
+    setTotalCost((prev) => prev + newRow.cost);
   };
 
+  const handleCreateInvoice = async () => {
+    if (rows.length === 0) {
+      alert("Please add at least one product");
+      return;
+    }
+    const rowInvoice : CreateInvoiceDetailDTO[] = rows.map((row) => {
+      return {
+        variantId: row.id,
+        quantity: row.quantity,
+        cost: row.cost,
+      }
+    })
+    const createdInvoice: CreateInvoiceDTO = {
+      //missing staffId, customerId, paymentMethod, createdDate
+      totalCost: totalCost,
+      InvoiceDetailsData: rowInvoice,
+    };
+    const response = await invoiceService.createInvoice(createdInvoice);
+    if (response.data.EC === 0) {
+      onInvoiceCreated(response.data.DT);
+      onClose();
+    } else {
+      console.log("Failed to create invoice:", response.data.EM);
+    }
+  }
+
   const columns: GridColDef[] = [
+    {
+      field: "SKU",
+      headerName: "SKU",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      editable: true,
+    },
     {
       field: "id",
       headerName: "ID",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
-    },
-    {
-      field: "variantId",
-      headerName: "VariantID",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-      editable: true,
     },
     {
       field: "buyingPrice",
@@ -169,7 +200,9 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
           icon={<DeleteOutlineIcon />}
           label="Delete"
           onClick={() => {
-            const updatedRows = rows.filter((row) => row.variantId !== params.row.variantId);
+            const updatedRows = rows.filter(
+              (row) => row.id !== params.row.id
+            );
             if (updatedRows.length === 0) {
               // Tri: because there's a bug in DataGrid which Material-UI team hasn't fixed yet:
               //when delete the last row, the DataGrid doesn't re-render
@@ -179,18 +212,22 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
                 setRows([]);
                 setShowDataGrid(true);
               }, 0);
-            } 
+            }
             setRows(updatedRows);
+            setTotalCost((prev) => prev - params.row.cost);
           }}
         />,
       ],
     },
   ];
 
+  console.log(variantSelected)
+  console.log(variantList[variantSelected || 1])
+
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 max-w-[1096px] w-full overflow-y-auto relative">
-        <div className="header w-full px-2 py-3 flex flex-row items-center justify-between border-b-[1px] border-b-slate-400">
+      <div className="popup bg-white rounded-xl p-4 max-w-[1096px] w-full max-h-[700px] overflow-auto relative">
+        <div className="header w-full px-2 py-2 flex flex-row items-center justify-between border-b-[1px] border-b-slate-400">
           <h2 className="text-[22px] font-semibold text-[#383E49]">
             Create new invoice
           </h2>
@@ -210,14 +247,14 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
               onChange={(e) => setCreatedDate(e.target.value)}
               className="border  max-w-[250px] border-slate-400 rounded-md p-[6px] pl-3 max-h-[38px]"
             />
-            <span className="text-base text-[#667085] block">Customer ID*</span>
+            <span className="text-base text-[#667085] block">Customer Name*</span>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
-                Select Customer ID
+                Select Customer Name
               </InputLabel>
               <Select
                 labelId="demo-select-small-label"
-                label="Select Customer ID"
+                label="Select Customer Name"
                 id="demo-select-small"
                 name="customerId"
                 value={customerId}
@@ -225,19 +262,19 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
               >
                 {customerList.map((customer) => (
                   <MenuItem key={customer.id} value={customer.id}>
-                    {customer.id}
+                    {customer.name}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            <span className="text-base text-[#667085] block">Staff ID*</span>
+            <span className="text-base text-[#667085] block">Staff Name*</span>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
-                Select Staff ID
+                Select Staff Name
               </InputLabel>
               <Select
                 labelId="demo-select-small-label"
-                label="Select Staff ID"
+                label="Select Staff Name"
                 id="demo-select-small"
                 name="staffId"
                 value={staffId}
@@ -245,6 +282,9 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
               >
                 <MenuItem value="">
                   <em>None</em>
+                </MenuItem>
+                <MenuItem value="A">
+                  <em>Nguyen Van A</em>
                 </MenuItem>
               </Select>
             </FormControl>
@@ -262,8 +302,11 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
                 name="paymentMethod"
                 onChange={(e) => setPaymentMethod(e.target.value as string)}
               >
-                <MenuItem value="">
-                  <em>None</em>
+                <MenuItem value="card">
+                  <em>Credit Card</em>
+                </MenuItem>
+                <MenuItem value="cash">
+                  <em>Cash</em>
                 </MenuItem>
               </Select>
             </FormControl>
@@ -272,18 +315,18 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
             <span className="text-base text-[#667085] block">Variant ID</span>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
-                Select Variant ID
+                Select Variant SKU
               </InputLabel>
               <Select
                 labelId="demo-select-small-label"
-                label="Select Variant ID"
+                label="Select Variant SKU"
                 id="demo-select-small"
                 value={variantSelected}
                 onChange={(e) => setVariantSelected(e.target.value as number)}
               >
                 {variantList.map((variant, index) => (
                   <MenuItem key={variant.id} value={index}>
-                    {variant.id}
+                    {variant.SKU}
                   </MenuItem>
                 ))}
               </Select>
@@ -340,16 +383,16 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
         <div className="">
           {showDataGrid && (
             <DataGrid
-            className="data-grid"
+              className="data-grid"
               style={{
                 padding: "10px",
                 border: "none",
                 backgroundColor: "white",
                 height: "100%",
               }}
-              rows={rows.map((row, index) => ({ ...row, id: index + 1 }))} 
+              rows={rows}
               columns={columns}
-              rowHeight={40}
+              rowHeight={35}
               initialState={{
                 pagination: {
                   paginationModel: {
@@ -364,6 +407,36 @@ export default function CreateInvoicePopup( { onClose }: { onClose: () => void }
               rowSelection={false}
             />
           )}
+        </div>
+        <p className="text-[20px] text-[#D91316] font-bold">Total Cost: {totalCost}</p>
+        <div className="buttons flex flex-row justify-end items-center gap-2">
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+              textTransform: "none",
+              fontSize: "14px",
+              backgroundColor: "#D91316",
+            }}
+            id=""
+            onClick={onClose}
+          >
+            Cancle
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+              textTransform: "none",
+              fontSize: "14px",
+            }}
+            id="addProductButton"
+            onClick={() => {
+              handleCreateInvoice();
+            }}
+          >
+            Create
+          </Button>
         </div>
       </div>
     </div>
