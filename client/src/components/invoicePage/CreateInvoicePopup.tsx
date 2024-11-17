@@ -23,8 +23,11 @@ import Customer from "../../entities/Customer";
 import http from "../../api/http";
 import { ProductVariant } from "../../entities";
 import InvoiceDetail from "../../entities/InvoiceDetail";
-import CreateInvoiceDTO, { CreateInvoiceDetailDTO } from "../../entities/DTO/CreateInvoiceDTO";
+import CreateInvoiceDTO, {
+  CreateInvoiceDetailDTO,
+} from "../../entities/DTO/CreateInvoiceDTO";
 import invoiceService from "../../services/invoiceService";
+import { customerService } from "../../services";
 
 export default function CreateInvoicePopup({
   onClose,
@@ -35,13 +38,13 @@ export default function CreateInvoicePopup({
 }) {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
   const [variantList, setVariantList] = useState<ProductVariant[]>([]);
-    // const [staffList, setStaffList] = useState<Staff[]>([]);
+  // const [staffList, setStaffList] = useState<Staff[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [customersResponse, variantsResponse] = await Promise.all([
-          http.get("/customers/get-all-customers"),
+          customerService.getAllCustomers(),
           http.get("/variants"),
         ]);
 
@@ -78,19 +81,17 @@ export default function CreateInvoicePopup({
   //   fetchStaffs()
   // }, [staffList]);
 
-
   const [createdDate, setCreatedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
   //customer and staff information
-  const [staffId, setStaffId] = useState<string>("");
-  const [customerId, setCustomerId] = useState<string>("");
+  const [staffId, setStaffId] = useState<number>();
+  const [customerId, setCustomerId] = useState<number>();
   const [paymentMethod, setPaymentMethod] = useState<string>("");
 
   const [variantSelected, setVariantSelected] = useState<number>(0);
   const [promotionSelected, setPromotionSelected] = useState<number>(1);
   const [quatanty, setQuantanty] = useState<number>(0);
-  const [note, setNote] = useState<string>("");
   const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
   const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
   const [totalCost, setTotalCost] = useState<number>(0);
@@ -122,15 +123,17 @@ export default function CreateInvoicePopup({
       alert("Please add at least one product");
       return;
     }
-    const rowInvoice : CreateInvoiceDetailDTO[] = rows.map((row) => {
+    const rowInvoice: CreateInvoiceDetailDTO[] = rows.map((row) => {
       return {
         variantId: row.id,
         quantity: row.quantity,
         cost: row.cost,
-      }
-    })
+      };
+    });
     const createdInvoice: CreateInvoiceDTO = {
-      //missing staffId, customerId, paymentMethod, createdDate
+      //missing customerId, paymentMethod, createdDate
+      staffId: staffId || 0,
+      customerId: customerId || 0,
       totalCost: totalCost,
       InvoiceDetailsData: rowInvoice,
     };
@@ -141,7 +144,7 @@ export default function CreateInvoicePopup({
     } else {
       console.log("Failed to create invoice:", response.data.EM);
     }
-  }
+  };
 
   const columns: GridColDef[] = [
     {
@@ -200,9 +203,7 @@ export default function CreateInvoicePopup({
           icon={<DeleteOutlineIcon />}
           label="Delete"
           onClick={() => {
-            const updatedRows = rows.filter(
-              (row) => row.id !== params.row.id
-            );
+            const updatedRows = rows.filter((row) => row.id !== params.row.id);
             if (updatedRows.length === 0) {
               // Tri: because there's a bug in DataGrid which Material-UI team hasn't fixed yet:
               //when delete the last row, the DataGrid doesn't re-render
@@ -221,8 +222,8 @@ export default function CreateInvoicePopup({
     },
   ];
 
-  console.log(variantSelected)
-  console.log(variantList[variantSelected || 1])
+  console.log(variantSelected);
+  console.log(variantList[variantSelected || 1]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -247,7 +248,9 @@ export default function CreateInvoicePopup({
               onChange={(e) => setCreatedDate(e.target.value)}
               className="border  max-w-[250px] border-slate-400 rounded-md p-[6px] pl-3 max-h-[38px]"
             />
-            <span className="text-base text-[#667085] block">Customer Name*</span>
+            <span className="text-base text-[#667085] block">
+              Customer Name*
+            </span>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Customer Name
@@ -258,7 +261,7 @@ export default function CreateInvoicePopup({
                 id="demo-select-small"
                 name="customerId"
                 value={customerId}
-                onChange={(e) => setCustomerId(e.target.value as string)}
+                onChange={(e) => setCustomerId(e.target.value as number)}
               >
                 {customerList.map((customer) => (
                   <MenuItem key={customer.id} value={customer.id}>
@@ -278,14 +281,16 @@ export default function CreateInvoicePopup({
                 id="demo-select-small"
                 name="staffId"
                 value={staffId}
-                onChange={(e) => setStaffId(e.target.value as string)}
+                onChange={(e) => setStaffId(e.target.value as number)}
               >
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value="A">
-                  <em>Nguyen Van A</em>
-                </MenuItem>
+                {/* {staffList.map((staff, index) => (
+                  <MenuItem key={staff.id} value={index}>
+                    {staff.name}
+                  </MenuItem>
+                ))} */}
               </Select>
             </FormControl>
             <span className="text-base text-[#667085] block">
@@ -311,7 +316,7 @@ export default function CreateInvoicePopup({
               </Select>
             </FormControl>
           </div>
-          <div className="row-2 py-3 px-4 grid grid-cols-[14%_1fr_14%_1fr] items-center grid-rows-[1fr_1fr_20%] gap-x-3 gap-y-3 border-b-[1px] border-b-slate-400">
+          <div className="row-2 py-3 px-4 grid grid-cols-[8%_1fr_8%_1fr_8%_1fr] items-center grid-rows-[1fr_20%] gap-x-3 gap-y-3 border-b-[1px] border-b-slate-400">
             <span className="text-base text-[#667085] block">Variant ID</span>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
@@ -331,6 +336,15 @@ export default function CreateInvoicePopup({
                 ))}
               </Select>
             </FormControl>
+            <span className="text-base text-[#667085] block">Quantanty</span>
+            <input
+              type="number"
+              value={quatanty}
+              name="quatanty"
+              placeholder="Set Quantanty"
+              onChange={(e) => setQuantanty(Number.parseInt(e.target.value))}
+              className="border  max-w-[250px] border-slate-400 max-h-[38px] rounded-md mb-2 p-[6px] px-3"
+            />
             <span className="text-base text-[#667085] block">Promotion</span>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
@@ -348,27 +362,14 @@ export default function CreateInvoicePopup({
                   <em>None</em>
                 </MenuItem>
                 <MenuItem value={1}>1%</MenuItem>
+                {/* {promotionList.map((promotion, index) => (
+                  <MenuItem key={promotion.id} value={index}>
+                    {promotion.percent}
+                  </MenuItem>
+                ))} */}
               </Select>
             </FormControl>
-            <span className="text-base text-[#667085] block">Quantanty</span>
-            <input
-              type="number"
-              value={quatanty}
-              name="quatanty"
-              placeholder="Set Quantanty"
-              onChange={(e) => setQuantanty(Number.parseInt(e.target.value))}
-              className="border  max-w-[250px] border-slate-400 rounded-md mb-2 p-[6px] px-3"
-            />
-            <span className="text-base text-[#667085] block">Note</span>
-            <input
-              type="text"
-              name="note"
-              value={note}
-              placeholder="Set Note"
-              onChange={(e) => setNote(e.target.value)}
-              className="border  max-w-[250px] border-slate-400 rounded-md mb-2 p-[6px] px-3"
-            />
-            <div className="col-span-4 w-full flex flex-row justify-end">
+            <div className="col-span-6 w-full flex flex-row justify-end mb-4">
               <Button
                 variant="contained"
                 color="primary"
@@ -408,7 +409,9 @@ export default function CreateInvoicePopup({
             />
           )}
         </div>
-        <p className="text-[20px] text-[#D91316] font-bold">Total Cost: {totalCost}</p>
+        <p className="text-[20px] text-[#D91316] font-bold text-end mb-3 px-4">
+          Total Cost: {totalCost}
+        </p>
         <div className="buttons flex flex-row justify-end items-center gap-2">
           <Button
             variant="contained"
