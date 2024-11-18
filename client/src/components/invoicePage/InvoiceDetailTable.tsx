@@ -33,7 +33,7 @@ export default function InvoiceDetailTable({
   }, [invoiceDetails]);
 
   const [customer, setCustomer] = useState<Customer>({
-    id: "1",
+    id: 1,
     name: "Thinh",
     phone: "0123456789",
     email: "thinh",
