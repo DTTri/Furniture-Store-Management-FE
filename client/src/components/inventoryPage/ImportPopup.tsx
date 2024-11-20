@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ProductVaraint from "../../entities/ProductVariant";
+import ProductVariant from "../../entities/ProductVariant";
 import { Product } from "../../entities";
 import { Button } from "@mui/material";
 import {
@@ -18,6 +18,7 @@ import {
 import CreateGoodsReceiptDTO from "./CreateGoodsReceiptDTO";
 
 interface ReceiptTableRow {
+  index: number;
   id: number;
   productName: string;
   sku: string;
@@ -25,9 +26,21 @@ interface ReceiptTableRow {
   buyingPrice: number;
   cost: number;
 }
+
 export default function ImportPopup({ onClose }: { onClose: () => void }) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [productVariants, setProductVariants] = useState<ProductVaraint[]>([]);
+  const [productVariants, setProductVariants] = useState<ProductVariant[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
+    null
+  );
+  const [rows, setRows] = useState<ReceiptTableRow[]>([]);
+  const [filteredProductVariants, setFilteredProductVariants] = useState<
+    ProductVariant[]
+  >([]);
+  const [shippingCost, setShippingCost] = useState(0);
+  const [showDataGrid, setShowDataGrid] = useState(true); // State to control unmount and mount of DataGrid
+
   useEffect(() => {
     const fetchProductsAndVariants = async () => {
       const response = Promise.all([
@@ -49,30 +62,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
     };
     fetchProductsAndVariants();
   }, []);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedVariant, setSelectedVariant] = useState<ProductVaraint | null>(
-    null
-  );
-  const [currentQuantity, setCurrentQuantity] = useState(1);
-  const [rows, setRows] = useState<ReceiptTableRow[]>([]);
-  const handleAddRow = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (selectedProduct && selectedVariant) {
-      const newRow: ReceiptTableRow = {
-        id: selectedVariant.id, // Assign a unique id
-        productName: selectedProduct.name,
-        sku: selectedVariant.SKU,
-        quantity: currentQuantity,
-        buyingPrice: selectedVariant.buyingPrice,
-        cost: currentQuantity * selectedVariant.buyingPrice,
-      };
-      setRows([...rows, newRow]);
-    }
-  };
 
-  const [filteredProductVariants, setFilteredProductVariants] = useState<
-    ProductVaraint[]
-  >([]);
   useEffect(() => {
     if (selectedProduct) {
       setFilteredProductVariants(
@@ -88,8 +78,29 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       );
     }
   }, [selectedProduct, productVariants]);
-  const [shippingCost, setShippingCost] = useState(0);
-  const [showDataGrid, setShowDataGrid] = useState(true); // State to control unmount and mount of DataGrid
+
+  const handleAddRow = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (selectedProduct && selectedVariant) {
+      // Kiểm tra xem biến thể đã tồn tại trong bảng chưa
+      const existingRow = rows.find((row) => row.id === selectedVariant.id);
+      if (existingRow) {
+        alert("Variant already added to the receipt table.");
+        return;
+      }
+
+      const newRow: ReceiptTableRow = {
+        index: rows.length + 1,
+        id: selectedVariant.id, // Assign a unique id
+        productName: selectedProduct.name,
+        sku: selectedVariant.SKU,
+        quantity: 1, // Default quantity
+        buyingPrice: selectedVariant.buyingPrice,
+        cost: selectedVariant.buyingPrice, // Default cost
+      };
+      setRows([...rows, newRow]);
+    }
+  };
 
   const handleDeleteRow = (id: number) => {
     const updatedRows = rows.filter((row) => row.id !== id);
@@ -106,13 +117,28 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       // Update STT (index) for remaining rows
       const reindexedRows = updatedRows.map((row, index) => ({
         ...row,
-        id: index + 1,
+        index: index + 1,
       }));
       setRows(reindexedRows);
     }
   };
+
+  const handleQuantityChange = (id: number, quantity: number) => {
+    const updatedRows = rows.map((row) =>
+      row.id === id
+        ? { ...row, quantity, cost: quantity * row.buyingPrice }
+        : row
+    );
+    setRows(updatedRows);
+  };
+
   const columns: GridColDef<ReceiptTableRow>[] = [
-    { field: "id", headerName: "STT", flex: 0.5 },
+    {
+      field: "index",
+      headerName: "STT",
+      flex: 0.5,
+    },
+    { field: "id", headerName: "ID", flex: 0.5 },
     { field: "productName", headerName: "Product Name", flex: 2 },
     {
       field: "sku",
@@ -123,6 +149,16 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       field: "quantity",
       headerName: "Quantity",
       flex: 2,
+      renderCell: (params) => (
+        <input
+          type="number"
+          min={1}
+          onChange={(e) =>
+            handleQuantityChange(params.row.id, parseInt(e.target.value))
+          }
+          value={params.row.quantity}
+        />
+      ),
     },
     {
       field: "buyingPrice",
@@ -149,26 +185,15 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       ],
     },
   ];
+
   const [totalCost, setTotalCost] = useState(0);
   useEffect(() => {
     const newTotalCost = rows.reduce((acc, row) => acc + row.cost, 0);
     setTotalCost(newTotalCost);
   }, [rows]);
-  const handleImport = async () => {
-    // type CreateGoodsReceiptDTO = {
-    //   shipping: number;
-    //   GoodsReceiptDetailsData: GoodsReceiptDetailsData[];
-    //   totalCost: number;
-    // };
 
-    // type GoodsReceiptDetailsData = {
-    //   variantId: number;
-    //   quantity: number;
-    //   cost: number;
-    // };
-    // map rows and fields to CreateGoodsReceiptDTO
+  const handleImport = async () => {
     const goodsReceiptDetailsData = rows.map((row) => ({
-      // if productVariant is not found, return null
       variantId: row.id,
       quantity: row.quantity,
       cost: row.cost,
@@ -194,6 +219,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       console.error("Error importing goods receipt:", error);
     }
   };
+
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup bg-white flex justify-between flex-wrap gap-4 relative rounded-xl p-4 w-2/3 min-w-[420px] h-[80vh] max-h-[80vh] overflow-auto">
@@ -247,16 +273,6 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
                 </option>
               ))}
             </select>
-            <input
-              type="number"
-              placeholder="Số lượng"
-              className="border border-gray-300 rounded-md p-1"
-              id="importQuantity"
-              required
-              min={1}
-              defaultValue={currentQuantity}
-              onChange={(e) => setCurrentQuantity(parseInt(e.target.value))}
-            />
             <Button
               type="submit"
               variant="contained"

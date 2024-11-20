@@ -5,6 +5,7 @@ import variantService from "./variant.service";
 import goodsReceiptService from "./goodsReceipt.service";
 import categoryService from "./categoryService";
 import invoiceService from "./invoiceService";
+import promotionService from "./promotion.service";
 export {
   customerService,
   providerService,
@@ -12,5 +13,6 @@ export {
   variantService,
   goodsReceiptService,
   categoryService,
-  invoiceService
+  invoiceService,
+  promotionService,
 };

@@ -1,11 +1,14 @@
 import { Route, Routes } from "react-router-dom";
-import ProductPage from "./pages/product/ProductPage";
-import InventoryPage from "./pages/inventory/InventoryPage";
-import Layout from "./pages/Layout";
-import InvoicePage from "./pages/invoice/InvoicePage";
-import ProviderPage from "./pages/provider/ProviderPage";
-import CustomerPage from "./pages/customer/CustomerPage";
-import CategoryPage from "./pages/category/CategoryPage";
+import {
+  CategoryPage,
+  CustomerPage,
+  InventoryPage,
+  InvoicePage,
+  Layout,
+  ProductPage,
+  ProviderPage,
+} from "./pages";
+
 function App() {
   return (
     <Routes>

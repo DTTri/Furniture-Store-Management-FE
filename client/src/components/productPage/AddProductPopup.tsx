@@ -32,6 +32,7 @@ export default function AddProductPopup({
   const [catalogueId, setCatalogueId] = useState(
     product?.catalogueId || catalogues[0].id
   );
+  const [image, setImage] = useState(product?.image || "");
   const [warranty, setWarranty] = useState(product?.warranty || 0);
   //   type AddProductDTO = {
   //     name: string;
@@ -75,7 +76,8 @@ export default function AddProductPopup({
       category === product?.category &&
       description === product?.description &&
       catalogueId === product?.catalogueId &&
-      warranty === product?.warranty
+      warranty === product?.warranty &&
+      image === product?.image
     ) {
       alert("No change to update");
       return;
@@ -114,10 +116,12 @@ export default function AddProductPopup({
       <div className="popup bg-white rounded-xl p-4 w-1/2 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
         <div className="container w-full flex justify-around ">
           <div className="image-container basis-[45%] flex justify-center items-center">
-            <img
-              src="https://via.placeholder.com/300"
-              alt="product"
-              className="w-1/2 h-1/2"
+            <input
+              type="file"
+              id="newProductImageInput"
+              accept="image/*"
+              defaultValue={product?.image}
+              onChange={(e) => setImage(e.target.value)}
             />
           </div>
           <div className="information-container basis-1/2 flex flex-col gap-4">
