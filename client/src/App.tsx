@@ -6,6 +6,7 @@ import {
   InvoicePage,
   Layout,
   ProductPage,
+  PromotionPage,
   ProviderPage,
 } from "./pages";
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/provider" element={<ProviderPage />} />
         <Route path="/customer" element={<CustomerPage />} />
         <Route path="/category" element={<CategoryPage />} />
+        <Route path="/promotion" element={<PromotionPage />} />
       </Route>
       {/* <Route path="/login" element={<div>Login</div>} /> */}
     </Routes>

@@ -8,5 +8,7 @@ type Promotion = {
     variantId: number;
     discount: number;
   }[];
+  createdAt: string;
+  updatedAt: string;
 };
 export default Promotion;

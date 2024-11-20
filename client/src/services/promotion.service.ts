@@ -1,6 +1,5 @@
 import CreatePromotionDTO from "../components/promotionPage/CreatePromotionDTO";
-import Promotion from "../entities/Promotion";
-import http from "./http";
+import http from "../api/http";
 
 class PromotionService {
   baseUri = "/promotion";
@@ -16,7 +15,7 @@ class PromotionService {
   async createPromotion(promotion: CreatePromotionDTO) {
     return await http.post(this.getUri("/create-promotion"), promotion);
   }
-  async updatePromotion(promotion: Promotion) {
+  async updatePromotion(promotion: object) {
     return await http.put(this.getUri(`/update-promotion`), promotion);
   }
   async deletePromotion(id: number) {
