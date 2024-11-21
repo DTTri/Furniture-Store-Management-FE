@@ -64,7 +64,8 @@ export default function AddProductPopup({
       const response = await http.get(
         "/file/presigned-url?fileName=" +
           f["file"].name +
-          "&contentType=image/jpg"
+          "&contentType=" +
+          f["file"].type
       );
       console.log(response);
       setPresignedUrl(response.data.presignedUrl);
@@ -73,8 +74,14 @@ export default function AddProductPopup({
       // PUT request: upload file to S3
       const result = await fetch(response.data.presignedUrl, {
         method: "PUT",
+        headers: {
+          "Content-Type": f["file"].type,
+        },
         body: f["file"],
       });
+      if (!result.ok) {
+        throw new Error("Failed to upload image to S3");
+      }
       console.log(result);
     } catch (error) {
       console.error("Error uploading image:", error);
