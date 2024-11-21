@@ -28,7 +28,7 @@ export default function UpdateCategoryPopup({
       }
       const response = await categoryService.updateCategory(
         updatedCategory.id,
-        { name: categoryName }
+        { "name": categoryName }
       );
       if (response.EC === 0) {
         onCategoryUpdated(response.DT);
@@ -70,7 +70,6 @@ export default function UpdateCategoryPopup({
             value={categoryName}
             onChange={(e) => {
               setCategoryName(e.target.value);
-              console.log(categoryName);
             }}
             id="searchProductInput"
           ></input>

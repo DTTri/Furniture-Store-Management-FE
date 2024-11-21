@@ -145,7 +145,7 @@ export default function InvoicePage() {
         style={{
           borderRadius: "10px",
           backgroundColor: "white",
-          height: "fit-content",
+          height: "480px",
         }}
         columns={columns}
         rows={invoiceList}

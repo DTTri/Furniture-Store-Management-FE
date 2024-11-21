@@ -1,15 +1,12 @@
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   Button,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
 } from "@mui/material";
-import { getDay, set } from "date-fns";
-import { daysInYear } from "date-fns/constants";
-import React, { useEffect, useRef, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -17,17 +14,23 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import InvoiceDetailDTO from "./InvoiceDetailDTO";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import Customer from "../../entities/Customer";
+import { useEffect, useState } from "react";
 import http from "../../api/http";
-import { ProductVariant } from "../../entities";
-import InvoiceDetail from "../../entities/InvoiceDetail";
+import { Product, ProductVariant } from "../../entities";
+import Customer from "../../entities/Customer";
 import CreateInvoiceDTO, {
   CreateInvoiceDetailDTO,
 } from "../../entities/DTO/CreateInvoiceDTO";
+import {
+  customerService,
+  productService,
+  variantService,
+} from "../../services";
 import invoiceService from "../../services/invoiceService";
-import { customerService } from "../../services";
+import InvoiceDetailDTO from "./InvoiceDetailDTO";
+import { se } from "date-fns/locale";
+import { Link } from "react-router-dom";
+import AddCustomerPopup from "../customerPage/AddCustomerPopup";
 
 export default function CreateInvoicePopup({
   onClose,
@@ -37,16 +40,24 @@ export default function CreateInvoicePopup({
   onInvoiceCreated: (invoice: CreateInvoiceDTO) => void;
 }) {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
+  const [productList, setProductList] = useState<Product[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [variantList, setVariantList] = useState<ProductVariant[]>([]);
+  const [variantFiltered, setvariantFiltered] = useState<ProductVariant[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
+    null
+  );
   // const [staffList, setStaffList] = useState<Staff[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [customersResponse, variantsResponse] = await Promise.all([
-          customerService.getAllCustomers(),
-          http.get("/variants"),
-        ]);
+        const [customersResponse, productResponse, variantsResponse] =
+          await Promise.all([
+            customerService.getAllCustomers(),
+            productService.getAllProducts(),
+            variantService.getAllVariants(),
+          ]);
 
         if (customersResponse.data.EC === 0) {
           setCustomerList(customersResponse.data.DT);
@@ -54,8 +65,15 @@ export default function CreateInvoicePopup({
           console.log("Failed to fetch customers:", customersResponse.data.EM);
         }
 
+        if (productResponse.data.EC === 0) {
+          setProductList(productResponse.data.DT);
+        } else {
+          console.log("Failed to fetch products:", productResponse.data.EM);
+        }
+
         if (variantsResponse.data.EC === 0) {
           setVariantList(variantsResponse.data.DT);
+          setvariantFiltered(variantsResponse.data.DT);
         } else {
           console.log("Failed to fetch variants:", variantsResponse.data.EM);
         }
@@ -65,28 +83,7 @@ export default function CreateInvoicePopup({
     };
     fetchData();
   }, []);
-  // useEffect(() => {
-  //   const fetchStaffs = async () => {
-  //     try {
-  //       const response = await http.get("/staffs/get-all-staffs");
-  //       if (response.data.EC === 0) {
-  //         setStaffList(response.data.DT);
-  //       } else {
-  //         console.log("Failed to fetch customers:", response.data.EM);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching customers:", error);
-  //     }
-  //   }
-  //   fetchStaffs()
-  // }, [staffList]);
 
-  const [createdDate, setCreatedDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
-  );
-  //customer and staff information
-  const [staffId, setStaffId] = useState<number>();
-  const [customerId, setCustomerId] = useState<number>();
   const [paymentMethod, setPaymentMethod] = useState<string>("");
 
   const [variantSelected, setVariantSelected] = useState<number>(0);
@@ -96,7 +93,17 @@ export default function CreateInvoicePopup({
   const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
   const [totalCost, setTotalCost] = useState<number>(0);
 
+  const [isShowAddCustomerPopup, setIsShowAddCustomerPopup] = useState<boolean>(false);
+  const onCustomerCreated = (createdCustomer: Customer) => {
+    setCustomerList([...customerList, createdCustomer]);
+  }
+  //Customer information
+  const [customerInfo, setCustomerInfo] = useState<Customer | null>(null);
   const handleAddProduct = () => {
+    if (!selectedVariant) {
+      alert("Please select variant");
+      return;
+    }
     if (quatanty == 0) {
       alert("Please set quatanty");
       return;
@@ -106,12 +113,12 @@ export default function CreateInvoicePopup({
       return;
     }
     const newRow: InvoiceDetailDTO = {
-      id: variantList[variantSelected].id,
-      SKU: variantList[variantSelected].SKU,
-      buyingPrice: variantList[variantSelected].buyingPrice,
+      id: selectedVariant?.id,
+      SKU: selectedVariant.SKU,
+      buyingPrice: selectedVariant.buyingPrice,
       promotion: promotionSelected,
       quantity: quatanty,
-      cost: variantList[variantSelected].buyingPrice * quatanty,
+      cost: selectedVariant.buyingPrice * quatanty,
     };
     console.log(newRow);
     setRows([...rows, newRow]);
@@ -119,6 +126,10 @@ export default function CreateInvoicePopup({
   };
 
   const handleCreateInvoice = async () => {
+    if(!customerInfo){
+      alert("Please select customer");
+      return;
+    }
     if (rows.length === 0) {
       alert("Please add at least one product");
       return;
@@ -132,17 +143,19 @@ export default function CreateInvoicePopup({
     });
     const createdInvoice: CreateInvoiceDTO = {
       //missing customerId, paymentMethod, createdDate
-      staffId: staffId || 0,
-      customerId: customerId || 0,
+      //wait for staff global state
+      staffId: 0,
+      customerId: customerInfo.id || 0,
       totalCost: totalCost,
       InvoiceDetailsData: rowInvoice,
     };
+    console.log("createdInvoice", createdInvoice);
     const response = await invoiceService.createInvoice(createdInvoice);
-    if (response.data.EC === 0) {
-      onInvoiceCreated(response.data.DT);
+    if (response.EC === 0) {
+      onInvoiceCreated(response.DT);
       onClose();
     } else {
-      console.log("Failed to create invoice:", response.data.EM);
+      console.log("Failed to create invoice:", response.EM);
     }
   };
 
@@ -163,6 +176,17 @@ export default function CreateInvoicePopup({
       align: "center",
     },
     {
+      field: "variantName",
+      headerName: "Variant Name",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (value, row) => {
+        console.log(row);
+        return row.size + " " + row.color;
+      },
+    },
+    {
       field: "buyingPrice",
       headerName: "Buying Price",
       flex: 1,
@@ -172,17 +196,10 @@ export default function CreateInvoicePopup({
     {
       field: "quantity",
       headerName: "Quantity",
-      flex: 1,
+      flex: 0.5,
       headerAlign: "center",
       align: "center",
       editable: true,
-    },
-    {
-      field: "promotion",
-      headerName: "Promotion",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
     },
     {
       field: "cost",
@@ -222,12 +239,31 @@ export default function CreateInvoicePopup({
     },
   ];
 
-  console.log(variantSelected);
-  console.log(variantList[variantSelected || 1]);
+  const handOnSearchCustomerInfo =  () => {
+    const inputElement = document.getElementById('customerPhoneInput') as HTMLInputElement;
+    const searchedCustomer = customerList.find((customer) => customer.phone === inputElement.value);
+    if(searchedCustomer){
+      setCustomerInfo(searchedCustomer);
+    }
+    else{
+      setCustomerInfo(null);
+    }
+  }
+
+  useEffect(() => {
+    if (selectedProduct) {
+      console.log("selectedProduct", selectedProduct);
+      const filtedVariant = variantList.filter(
+        (variant) => variant.productId === selectedProduct.id
+      );
+      console.log("filtedVariant", filtedVariant);
+      setvariantFiltered(filtedVariant);
+    }
+  }, [selectedProduct]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 max-w-[1096px] w-full max-h-[700px] overflow-auto relative">
+      <div className="popup bg-white rounded-xl p-4 max-w-[1096px] w-full max-h-[650px] overflow-auto relative">
         <div className="header w-full px-2 py-2 flex flex-row items-center justify-between border-b-[1px] border-b-slate-400">
           <h2 className="text-[22px] font-semibold text-[#383E49]">
             Create new invoice
@@ -239,19 +275,26 @@ export default function CreateInvoicePopup({
           />
         </div>
         <div className="w-full grid">
-          <div className="row-1 py-3 px-4 grid grid-cols-[14%_1fr_14%_1fr] items-center grid-rows-2 gap-x-3 gap-y-4 border-b-[1px] border-b-slate-400">
-            <span className="text-base text-[#667085] block">Created Date</span>
-            <input
-              type="date"
-              value={createdDate}
-              name="createdDate"
-              onChange={(e) => setCreatedDate(e.target.value)}
-              className="border  max-w-[250px] border-slate-400 rounded-md p-[6px] pl-3 max-h-[38px]"
-            />
+          <div className="row-1 py-4 px-4 grid grid-cols-[14%_1fr_24%_1fr] items-center grid-rows-[50%_50%] gap-x-3 gap-y-3 border-b-[1px] border-b-slate-400">
             <span className="text-base text-[#667085] block">
-              Customer Name*
+              Customer phone
             </span>
-            <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
+            <input placeholder="Fill Customer Phone" id="customerPhoneInput" maxLength={10} type="tel" className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3" />
+            <Button onClick={handOnSearchCustomerInfo} className="col-span-2" variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px", padding: "6px", maxWidth: "100px" }}>Search</Button>
+            { customerInfo ? (
+                  <div className="col-span-4 pr-5 w-full flex flex-row justify-between">
+                      <p>Customer name: {customerInfo.name}</p>
+                      <p>Customer phone: {customerInfo.phone}</p>
+                      <p>Customer email: {customerInfo.email}</p>
+                  </div>
+              ) : (
+                  <div className="col-span-4 ro w-full flex flex-row items-center gap-2">
+                      <p>Can't find customer information?</p>
+                      <a className="text-blue-500 font-semibold underline cursor-pointer " onClick={() => { setIsShowAddCustomerPopup(true) }}>Add new Customer</a>
+                  </div>
+              )
+            }
+            {/* <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Customer Name
               </InputLabel>
@@ -269,31 +312,8 @@ export default function CreateInvoicePopup({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
-            <span className="text-base text-[#667085] block">Staff Name*</span>
-            <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
-              <InputLabel id="demo-select-small-label">
-                Select Staff Name
-              </InputLabel>
-              <Select
-                labelId="demo-select-small-label"
-                label="Select Staff Name"
-                id="demo-select-small"
-                name="staffId"
-                value={staffId}
-                onChange={(e) => setStaffId(e.target.value as number)}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {/* {staffList.map((staff, index) => (
-                  <MenuItem key={staff.id} value={index}>
-                    {staff.name}
-                  </MenuItem>
-                ))} */}
-              </Select>
-            </FormControl>
-            <span className="text-base text-[#667085] block">
+            </FormControl> */}
+            {/* <span className="text-base text-[#667085] block">
               Payment menthod
             </span>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
@@ -314,10 +334,39 @@ export default function CreateInvoicePopup({
                   <em>Cash</em>
                 </MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
           </div>
-          <div className="row-2 py-3 px-4 grid grid-cols-[8%_1fr_8%_1fr_8%_1fr] items-center grid-rows-[1fr_20%] gap-x-3 gap-y-3 border-b-[1px] border-b-slate-400">
-            <span className="text-base text-[#667085] block">Variant ID</span>
+
+          <div className="row-2 py-2 pb-6 px-4 grid grid-cols-[14%_1fr_14%_1fr] items-center grid-rows-[1fr_20%] gap-x-3 gap-y-4 border-b-[1px] border-b-slate-400">
+            <span className="text-base text-[#667085] block">Product</span>
+            <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
+              <InputLabel id="demo-select-small-label">
+                Select Product
+              </InputLabel>
+              <Select
+                labelId="demo-select-small-label"
+                label="Select Variant SKU"
+                id="demo-select-small"
+                value={selectedVariant?.id}
+                onChange={(e) => {
+                  setSelectedVariant(null);
+                  setSelectedProduct(
+                    productList.find(
+                      (product) => product.id === e.target.value
+                    ) ?? null
+                  );
+                }}
+              >
+                {productList.map((product, index) => (
+                  <MenuItem key={product.id} value={product.id}>
+                    {product.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <InputLabel id="demo-select-small-label">
+                Select Variant SKU
+              </InputLabel>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Variant SKU
@@ -326,54 +375,38 @@ export default function CreateInvoicePopup({
                 labelId="demo-select-small-label"
                 label="Select Variant SKU"
                 id="demo-select-small"
-                value={variantSelected}
-                onChange={(e) => setVariantSelected(e.target.value as number)}
+                value={selectedVariant?.id}
+                onChange={(e) => {
+                  setSelectedVariant(
+                    variantFiltered.find(
+                      (variant) => variant.id === e.target.value
+                    ) ?? null
+                  );
+                }}
               >
-                {variantList.map((variant, index) => (
-                  <MenuItem key={variant.id} value={index}>
+                {variantFiltered.map((variant, index) => (
+                  <MenuItem key={variant.id} value={variant.id}>
                     {variant.SKU}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            <span className="text-base text-[#667085] block">Quantanty</span>
+            <span className="text-base text-[#667085] block">
+              Quantanty
+            </span>
             <input
               type="number"
               value={quatanty}
               name="quatanty"
               placeholder="Set Quantanty"
               onChange={(e) => setQuantanty(Number.parseInt(e.target.value))}
-              className="border  max-w-[250px] border-slate-400 max-h-[38px] rounded-md mb-2 p-[6px] px-3"
+              className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3"
             />
-            <span className="text-base text-[#667085] block">Promotion</span>
-            <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
-              <InputLabel id="demo-select-small-label">
-                Select Promtotion
-              </InputLabel>
-              <Select
-                labelId="demo-select-small-label"
-                label="Select Customer ID"
-                id="demo-select-small"
-                name="customerId"
-                value={promotionSelected}
-                // onChange={handleChange} -> setPromotionSelected when promotion is set all up
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={1}>1%</MenuItem>
-                {/* {promotionList.map((promotion, index) => (
-                  <MenuItem key={promotion.id} value={index}>
-                    {promotion.percent}
-                  </MenuItem>
-                ))} */}
-              </Select>
-            </FormControl>
-            <div className="col-span-6 w-full flex flex-row justify-end mb-4">
+            <div className="col-span-2 w-full flex flex-row justify-end">
               <Button
                 variant="contained"
                 color="primary"
-                style={{ textTransform: "none", marginRight: "72x" }}
+                style={{ textTransform: "none", marginRight: "100px" }}
                 onClick={handleAddProduct}
               >
                 Add product
@@ -409,9 +442,15 @@ export default function CreateInvoicePopup({
             />
           )}
         </div>
-        <p className="text-[20px] text-[#D91316] font-bold text-end mb-3 px-4">
-          Total Cost: {totalCost}
-        </p>
+        <div className="px-3 w-full flex flex-row items-center justify-between mb-3">
+          <div className="flex flex-row items-center gap-3 px-2">
+            <input className="w-4 h-4" type="checkbox" />
+            <span className="font-medium text-[16px]">Apply promotion event</span>
+          </div>
+          <p className="text-[20px] text-[#D91316] font-bold text-end">
+            Total Cost: {totalCost}
+          </p>
+        </div>
         <div className="buttons flex flex-row justify-end items-center gap-2">
           <Button
             variant="contained"
@@ -442,6 +481,7 @@ export default function CreateInvoicePopup({
           </Button>
         </div>
       </div>
+      {isShowAddCustomerPopup && (<AddCustomerPopup onCustomerUpdated={() => {}} onCustomerCreated={onCustomerCreated} onClose={() => { setIsShowAddCustomerPopup(false) }} />)}
     </div>
   );
 }

@@ -8,6 +8,9 @@ class CustomerService {
   async getAllCustomers() {
     return await http.get(this.getUri("/get-all-customers"));
   }
+  async getCustomerById(customerId: number) {
+    return await http.get(this.getUri("/get-customer/" + customerId));
+  }
   async createCustomer(customer: AddCustomerDTO) {
     return await http.post(this.getUri("/create-customer"), customer);
   }
