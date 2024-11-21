@@ -6,6 +6,7 @@ import goodsReceiptService from "./goodsReceipt.service";
 import categoryService from "./categoryService";
 import invoiceService from "./invoiceService";
 import promotionService from "./promotion.service";
+import http from "./http";
 export {
   customerService,
   providerService,
@@ -15,4 +16,5 @@ export {
   categoryService,
   invoiceService,
   promotionService,
+  http,
 };

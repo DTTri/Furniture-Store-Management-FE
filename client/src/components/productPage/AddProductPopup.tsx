@@ -4,7 +4,9 @@ import { Button } from "@mui/material";
 import AddProductDTO from "./AddProductDTO";
 import { useState } from "react";
 import { productService } from "../../services";
-
+import http from "../../api/http";
+import "react-dropzone-uploader/dist/styles.css";
+import Dropzone, { IFileWithMeta } from "react-dropzone-uploader";
 export default function AddProductPopup({
   onClose,
   onProductCreated,
@@ -34,6 +36,9 @@ export default function AddProductPopup({
   );
   const [image, setImage] = useState(product?.image || "");
   const [warranty, setWarranty] = useState(product?.warranty || 0);
+
+  const [presignedUrl, setPresignedUrl] = useState("");
+  const [key, setKey] = useState("");
   //   type AddProductDTO = {
   //     name: string;
   //     category: string;
@@ -41,18 +46,54 @@ export default function AddProductPopup({
   //     catalogueId: number;
   //     warranty: number;
   //   };
+  //   (method) onChangeStatus?(file: IFileWithMeta, status: StatusValue, allFiles: IFileWithMeta[]): {
+  //     meta: {
+  //         [name: string]: any;
+  //     };
+  // } | void
+  const handleChangeStatus = (
+    { meta }: { meta: { name: string } },
+    status: string
+  ) => {
+    console.log(status, meta);
+  };
+  const handleSubmit = async (files: IFileWithMeta[]) => {
+    const f = files[0];
 
+    try {
+      const response = await http.get(
+        "/file/presigned-url?fileName=" +
+          f["file"].name +
+          "&contentType=image/jpg"
+      );
+      console.log(response);
+      setPresignedUrl(response.data.presignedUrl);
+      setKey(response.data.key);
+
+      // PUT request: upload file to S3
+      const result = await fetch(response.data.presignedUrl, {
+        method: "PUT",
+        body: f["file"],
+      });
+      console.log(result);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
   const handleAddProduct = async () => {
     if (!name || name === "") {
       alert("Name is required");
       return;
     }
+
+    const uploadedImage = "https://seuit-qlnt.s3.amazonaws.com/" + key;
     const newProductDTO: AddProductDTO = {
       name,
       category,
       description,
       catalogueId,
       warranty,
+      image: key !== "" ? uploadedImage : undefined,
     };
     try {
       const response = await productService.createProduct(newProductDTO);
@@ -115,13 +156,18 @@ export default function AddProductPopup({
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup bg-white rounded-xl p-4 w-1/2 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
         <div className="container w-full flex justify-around ">
-          <div className="image-container basis-[45%] flex justify-center items-center">
-            <input
-              type="file"
-              id="newProductImageInput"
-              accept="image/*"
-              defaultValue={product?.image}
-              onChange={(e) => setImage(e.target.value)}
+          <div className="image-container basis-[45%] flex flex-col justify-center items-center gap-4">
+            <Dropzone
+              onChangeStatus={handleChangeStatus}
+              onSubmit={handleSubmit}
+              maxFiles={1}
+              multiple={false}
+              canCancel={false}
+              inputContent="Drop A File"
+              styles={{
+                dropzone: { width: 200, height: 100 },
+                dropzoneActive: { borderColor: "green" },
+              }}
             />
           </div>
           <div className="information-container basis-1/2 flex flex-col gap-4">
@@ -145,8 +191,10 @@ export default function AddProductPopup({
                 defaultValue={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
-                {categories.map((category) => (
-                  <option value={category}>{category}</option>
+                {categories.map((category, index) => (
+                  <option key={index} value={category}>
+                    {category}
+                  </option>
                 ))}
               </select>
             </div>
@@ -172,8 +220,10 @@ export default function AddProductPopup({
                 onChange={(e) => setCatalogueId(Number(e.target.value))}
                 defaultValue={catalogueId}
               >
-                {catalogues.map((catalogue) => (
-                  <option value={catalogue.id}>{catalogue.name}</option>
+                {catalogues.map((catalogue, index) => (
+                  <option key={index} value={catalogue.id}>
+                    {catalogue.name}
+                  </option>
                 ))}
               </select>
             </div>

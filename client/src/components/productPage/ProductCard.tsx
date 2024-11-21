@@ -14,7 +14,11 @@ export default function ProductCard({
       className="product-card w-[252px] h-[265px] bg-white rounded-lg shadow-md transform transition duration-300 hover:scale-105 hover:shadow-x"
     >
       <div className="product-image w-full h-1/2 overflow-hidden rounded-t-lg">
-        <img src="/images/chair.jpg" alt="product" className="object-cover" />
+        <img
+          src={product.image !== "" ? product.image : "/images/chair.jpg"}
+          alt="product"
+          className="object-cover"
+        />
       </div>
       <div className="product-info w-full p-4">
         <div className="flex justify-between items-center">
