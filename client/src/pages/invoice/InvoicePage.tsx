@@ -168,8 +168,9 @@ export default function InvoicePage() {
       {isCreateInvoicePopupOpen && (
         <CreateInvoicePopup
           onClose={() => setIsCreateInvoicePopupOpen(false)}
-          onInvoiceCreated={() => {
-            
+          onInvoiceCreated={(createdInvoice: Invoice) => {
+            const updatedInvoiceList = [...invoiceList, createdInvoice];
+            setInvoiceList(updatedInvoiceList.map((invoice, index) => ({ ...invoice, index: index + 1 })));
           }}
         />
       )}
