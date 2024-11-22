@@ -15,7 +15,6 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import http from "../../api/http";
 import { Product, ProductVariant } from "../../entities";
 import Customer from "../../entities/Customer";
 import CreateInvoiceDTO, {
@@ -32,6 +31,8 @@ import InvoiceDetailDTO from "./InvoiceDetailDTO";
 import AddCustomerPopup from "../customerPage/AddCustomerPopup";
 import Invoice from "../../entities/Invoice";
 import Promotion from "../../entities/Promotion";
+import { id } from "date-fns/locale";
+import { set } from "date-fns";
 
 export default function CreateInvoicePopup({
   onClose,
@@ -50,7 +51,6 @@ export default function CreateInvoicePopup({
   );
   const [curPromotion, setCurPromotion] = useState<Promotion | null>(null);
   // const [staffList, setStaffList] = useState<Staff[]>([]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -67,7 +67,6 @@ export default function CreateInvoicePopup({
             new Date().toISOString().slice(0, 10)
           ),
         ]);
-        console.log(promtionResponse.data.DT);
         if (customersResponse.data.EC === 0) {
           setCustomerList(customersResponse.data.DT);
         } else {
@@ -106,6 +105,7 @@ export default function CreateInvoicePopup({
   const [quatanty, setQuantanty] = useState<number>(0);
   const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
   const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
+  const [prevRows, setPrevRows] = useState<InvoiceDetailDTO[]>([]);
   const [totalCost, setTotalCost] = useState<number>(0);
 
   const [isShowAddCustomerPopup, setIsShowAddCustomerPopup] =
@@ -113,6 +113,8 @@ export default function CreateInvoicePopup({
   const onCustomerCreated = (createdCustomer: Customer) => {
     setCustomerList([...customerList, createdCustomer]);
   };
+  console.log(rows);
+
   //Customer information
   const [customerInfo, setCustomerInfo] = useState<Customer | null>(null);
   const handleAddProduct = () => {
@@ -197,10 +199,6 @@ export default function CreateInvoicePopup({
       flex: 1,
       headerAlign: "center",
       align: "center",
-      valueGetter: (value, row) => {
-        console.log(row);
-        return row.size + " " + row.color;
-      },
     },
     {
       field: "buyingPrice",
@@ -223,9 +221,6 @@ export default function CreateInvoicePopup({
       flex: 1,
       headerAlign: "center",
       align: "center",
-      valueGetter: (params, row) => {
-        return row.quantity * row.buyingPrice;
-      },
     },
     {
       field: "actions",
@@ -271,11 +266,9 @@ export default function CreateInvoicePopup({
 
   useEffect(() => {
     if (selectedProduct) {
-      console.log("selectedProduct", selectedProduct);
       const filtedVariant = variantList.filter(
         (variant) => variant.productId === selectedProduct.id
       );
-      console.log("filtedVariant", filtedVariant);
       setvariantFiltered(filtedVariant);
     }
   }, [selectedProduct]);
@@ -490,41 +483,31 @@ export default function CreateInvoicePopup({
               className="w-4 h-4"
               type="checkbox"
               onChange={(e) => {
-                console.log(curPromotion);
                 if (!curPromotion) {
                   alert("There is no promotion event today");
                   return;
                 }
-                if (e.target.checked) {
+                if (e.target.checked) {                  
                   const discountedRows = rows.map((row) => {
-                    const promotionProduct = curPromotion.promotionProducts.find(
+                    const promotionProduct = curPromotion.PromotionProducts.find(
                         (promo) => promo.variantId === row.id
                       );
                       if (promotionProduct) {
-                      console.log(promotionProduct.discount );
+                      console.log("discount"  + promotionProduct.discount);
+                      const discountedCost = row.cost - (row.cost * promotionProduct.discount) / 100;
                       return {
                         ...row,
-                        cost:
-                          row.cost -
-                          (row.cost * promotionProduct.discount) / 100,
+                        cost: discountedCost
                       };
                     }
                     return row;
                   });
-                  console.log(discountedRows);
                   setRows(discountedRows);
+                  setPrevRows(rows);
+                  setTotalCost(discountedRows.reduce((acc, row) => acc + row.cost, 0));
                 } else {
-                  // const restoredRows = rows.map((row) => {
-                  //   if (row?.originalCost !== undefined) {
-                  //     return {
-                  //       ...row,
-                  //       cost: row.originalCost, // Khôi phục giá trị gốc của cost
-                  //       originalCost: undefined, // Xóa thuộc tính originalCost
-                  //     };
-                  //   }
-                  //   return row;
-                  // });
-                  // setRows(restoredRows);
+                  setRows(prevRows);
+                  setTotalCost(prevRows.reduce((acc, row) => acc + row.cost, 0));
                 }
               }}
             />
