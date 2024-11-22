@@ -6,6 +6,7 @@ import InvoiceDetail from "../../entities/InvoiceDetail";
 import http from "../../api/http";
 import Customer from "../../entities/Customer";
 import { Button } from "@mui/material";
+import { customerService } from "../../services";
 
 export default function InvoiceDetailTable({
   onClose,
@@ -14,14 +15,14 @@ export default function InvoiceDetailTable({
   onClose: () => void;
   invoice: Invoice;
 }) {
-  const [invoiceDetails, setInvoiceDetails] = useState<InvoiceDetail[]>([]);
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice>();
   useEffect(() => {
     const fetchInvoiceDetails = async () => {
       try {
         const response = await http.get(`/invoices/get-invoice/${invoice.id}`);
         if (response.data.EC === 0) {
           console.log(response.data);
-          setInvoiceDetails(response.data.DT.InvoiceDetails);
+          setSelectedInvoice(response.data.DT);
         } else {
           console.error("Failed to fetch invoice details:", response.data.EM);
         }
@@ -30,31 +31,27 @@ export default function InvoiceDetailTable({
       }
     };
     fetchInvoiceDetails();
-  }, [invoiceDetails]);
+  }, []);
 
-  const [customer, setCustomer] = useState<Customer>({
-    id: 1,
-    name: "Thinh",
-    phone: "0123456789",
-    email: "thinh",
-  });
-  //   useEffect(() => {
-  //     const fetchCustomer = async () => {
-  //       try {
-  //         const response = await http.get(
-  //           `/customers/get-customer/${invoice.customerId}`
-  //         );
-  //         if (response.data.EC === 0) {
-  //           setCustomer(response.data.DT.InvoiceDetails);
-  //         } else {
-  //           console.error("Failed to fetch customer:", response.data.EM);
-  //         }
-  //       } catch (error) {
-  //         console.error("Error fetching customer:", error);
-  //       }
-  //     };
-  //     fetchCustomer();
-  //   }, [customer]);
+  const [customer, setCustomer] = useState<Customer>();
+    useEffect(() => {
+      const fetchCustomer = async () => {
+        try {
+          console.log(selectedInvoice?.customerId);
+          const response = await customerService.getCustomerById(selectedInvoice?.customerId || 0);
+          if (response.data.EC === 0) {
+            console.log(response.data.DT);
+            console.log(selectedInvoice?.customerId);
+            setCustomer(response.data.DT);
+          } else {
+            console.error("Failed to fetch customer:", response.data.EM);
+          }
+        } catch (error) {
+          console.error("Error fetching customer:", error);
+        }
+      };
+      fetchCustomer();
+    });
 
   const columns: GridColDef[] = [
     {
@@ -96,8 +93,7 @@ export default function InvoiceDetailTable({
         align: "center",
       },
   ];
-  console.log(invoice);
-  const rows = invoiceDetails.map((item, index) => {
+  const rows = selectedInvoice?.InvoiceDetails.map((item, index) => {
     return {
       ...item,
       index: index + 1,
@@ -153,7 +149,7 @@ export default function InvoiceDetailTable({
               },
             }}
             pageSizeOptions={
-              rows.length < 4 ? [4, rows.length] : [4, rows.length + 1]
+              rows && rows.length < 4 ? [4, rows.length] : [4, (rows?.length || 0) + 1]
             }
             slots={{ toolbar: GridToolbar }}
             rowSelection={false}

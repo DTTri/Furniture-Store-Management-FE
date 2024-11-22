@@ -1,11 +1,11 @@
 import InvoiceStatus from "../constants/enums/InvoiceStatus"
 import InvoiceDetail from "./InvoiceDetail";
 type Invoice = {
-    id: string;
+    id: number;
     totalCost: number;
     status: InvoiceStatus,
-    customerId: string;
-    staffId: string;
+    customerId: number;
+    staffId: number;
     createdAt: string;
     InvoiceDetails: InvoiceDetail[];
 }

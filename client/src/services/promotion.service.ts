@@ -12,6 +12,9 @@ class PromotionService {
   async getPromotionById(id: number) {
     return await http.get(this.getUri(`/get-promotion/${id}`));
   }
+  async getPromotionByDate(Date: string) {
+    return await http.get(this.getUri(`/?date=${Date}`));
+  }
   async createPromotion(promotion: CreatePromotionDTO) {
     return await http.post(this.getUri("/create-promotion"), promotion);
   }

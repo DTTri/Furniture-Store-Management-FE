@@ -4,7 +4,7 @@ type Promotion = {
   description: string;
   startDate: string;
   finishDate: string;
-  promotionProducts: {
+  PromotionProducts: {
     variantId: number;
     discount: number;
   }[];

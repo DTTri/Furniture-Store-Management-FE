@@ -145,7 +145,7 @@ export default function InvoicePage() {
         style={{
           borderRadius: "10px",
           backgroundColor: "white",
-          height: "fit-content",
+          height: "480px",
         }}
         columns={columns}
         rows={invoiceList}
@@ -168,8 +168,9 @@ export default function InvoicePage() {
       {isCreateInvoicePopupOpen && (
         <CreateInvoicePopup
           onClose={() => setIsCreateInvoicePopupOpen(false)}
-          onInvoiceCreated={() => {
-            
+          onInvoiceCreated={(createdInvoice: Invoice) => {
+            const updatedInvoiceList = [...invoiceList, createdInvoice];
+            setInvoiceList(updatedInvoiceList.map((invoice, index) => ({ ...invoice, index: index + 1 })));
           }}
         />
       )}
