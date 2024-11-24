@@ -6,6 +6,9 @@ import GoodsReceiptDetail from "./GoodsReceiptDetail";
 import Category from "./Category";
 import Provider from "./Provider";
 import Customer from "./Customer";
+import WarrantyOrder from "./WarrantyOrder";
+import RepairOrder from "./RepairOrder";
+import Staff from "./Staff";
 export type {
   Product,
   ProductVariant,
@@ -15,4 +18,7 @@ export type {
   Category,
   Provider,
   Customer,
+  WarrantyOrder,
+  RepairOrder,
+  Staff,
 };

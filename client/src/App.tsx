@@ -9,6 +9,9 @@ import {
   PromotionPage,
   ProviderPage,
 } from "./pages";
+import StaffPage from "./pages/staff/StaffPage";
+import RepairPage from "./pages/repair/RepairPage";
+import WarrantyPage from "./pages/warranty/WarrantyPage";
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
         <Route path="/customer" element={<CustomerPage />} />
         <Route path="/category" element={<CategoryPage />} />
         <Route path="/promotion" element={<PromotionPage />} />
+        <Route path="/staff" element={<StaffPage />} />
+        <Route path="/repair" element={<RepairPage />} />
+        <Route path="/warranty" element={<WarrantyPage />} />
       </Route>
       {/* <Route path="/login" element={<div>Login</div>} /> */}
     </Routes>
