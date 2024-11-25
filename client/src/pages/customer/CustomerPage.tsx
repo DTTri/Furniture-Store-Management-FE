@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import { Customer } from "../../entities";
 import { Button } from "@mui/material";
 import { AddCustomerPopup, CustomersTable } from "../../components";
-import http from "../../api/http";
-
+import { customerService } from "../../services";
 export default function CustomerPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await http.get("/customers/get-all-customers");
+        const res = await customerService.getAllCustomers();
         if (res.data.EC === 0) {
           setCustomers(res.data.DT);
         } else {
@@ -35,9 +34,7 @@ export default function CustomerPage() {
 
   const handleDeleteCustomer = async () => {
     try {
-      const res = await http.delete(
-        `/customers/delete-customer/${selectedCustomer.id}`
-      );
+      const res = await customerService.deleteCustomer(selectedCustomer.id);
       if (res.data.EC === 0) {
         setCustomers(customers.filter((c) => c.id !== selectedCustomer.id));
         setIsConfirmDeleteCustomerPopupOpen(false);

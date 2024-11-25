@@ -4,6 +4,7 @@ type AddProductDTO = {
   description: string;
   catalogueId: number;
   warranty: number;
+  image?: string;
 };
 // {
 //     "category": "bàn ghế gỗ",

@@ -3,15 +3,14 @@ import { ProvidersTable } from "../../components";
 import { useEffect, useState } from "react";
 import { Provider } from "../../entities";
 import AddProviderPopup from "../../components/providerPage/AddProviderPopup";
-import http from "../../api/http";
-
+import { providerService } from "../../services";
 export default function ProviderPage() {
   const [providers, setProviders] = useState<Provider[]>([]);
 
   useEffect(() => {
     const fetchProviders = async () => {
       try {
-        const res = await http.get("/providers/get-all-providers");
+        const res = await providerService.getAllProviders();
         if (res.data.EC === 0) {
           setProviders(res.data.DT);
         } else {

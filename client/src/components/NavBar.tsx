@@ -16,7 +16,7 @@ export default function NavBar() {
         <img src={Logo} className="w-[48px] h-[48px] mr-3" alt="" />
         <span className="font-bold text-xl">Nội thất đẹp</span>
       </a>
-      <ul className="navbar-menu flex flex-col justify-center gap-1 py-2 px-[24px] mb-[16px]">
+      <ul className="navbar-menu flex flex-col justify-center gap-[2px] py-2 px-[24px] mb-4">
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
           <Link className="flex flex-row  items-center " to="/">
             <img className="w-[20px] h-[20px] mr-3" src={product} alt="" />
@@ -34,15 +34,15 @@ export default function NavBar() {
           </Link>
         </li>
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
-          <Link className="flex flex-row items-center py-1" to="/">
+          <Link className="flex flex-row items-center py-1" to="/category">
             <img className="w-[20px] h-[20px] mr-3" src={catalogue} alt="" />
             <span className="text-base font-medium text-[#5D6679]">
-              Catalogue
+              Category
             </span>
           </Link>
         </li>
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
-          <Link className="flex flex-row items-center py-1" to="/bill">
+          <Link className="flex flex-row items-center py-1" to="/invoice">
             <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
             <span className="text-base font-medium text-[#5D6679]">
               Invoice
@@ -66,11 +66,36 @@ export default function NavBar() {
           </Link>
         </li>
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
-          <Link className="flex flex-row items-center py-1" to="/">
+          <Link className="flex flex-row items-center py-1" to="/staff">
             <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
             <span className="text-base font-medium text-[#5D6679]">Staff</span>
           </Link>
         </li>
+        <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
+          <Link className="flex flex-row items-center py-1" to="/promotion">
+            <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
+            <span className="text-base font-medium text-[#5D6679]">
+              Promotion
+            </span>
+          </Link>
+        </li>
+        {/* warranty */}
+        <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
+          <Link className="flex flex-row items-center py-1" to="/warranty">
+            <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
+            <span className="text-base font-medium text-[#5D6679]">
+              Warranty
+            </span>
+          </Link>
+        </li>
+        {/* repair */}
+        <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
+          <Link className="flex flex-row items-center py-1" to="/repair">
+            <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
+            <span className="text-base font-medium text-[#5D6679]">Repair</span>
+          </Link>
+        </li>
+
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
           <Link className="flex flex-row items-center py-1" to="/">
             <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
@@ -78,7 +103,7 @@ export default function NavBar() {
           </Link>
         </li>
       </ul>
-      <ul className="navbar-menu flex flex-col justify-center gap-1 py-2 px-[24px]">
+      <ul className="navbar-menu flex flex-col justify-center gap-[2px] py-2 px-[24px]">
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
           <Link className="flex flex-row items-center " to="/">
             <img className="w-[24px] h-[24px] mr-3" src={setting} alt="" />

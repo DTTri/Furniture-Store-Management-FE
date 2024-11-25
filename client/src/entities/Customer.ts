@@ -3,7 +3,6 @@ type Customer = {
   name: string;
   phone: string;
   email: string;
-  point: number;
 };
 
 export default Customer;

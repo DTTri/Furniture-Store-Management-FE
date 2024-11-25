@@ -28,7 +28,7 @@ export default function ProvidersTable({
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "INDEX", // use English
+      headerName: "INDEX",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
