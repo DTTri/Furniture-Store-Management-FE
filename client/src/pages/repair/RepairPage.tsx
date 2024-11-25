@@ -105,7 +105,7 @@ export default function RepairPage() {
               Are you sure you want to delete repair order{" "}
               {selectedRepairOrder.id}?
             </h2>
-            <div className="flex gap-4 mt-4">
+            <div className="flex justify-center gap-4 mt-4">
               <Button
                 variant="contained"
                 color="primary"

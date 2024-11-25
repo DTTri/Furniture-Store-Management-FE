@@ -10,5 +10,9 @@ type Staff = {
   accountId: number;
   updatedAt: string;
   createdAt: string;
+  Account: {
+    username: string;
+    status: string;
+  };
 };
 export default Staff;

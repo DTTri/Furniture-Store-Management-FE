@@ -106,7 +106,7 @@ export default function WarrantyPage() {
               Are you sure you want to delete warranty order{" "}
               {selectedWarrantyOrder.id}?
             </h2>
-            <div className="flex gap-4 mt-4">
+            <div className="flex justify-center gap-4 mt-4">
               <Button
                 variant="contained"
                 color="primary"

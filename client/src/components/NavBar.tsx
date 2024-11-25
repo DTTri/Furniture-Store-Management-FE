@@ -66,7 +66,7 @@ export default function NavBar() {
           </Link>
         </li>
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
-          <Link className="flex flex-row items-center py-1" to="/">
+          <Link className="flex flex-row items-center py-1" to="/staff">
             <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
             <span className="text-base font-medium text-[#5D6679]">Staff</span>
           </Link>
@@ -95,6 +95,7 @@ export default function NavBar() {
             <span className="text-base font-medium text-[#5D6679]">Repair</span>
           </Link>
         </li>
+
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
           <Link className="flex flex-row items-center py-1" to="/">
             <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
