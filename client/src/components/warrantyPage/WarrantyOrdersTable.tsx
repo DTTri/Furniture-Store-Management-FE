@@ -1,4 +1,5 @@
-import { Provider } from "../../entities";
+import React from "react";
+import { WarrantyOrder } from "../../entities";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -6,24 +7,28 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import InfoIcon from "@mui/icons-material/Info";
+
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
-export default function ProvidersTable({
-  providers,
-  onEditProvider,
+export default function WarrantyOrdersTable({
+  warrantyOrders,
+  onEditwarrantyOrder,
 }: {
-  providers: Provider[];
-  onEditProvider: (provider: Provider) => void;
+  warrantyOrders: WarrantyOrder[];
+  onEditwarrantyOrder: (warrantyOrder: WarrantyOrder) => void;
 }) {
-  // type Provider = {
+  // type WarrantyOrder = {
   //     id: number;
-  //     name: string;
-  //     address: string;
-  //     phone: string;
-  //     email: string;
-  //     president: string;
-  //     status: ProviderStatus;
+  //     description: string;
+  //     details: string;
+  //     cost: string;
+  //     status: string;
+  //     estimateFinishDate: string;
+  //     finishDate: string;
+  //     createdAt: string;
+  //     updatedAt: string;
+  //     staffId: number;
+  //     warrantyId: number;
   //   };
   const columns: GridColDef[] = [
     {
@@ -41,36 +46,22 @@ export default function ProvidersTable({
       align: "center",
     },
     {
-      field: "name",
-      headerName: "Name",
+      field: "description",
+      headerName: "Description",
       flex: 1,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "address",
-      headerName: "Address",
+      field: "details",
+      headerName: "Details",
       flex: 1,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "phone",
-      headerName: "Phone",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "president",
-      headerName: "President",
+      field: "cost",
+      headerName: "Cost",
       flex: 1,
       headerAlign: "center",
       align: "center",
@@ -78,6 +69,48 @@ export default function ProvidersTable({
     {
       field: "status",
       headerName: "Status",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "estimateFinishDate",
+      headerName: "Estimate Finish Date",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "finishDate",
+      headerName: "Finish Date",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "createdAt",
+      headerName: "Created At",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "updatedAt",
+      headerName: "Updated At",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "staffId",
+      headerName: "Staff ID",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "warrantyId",
+      headerName: "Warranty ID",
       flex: 1,
       headerAlign: "center",
       align: "center",
@@ -91,23 +124,20 @@ export default function ProvidersTable({
           icon={<ModeEditIcon />}
           label="Edit"
           onClick={() => {
-            const providerID = params.id as number;
-            const provider = providers.find((p) => p.id === providerID);
-            if (provider) {
-              onEditProvider(provider);
+            const orderId = params.id as number;
+            const warrantyOrder = warrantyOrders.find(
+              (order) => order.id === orderId
+            );
+            if (warrantyOrder) {
+              onEditwarrantyOrder(warrantyOrder);
             }
           }}
-        />,
-        <GridActionsCellItem
-          icon={<InfoIcon />}
-          label="Info"
-          onClick={() => {}}
         />,
       ],
     },
   ];
-  const rows = providers.map((provider, index) => ({
-    ...provider,
+  const rows = warrantyOrders.map((order, index) => ({
+    ...order,
     index: index + 1,
   }));
   return (

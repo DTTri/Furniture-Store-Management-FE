@@ -37,7 +37,7 @@ export default function NavBar() {
           <Link className="flex flex-row items-center py-1" to="/category">
             <img className="w-[20px] h-[20px] mr-3" src={catalogue} alt="" />
             <span className="text-base font-medium text-[#5D6679]">
-            Category
+              Category
             </span>
           </Link>
         </li>
@@ -74,7 +74,18 @@ export default function NavBar() {
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
           <Link className="flex flex-row items-center py-1" to="/promotion">
             <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Promotion</span>
+            <span className="text-base font-medium text-[#5D6679]">
+              Promotion
+            </span>
+          </Link>
+        </li>
+        {/* warranty */}
+        <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
+          <Link className="flex flex-row items-center py-1" to="/warranty">
+            <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
+            <span className="text-base font-medium text-[#5D6679]">
+              Warranty
+            </span>
           </Link>
         </li>
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
@@ -108,7 +119,6 @@ export default function NavBar() {
           </Link>
         </li>
       </ul>
-
     </nav>
   );
 }
