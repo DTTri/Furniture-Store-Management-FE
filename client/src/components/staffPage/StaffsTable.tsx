@@ -1,4 +1,5 @@
-import { Provider } from "../../entities";
+import React from "react";
+import { Staff } from "../../entities";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -6,25 +7,19 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import InfoIcon from "@mui/icons-material/Info";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
-export default function ProvidersTable({
-  providers,
-  onEditProvider,
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+export default function StaffsTable({
+  staffs,
+  onEditStaff,
+  onDeleteStaff,
 }: {
-  providers: Provider[];
-  onEditProvider: (provider: Provider) => void;
+  staffs: Staff[];
+  onEditStaff: (staff: Staff) => void;
+  onDeleteStaff: (staff: Staff) => void;
 }) {
-  // type Provider = {
-  //     id: number;
-  //     name: string;
-  //     address: string;
-  //     phone: string;
-  //     email: string;
-  //     president: string;
-  //     status: ProviderStatus;
-  //   };
   const columns: GridColDef[] = [
     {
       field: "index",
@@ -41,15 +36,36 @@ export default function ProvidersTable({
       align: "center",
     },
     {
-      field: "name",
-      headerName: "Name",
+      field: "fullname",
+      headerName: "Full Name",
       flex: 1,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "address",
-      headerName: "Address",
+      field: "birth",
+      headerName: "Birth",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "gender",
+      headerName: "Gender",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "idNumber",
+      headerName: "ID Number",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "startDate",
+      headerName: "Start Date",
       flex: 1,
       headerAlign: "center",
       align: "center",
@@ -69,18 +85,14 @@ export default function ProvidersTable({
       align: "center",
     },
     {
-      field: "president",
-      headerName: "President",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "status",
       headerName: "Status",
+      field: "Account.status",
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (value, row) => {
+        return row.Account.status;
+      },
     },
     {
       field: "actions",
@@ -91,23 +103,29 @@ export default function ProvidersTable({
           icon={<ModeEditIcon />}
           label="Edit"
           onClick={() => {
-            const providerID = params.id as number;
-            const provider = providers.find((p) => p.id === providerID);
-            if (provider) {
-              onEditProvider(provider);
+            const staffId = params.id as number;
+            const staff = staffs.find((s) => s.id === staffId);
+            if (staff) {
+              onEditStaff(staff);
             }
           }}
         />,
         <GridActionsCellItem
-          icon={<InfoIcon />}
-          label="Info"
-          onClick={() => {}}
+          icon={<DeleteIcon />}
+          label="Delete"
+          onClick={() => {
+            const staffId = params.id as number;
+            const staff = staffs.find((staff) => staff.id === staffId);
+            if (staff) {
+              onDeleteStaff(staff);
+            }
+          }}
         />,
       ],
     },
   ];
-  const rows = providers.map((provider, index) => ({
-    ...provider,
+  const rows = staffs.map((staff, index) => ({
+    ...staff,
     index: index + 1,
   }));
   return (

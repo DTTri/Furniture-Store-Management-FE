@@ -15,7 +15,6 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { all } from "axios";
 
 export default function AddPromotionPopup({
   onClose,
