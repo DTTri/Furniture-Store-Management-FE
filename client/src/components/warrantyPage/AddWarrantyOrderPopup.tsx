@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import AddWarrantyOrderDTO from "./AddWarrantyOrderDTO";
-
+import UpdateWarrantyOrderDTO from "./UpdateWarrantyOrderDTO";
 import WarrantyOrder from "../../entities/WarrantyOrder";
 import warrantyService from "../../services/warranty.service";
 
@@ -28,7 +28,11 @@ export default function AddWarrantyOrderPopup({
   const [warrantyId, setWarrantyId] = useState(warrantyOrder?.warrantyId || 0);
 
   const validateInputs = () => {
-    if (!description || !details || !staffId || !warrantyId) {
+    if (
+      !description ||
+      !details ||
+      (!warrantyOrder && (!staffId || !warrantyId))
+    ) {
       return false;
     }
     if (cost && isNaN(Number(cost))) {
@@ -71,12 +75,9 @@ export default function AddWarrantyOrderPopup({
       return;
     }
     try {
-      const updatedWarrantyOrder: AddWarrantyOrderDTO = {
+      const updatedWarrantyOrder: UpdateWarrantyOrderDTO = {
         description,
         details,
-        staffId,
-        warrantyId,
-        cost: cost ? Number(cost) : undefined,
         estimateFinishDate,
       };
       const response = await warrantyService.updateWarrantyOrder(
@@ -110,7 +111,7 @@ export default function AddWarrantyOrderPopup({
               onChange={(e) => {
                 setDescription(e.target.value);
               }}
-              defaultValue={warrantyOrder?.description}
+              defaultValue={description}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -127,22 +128,54 @@ export default function AddWarrantyOrderPopup({
               onChange={(e) => {
                 setDetails(e.target.value);
               }}
-              defaultValue={warrantyOrder?.details}
+              defaultValue={details}
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="cost">Cost</label>
-            <input
-              id="newWarrantyOrderCostInput"
-              name="cost"
-              placeholder="Cost"
-              className="border border-gray-300 px-2 py-1 rounded-md"
-              onChange={(e) => {
-                setCost(e.target.value);
-              }}
-              defaultValue={warrantyOrder?.cost}
-            />
-          </div>
+          {!warrantyOrder && (
+            <>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="cost">Cost</label>
+                <input
+                  id="newWarrantyOrderCostInput"
+                  name="cost"
+                  placeholder="Cost"
+                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  onChange={(e) => {
+                    setCost(e.target.value);
+                  }}
+                  defaultValue={cost}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="staffId">Staff ID</label>
+                <input
+                  id="newWarrantyOrderStaffIdInput"
+                  name="staffId"
+                  placeholder="Staff ID"
+                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  required
+                  onChange={(e) => {
+                    setStaffId(Number(e.target.value));
+                  }}
+                  defaultValue={staffId}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="warrantyId">Warranty ID</label>
+                <input
+                  id="newWarrantyOrderWarrantyIdInput"
+                  name="warrantyId"
+                  placeholder="Warranty ID"
+                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  required
+                  onChange={(e) => {
+                    setWarrantyId(Number(e.target.value));
+                  }}
+                  defaultValue={warrantyId}
+                />
+              </div>
+            </>
+          )}
           <div className="flex flex-col gap-2">
             <label htmlFor="estimateFinishDate">Estimate Finish Date</label>
             <input
@@ -153,35 +186,7 @@ export default function AddWarrantyOrderPopup({
               onChange={(e) => {
                 setEstimateFinishDate(e.target.value);
               }}
-              defaultValue={warrantyOrder?.estimateFinishDate}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="staffId">Staff ID</label>
-            <input
-              id="newWarrantyOrderStaffIdInput"
-              name="staffId"
-              placeholder="Staff ID"
-              className="border border-gray-300 px-2 py-1 rounded-md"
-              required
-              onChange={(e) => {
-                setStaffId(Number(e.target.value));
-              }}
-              defaultValue={warrantyOrder?.staffId}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="warrantyId">Warranty ID</label>
-            <input
-              id="newWarrantyOrderWarrantyIdInput"
-              name="warrantyId"
-              placeholder="Warranty ID"
-              className="border border-gray-300 px-2 py-1 rounded-md"
-              required
-              onChange={(e) => {
-                setWarrantyId(Number(e.target.value));
-              }}
-              defaultValue={warrantyOrder?.warrantyId}
+              defaultValue={estimateFinishDate}
             />
           </div>
         </div>

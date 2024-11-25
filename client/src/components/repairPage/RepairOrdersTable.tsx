@@ -1,5 +1,5 @@
 import React from "react";
-import { WarrantyOrder } from "../../entities";
+import { RepairOrder } from "../../entities";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -10,28 +10,16 @@ import {
 
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
-export default function WarrantyOrdersTable({
-  warrantyOrders,
-  onEditWarrantyOrder,
-  onDeleteWarrantyOrder,
+
+export default function RepairOrdersTable({
+  repairOrders,
+  onEditRepairOrder,
+  onDeleteRepairOrder,
 }: {
-  warrantyOrders: WarrantyOrder[];
-  onEditWarrantyOrder: (warrantyOrder: WarrantyOrder) => void;
-  onDeleteWarrantyOrder: (warrantyOrder: WarrantyOrder) => void;
+  repairOrders: RepairOrder[];
+  onEditRepairOrder: (repairOrder: RepairOrder) => void;
+  onDeleteRepairOrder: (repairOrder: RepairOrder) => void;
 }) {
-  // type WarrantyOrder = {
-  //     id: number;
-  //     description: string;
-  //     details: string;
-  //     cost: string;
-  //     status: string;
-  //     estimateFinishDate: string;
-  //     finishDate: string;
-  //     createdAt: string;
-  //     updatedAt: string;
-  //     staffId: number;
-  //     warrantyId: number;
-  //   };
   const columns: GridColDef[] = [
     {
       field: "index",
@@ -44,6 +32,13 @@ export default function WarrantyOrdersTable({
       field: "id",
       headerName: "ID",
       flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "productName",
+      headerName: "Product Name",
+      flex: 1,
       headerAlign: "center",
       align: "center",
     },
@@ -111,8 +106,8 @@ export default function WarrantyOrdersTable({
       align: "center",
     },
     {
-      field: "warrantyId",
-      headerName: "Warranty ID",
+      field: "customerId",
+      headerName: "Customer ID",
       flex: 1,
       headerAlign: "center",
       align: "center",
@@ -127,11 +122,11 @@ export default function WarrantyOrdersTable({
           label="Edit"
           onClick={() => {
             const orderId = params.id as number;
-            const warrantyOrder = warrantyOrders.find(
+            const repairOrder = repairOrders.find(
               (order) => order.id === orderId
             );
-            if (warrantyOrder) {
-              onEditWarrantyOrder(warrantyOrder);
+            if (repairOrder) {
+              onEditRepairOrder(repairOrder);
             }
           }}
         />,
@@ -140,18 +135,18 @@ export default function WarrantyOrdersTable({
           label="Delete"
           onClick={() => {
             const orderId = params.id as number;
-            const warrantyOrder = warrantyOrders.find(
+            const repairOrder = repairOrders.find(
               (order) => order.id === orderId
             );
-            if (warrantyOrder) {
-              onDeleteWarrantyOrder(warrantyOrder);
+            if (repairOrder) {
+              onDeleteRepairOrder(repairOrder);
             }
           }}
         />,
       ],
     },
   ];
-  const rows = warrantyOrders.map((order, index) => ({
+  const rows = repairOrders.map((order, index) => ({
     ...order,
     index: index + 1,
   }));

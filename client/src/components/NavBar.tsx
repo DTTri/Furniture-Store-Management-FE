@@ -88,6 +88,13 @@ export default function NavBar() {
             </span>
           </Link>
         </li>
+        {/* repair */}
+        <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
+          <Link className="flex flex-row items-center py-1" to="/repair">
+            <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
+            <span className="text-base font-medium text-[#5D6679]">Repair</span>
+          </Link>
+        </li>
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
           <Link className="flex flex-row items-center py-1" to="/">
             <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />

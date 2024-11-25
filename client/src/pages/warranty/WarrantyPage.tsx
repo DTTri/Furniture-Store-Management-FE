@@ -29,6 +29,25 @@ export default function WarrantyPage() {
   const [selectedWarrantyOrder, setSelectedWarrantyOrder] =
     useState<WarrantyOrder>(warrantyOrders[0]);
   const [isForUpdate, setIsForUpdate] = useState(false);
+  const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] =
+    useState(false);
+  const handleDeleteWarrantyOrder = async () => {
+    try {
+      const res = await warrantyService.deleteWarrantyOrder(
+        selectedWarrantyOrder.id
+      );
+      if (res.data.EC === 0) {
+        setWarrantyOrders(
+          warrantyOrders.filter((p) => p.id !== selectedWarrantyOrder.id)
+        );
+        console.log("Successfully deleted warranty order");
+      } else {
+        console.error("Failed to delete warranty order:", res.data.EM);
+      }
+    } catch (error) {
+      console.error("Error deleting warranty order:", error);
+    }
+  };
 
   return (
     <div className="bg-white w-full h-screen">
@@ -50,10 +69,14 @@ export default function WarrantyPage() {
       <div className="table-container w-full px-8 py-4">
         <WarrantyOrdersTable
           warrantyOrders={warrantyOrders}
-          onEditwarrantyOrder={(warrantyOrder) => {
+          onEditWarrantyOrder={(warrantyOrder) => {
             setIsAddWarrantyOrderPopupOpen(true);
             setSelectedWarrantyOrder(warrantyOrder);
             setIsForUpdate(true);
+          }}
+          onDeleteWarrantyOrder={(warrantyOrder) => {
+            setSelectedWarrantyOrder(warrantyOrder);
+            setIsConfirmDeletePopupOpen(true);
           }}
         />
       </div>
@@ -75,6 +98,37 @@ export default function WarrantyPage() {
             )
           }
         />
+      )}
+      {isConfirmDeletePopupOpen && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded-lg">
+            <h2>
+              Are you sure you want to delete warranty order{" "}
+              {selectedWarrantyOrder.id}?
+            </h2>
+            <div className="flex gap-4 mt-4">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setIsConfirmDeletePopupOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  handleDeleteWarrantyOrder();
+                  setIsConfirmDeletePopupOpen(false);
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
