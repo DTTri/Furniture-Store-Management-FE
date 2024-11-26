@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Logo from "../assets/Logo.png";
+import Logo from "../assets/Logo_App.png";
 import audit from "../assets/audit.svg";
 import inventory from "../assets/inventory.svg";
 import product from "../assets/product.svg";
@@ -12,9 +12,8 @@ import logout from "../assets/logout.svg";
 export default function NavBar() {
   return (
     <nav className="navbar bg-white h-full shadow-md w-[280px]">
-      <a href="#" className="w-full flex flex-row items-center p-[16px]">
-        <img src={Logo} className="w-[48px] h-[48px] mr-3" alt="" />
-        <span className="font-bold text-xl">Nội thất đẹp</span>
+      <a href="#" className="w-full max-h-[100px] flex flex-row items-center justify-center pr-4">
+        <img src={Logo} className="block object-cover" alt="" />
       </a>
       <ul className="navbar-menu flex flex-col justify-center gap-[2px] py-2 px-[24px] mb-4">
         <li className="navbar-menu-item py-2 px-2 hover:bg-[#F5F6F8]">
