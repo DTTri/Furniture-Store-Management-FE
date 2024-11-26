@@ -485,6 +485,7 @@ export default function CreateInvoicePopup({
               onChange={(e) => {
                 if (!curPromotion) {
                   alert("There is no promotion event today");
+                  e.target.checked = false;
                   return;
                 }
                 if (e.target.checked) {                  
