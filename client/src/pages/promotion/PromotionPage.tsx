@@ -12,6 +12,7 @@ export default function PromotionPage() {
     const fetchPromotions = async () => {
       try {
         const res = await promotionService.getAllPromotions();
+        console.log(res);
         if (res.data.EC === 0) {
           setPromotions(res.data.DT);
         } else {
