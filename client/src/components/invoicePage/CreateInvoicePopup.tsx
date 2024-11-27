@@ -31,8 +31,6 @@ import InvoiceDetailDTO from "./InvoiceDetailDTO";
 import AddCustomerPopup from "../customerPage/AddCustomerPopup";
 import Invoice from "../../entities/Invoice";
 import Promotion from "../../entities/Promotion";
-import { id } from "date-fns/locale";
-import { set } from "date-fns";
 
 export default function CreateInvoicePopup({
   onClose,
@@ -133,10 +131,10 @@ export default function CreateInvoicePopup({
     const newRow: InvoiceDetailDTO = {
       id: selectedVariant?.id,
       SKU: selectedVariant.SKU,
-      buyingPrice: selectedVariant.buyingPrice,
+      price: selectedVariant.price,
       promotion: promotionSelected,
       quantity: quatanty,
-      cost: selectedVariant.buyingPrice * quatanty,
+      cost: selectedVariant.price * quatanty,
     };
     console.log(newRow);
     setRows([...rows, newRow]);
@@ -201,8 +199,8 @@ export default function CreateInvoicePopup({
       align: "center",
     },
     {
-      field: "buyingPrice",
-      headerName: "Buying Price",
+      field: "price",
+      headerName: "Unit Price",
       flex: 1,
       headerAlign: "center",
       align: "center",

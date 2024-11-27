@@ -3,7 +3,7 @@ type InvoiceDetailDTO = {
     SKU: string, 
     quantity: number, 
     cost: number,
-    buyingPrice: number,
+    price: number,
     promotion: number
 }
 

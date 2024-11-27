@@ -14,19 +14,19 @@ import RepairPage from "./pages/repair/RepairPage";
 import WarrantyPage from "./pages/warranty/WarrantyPage";
 import LoginPage from "./pages/auth/LoginPage";
 import UserProtect from "./pages/UserProtect";
-import ForgotPasswordPage from "./pages/auth/ForgotPassword";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage/>} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/" element={<UserProtect><Layout/></UserProtect>}>
         <Route path="/" element={<ProductPage />} />
         <Route path="/inventory" element={<InventoryPage />} />
         <Route path="/invoice" element={<InvoicePage />} />
         <Route path="/provider" element={<ProviderPage />} />
         <Route path="/customer" element={<CustomerPage />} />
-        <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
         <Route path="/category" element={<CategoryPage />} />
         <Route path="/promotion" element={<PromotionPage />} />
         <Route path="/staff" element={<StaffPage />} />
