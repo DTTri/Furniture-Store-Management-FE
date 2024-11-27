@@ -19,7 +19,8 @@ import ForgotPasswordPage from "./pages/auth/ForgotPassword";
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/loginpage" element={<LoginPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route
         path="/"
         element={
@@ -33,14 +34,12 @@ function App() {
         <Route path="/invoice" element={<InvoicePage />} />
         <Route path="/provider" element={<ProviderPage />} />
         <Route path="/customer" element={<CustomerPage />} />
-        <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
         <Route path="/category" element={<CategoryPage />} />
         <Route path="/promotion" element={<PromotionPage />} />
         <Route path="/staff" element={<StaffPage />} />
         <Route path="/repair" element={<RepairPage />} />
         <Route path="/warranty" element={<WarrantyPage />} />
-      </Route>{" "}
-      {/* <Route path="/loginpage" element={<LoginPage />} /> */}
+      </Route>
     </Routes>
   );
 }
