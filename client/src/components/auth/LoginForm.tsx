@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Checkbox, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -13,6 +13,12 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+      setShow(true);  // Khi trang load xong, bật hiệu ứng mượt mà
+  }, []);
 
   const nav = useNavigate();
 
@@ -44,9 +50,13 @@ export default function LoginForm() {
   }
 
   return (
-    <div className='max-w-[420px] w-full px-9 py-9 bg-[#fff] rounded-[24px] flex flex-col mx-auto'>
-      <h3 className='text-[#000] text-sm font-normal'>WELCOME BACK</h3>
-      <h2 className='text-[#000] text-2xl font-semibold mb-5'>Sign In to your Account</h2>
+    <div
+            className={`duration-700 ${show ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}
+            style={{ transition: 'all 0.7s ease' }}
+        >
+    <div className='max-w-[420px] w-full px-9 py-11 bg-[#fff] rounded-[24px] flex flex-col mx-auto'>
+      <h3 className='text-[#000] text-sm font-medium'>WELCOME BACK</h3>
+      <h2 className='text-[#000] text-2xl font-bold mb-5'>Sign In to your Account</h2>
       <div className="flex flex-col gap-5">
           <TextField value={username} onChange={(e) => {
             console.log(e.target.value);
@@ -77,7 +87,7 @@ export default function LoginForm() {
         </FormControl>
       </div>
       <div className="flex flex-row items-center justify-between w-full mt-3 mb-3">
-        <FormControlLabel control={<Checkbox  value={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />} label="Remember me" style={{fontFamily: "Nunito Sans"}}/>
+        <FormControlLabel control={<Checkbox  value={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />} label="Remember me" style={{fontSize: "12px"}}/>
       </div>
       <Button onClick={handleOnLogin} variant='outlined' style={{backgroundColor: '#1266da', color: '#fff', fontSize: '20px', fontWeight: 'bold', textTransform: 'none', borderRadius: '4px', padding: '8px 0', width: '100%', cursor: 'pointer'}}>Sign in</Button>
     <div className="w-full flex flex-row justify-center mt-4">
@@ -86,6 +96,7 @@ export default function LoginForm() {
     {loading && (
       <LoadingProgress  />
     )}
+    </div>
     </div>
   )
 }
