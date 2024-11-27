@@ -1,12 +1,12 @@
-import { Product } from "../../entities";
-import { categories } from "../../constants";
+import { Category, Product } from "../../entities";
 import { Button } from "@mui/material";
 import AddProductDTO from "./AddProductDTO";
-import { useState } from "react";
-import { productService } from "../../services";
+import { useState, useRef, useEffect } from "react";
+import { categoryService, productService } from "../../services";
 import http from "../../api/http";
 import "react-dropzone-uploader/dist/styles.css";
-import Dropzone, { IFileWithMeta } from "react-dropzone-uploader";
+import Dropzone, { IFileWithMeta, StatusValue } from "react-dropzone-uploader";
+
 export default function AddProductPopup({
   onClose,
   onProductCreated,
@@ -18,45 +18,43 @@ export default function AddProductPopup({
   product?: Product;
   onProductUpdated: (product: Product) => void;
 }) {
-  const catalogues = [
-    {
-      id: 1,
-      name: "Bàn ghế gỗ",
-    },
-    {
-      id: 2,
-      name: "Bàn ghế sofa",
-    },
-  ];
   const [name, setName] = useState(product?.name || "");
-  const [category, setCategory] = useState(product?.category || categories[0]);
   const [description, setDescription] = useState(product?.description || "");
-  const [catalogueId, setCatalogueId] = useState(
-    product?.catalogueId || catalogues[0].id
-  );
+  const [catalogues, setCatalogues] = useState<Category[]>([]);
+  const [catalogueId, setCatalogueId] = useState(product?.catalogueId || 0);
   const [image, setImage] = useState(product?.image || "");
   const [warranty, setWarranty] = useState(product?.warranty || 0);
 
   const [presignedUrl, setPresignedUrl] = useState("");
   const [key, setKey] = useState("");
-  //   type AddProductDTO = {
-  //     name: string;
-  //     category: string;
-  //     description: string;
-  //     catalogueId: number;
-  //     warranty: number;
-  //   };
-  //   (method) onChangeStatus?(file: IFileWithMeta, status: StatusValue, allFiles: IFileWithMeta[]): {
-  //     meta: {
-  //         [name: string]: any;
-  //     };
-  // } | void
+  const dropzoneRef = useRef<any>(null);
+
+  useEffect(() => {
+    const fetchCatalogues = async () => {
+      try {
+        const response = await categoryService.getAllCategory();
+        console.log(response);
+        if (response.EC === 0) {
+          setCatalogues(response.DT);
+          if (response.DT.length > 0) {
+            setCatalogueId(response.DT[0].id);
+          }
+        } else {
+          console.error("Failed to fetch catalogues:", response.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching catalogues:", error);
+      }
+    };
+    fetchCatalogues();
+  }, []);
   const handleChangeStatus = (
     { meta }: { meta: { name: string } },
-    status: string
+    status: StatusValue
   ) => {
     console.log(status, meta);
   };
+
   const handleSubmit = async (files: IFileWithMeta[]) => {
     const f = files[0];
 
@@ -83,10 +81,13 @@ export default function AddProductPopup({
         throw new Error("Failed to upload image to S3");
       }
       console.log(result);
+      return true;
     } catch (error) {
       console.error("Error uploading image:", error);
+      return false;
     }
   };
+
   const handleAddProduct = async () => {
     if (!name || name === "") {
       alert("Name is required");
@@ -96,7 +97,6 @@ export default function AddProductPopup({
     const uploadedImage = "https://seuit-qlnt.s3.amazonaws.com/" + key;
     const newProductDTO: AddProductDTO = {
       name,
-      category,
       description,
       catalogueId,
       warranty,
@@ -121,7 +121,6 @@ export default function AddProductPopup({
     }
     if (
       name === product?.name &&
-      category === product?.category &&
       description === product?.description &&
       catalogueId === product?.catalogueId &&
       warranty === product?.warranty &&
@@ -136,7 +135,6 @@ export default function AddProductPopup({
     }
     const newProductDTO: AddProductDTO = {
       name,
-      category,
       description,
       catalogueId,
       warranty,
@@ -159,21 +157,48 @@ export default function AddProductPopup({
     }
   };
 
+  const handleCreateButtonClick = async () => {
+    if (dropzoneRef.current && dropzoneRef.current.files.length > 0) {
+      const uploadSuccess = await handleSubmit(dropzoneRef.current.files);
+      if (uploadSuccess) {
+        handleAddProduct();
+      }
+    } else {
+      handleAddProduct();
+    }
+  };
+
+  const handleUpdateButtonClick = async () => {
+    if (dropzoneRef.current && dropzoneRef.current.files.length > 0) {
+      const uploadSuccess = await handleSubmit(dropzoneRef.current.files);
+      if (uploadSuccess) {
+        handleUpdateProduct();
+      }
+    } else {
+      handleUpdateProduct();
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup bg-white rounded-xl p-4 w-1/2 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
         <div className="container w-full flex justify-around ">
-          <div className="image-container basis-[45%] flex flex-col justify-center items-center gap-4">
+          <div className="image-container basis-[45%] flex justify-center items-center gap-4 overflow-hidden ">
             <Dropzone
+              ref={dropzoneRef}
               onChangeStatus={handleChangeStatus}
-              onSubmit={handleSubmit}
               maxFiles={1}
               multiple={false}
-              canCancel={false}
-              inputContent="Drop A File"
-              styles={{
-                dropzone: { width: 200, height: 100 },
-                dropzoneActive: { borderColor: "green" },
+              inputContent="Drop a file here or click to browse"
+              accept="image/*"
+              submitButtonDisabled={false}
+              classNames={{
+                dropzone: `w-full min-h-[250px] bg-white text-2xl text-placeHolder flex items-center justify-center text-center`,
+                submitButton: "hidden",
+                previewImage:
+                  "w-full rounded-md flex items-center justify-center",
+                submitButtonContainer: "hidden",
+                inputLabel: "text-blue-500 hover:text-blue-700 cursor-pointer",
               }}
             />
           </div>
@@ -189,21 +214,6 @@ export default function AddProductPopup({
                 onChange={(e) => setName(e.target.value)}
                 defaultValue={product?.name}
               />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="category">Category</label>
-              <select
-                name="category"
-                id="newProductCategoryInput"
-                defaultValue={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                {categories.map((category, index) => (
-                  <option key={index} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="description">Description</label>
@@ -225,7 +235,8 @@ export default function AddProductPopup({
                 name="catalogue"
                 id="newProductCatalogueInput"
                 onChange={(e) => setCatalogueId(Number(e.target.value))}
-                defaultValue={catalogueId}
+                className="border border-gray-300 px-2 py-1 rounded-md"
+                //defaultValue={catalogueId}
               >
                 {catalogues.map((catalogue, index) => (
                   <option key={index} value={catalogue.id}>
@@ -235,7 +246,7 @@ export default function AddProductPopup({
               </select>
             </div>
             <div className="flex flex-col gap-2">
-              <label htmlFor="warranty">Warranty</label>
+              <label htmlFor="warranty">Warranty (month) </label>
               <input
                 type="number"
                 id="newProductWarrantyInput"
@@ -267,7 +278,7 @@ export default function AddProductPopup({
               style={{
                 textTransform: "none",
               }}
-              onClick={handleUpdateProduct}
+              onClick={handleUpdateButtonClick}
               id="confirmUpdateProductButton"
             >
               Update
@@ -278,7 +289,7 @@ export default function AddProductPopup({
               style={{
                 textTransform: "none",
               }}
-              onClick={handleAddProduct}
+              onClick={handleCreateButtonClick}
               id="confirmAddProductButton"
             >
               Create
