@@ -13,6 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   goodsReceiptService,
   productService,
+  providerService,
   variantService,
 } from "../../services";
 import CreateGoodsReceiptDTO from "./CreateGoodsReceiptDTO";
@@ -28,6 +29,8 @@ interface ReceiptTableRow {
 }
 
 export default function ImportPopup({ onClose }: { onClose: () => void }) {
+  const [providers, setProviders] = useState<Product[]>([]);
+  const [providerId, setProviderId] = useState(0);
   const [products, setProducts] = useState<Product[]>([]);
   const [productVariants, setProductVariants] = useState<ProductVariant[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -60,7 +63,24 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
         console.error("Failed to fetch variants:", variantsResponse.data.EM);
       }
     };
+    const fetchProviders = async () => {
+      try {
+        const res = await providerService.getAllProviders();
+        if (res.data.EC === 0) {
+          setProviders(res.data.DT);
+          if (res.data.DT.length > 0) {
+            setProviderId(res.data.DT[0].id);
+          }
+        } else {
+          console.error("Failed to fetch providers:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching providers:", error);
+      }
+    };
+
     fetchProductsAndVariants();
+    fetchProviders();
   }, []);
 
   useEffect(() => {
@@ -188,9 +208,10 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
 
   const [totalCost, setTotalCost] = useState(0);
   useEffect(() => {
-    const newTotalCost = rows.reduce((acc, row) => acc + row.cost, 0);
+    const newTotalCost =
+      rows.reduce((acc, row) => acc + row.cost, 0) + shippingCost;
     setTotalCost(newTotalCost);
-  }, [rows]);
+  }, [rows, shippingCost]);
 
   const handleImport = async () => {
     const goodsReceiptDetailsData = rows.map((row) => ({
@@ -202,6 +223,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       shipping: shippingCost,
       GoodsReceiptDetailsData: goodsReceiptDetailsData,
       totalCost: totalCost,
+      providerId: providerId,
     };
     console.log(newGoodsReceipt);
     try {
@@ -226,64 +248,82 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
         <button className="absolute top-2 right-2" onClick={onClose}>
           x
         </button>
-        <div className="add-variant-to-import basis-1/3 min-w-96 border-r-2">
-          <h3 className="text-center font-bold">Choose variant</h3>
-          <form
-            id="addRowForm"
-            className="flex flex-col gap-4 p-4"
-            onSubmit={handleAddRow}
-          >
+        <div className="add-variant-to-import basis-1/3 min-w-96 border-r-2 flex flex-col gap-4  px-4">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="provider" className="text-center font-bold text-lg">
+              Choose provider
+            </label>
             <select
-              id="selectedProduct"
+              id="provider"
+              onChange={(e) => setProviderId(parseInt(e.target.value))}
               className="border border-gray-300 rounded-md p-1"
-              onChange={(e) => {
-                setSelectedVariant(null);
-                const selectedProductId = parseInt(e.target.value);
-                setSelectedProduct(
-                  products.find(
-                    (product) => product.id === selectedProductId
-                  ) ?? null
-                );
-              }}
             >
-              <option value="">Choose product</option>
-              {products.map((product) => (
-                <option key={product.id} value={product.id}>
-                  {product.name}
+              {providers.map((provider) => (
+                <option key={provider.id} value={provider.id}>
+                  {provider.name}
                 </option>
               ))}
             </select>
-            <select
-              id="selectedVariant"
-              className="border border-gray-300 rounded-md p-1"
-              disabled={!selectedProduct}
-              onChange={(e) => {
-                const selectedVariantId = parseInt(e.target.value);
-                setSelectedVariant(
-                  filteredProductVariants.find(
-                    (variant) => variant.id === selectedVariantId
-                  ) ?? null
-                );
-              }}
+          </div>
+          <div>
+            <p className="text-center font-bold text-lg">Choose variant</p>
+            <form
+              id="addRowForm"
+              className="flex flex-col gap-4"
+              onSubmit={handleAddRow}
             >
-              <option value="">Choose variant</option>
-              {filteredProductVariants.map((variant) => (
-                <option key={variant.id} value={variant.id}>
-                  {`${variant.color} - ${variant.size}`}
-                </option>
-              ))}
-            </select>
-            <Button
-              type="submit"
-              variant="contained"
-              style={{
-                textTransform: "none",
-              }}
-              id="addRowButton"
-            >
-              Add
-            </Button>
-          </form>
+              <select
+                id="selectedProduct"
+                className="border border-gray-300 rounded-md p-1"
+                onChange={(e) => {
+                  setSelectedVariant(null);
+                  const selectedProductId = parseInt(e.target.value);
+                  setSelectedProduct(
+                    products.find(
+                      (product) => product.id === selectedProductId
+                    ) ?? null
+                  );
+                }}
+              >
+                <option value="">Choose product</option>
+                {products.map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                id="selectedVariant"
+                className="border border-gray-300 rounded-md p-1"
+                disabled={!selectedProduct}
+                onChange={(e) => {
+                  const selectedVariantId = parseInt(e.target.value);
+                  setSelectedVariant(
+                    filteredProductVariants.find(
+                      (variant) => variant.id === selectedVariantId
+                    ) ?? null
+                  );
+                }}
+              >
+                <option value="">Choose variant</option>
+                {filteredProductVariants.map((variant) => (
+                  <option key={variant.id} value={variant.id}>
+                    {`${variant.color} - ${variant.size}`}
+                  </option>
+                ))}
+              </select>
+              <Button
+                type="submit"
+                variant="contained"
+                style={{
+                  textTransform: "none",
+                }}
+                id="addRowButton"
+              >
+                Add
+              </Button>
+            </form>
+          </div>
         </div>
         <div className="imported-variants basis-[58%] h-full flex flex-col items-center gap-3">
           <h2 className="text-center text-xl font-bold">Goods Receipt</h2>

@@ -2,6 +2,7 @@ type CreateGoodsReceiptDTO = {
   shipping: number;
   GoodsReceiptDetailsData: GoodsReceiptDetailsData[];
   totalCost: number;
+  providerId: number;
 };
 
 type GoodsReceiptDetailsData = {
