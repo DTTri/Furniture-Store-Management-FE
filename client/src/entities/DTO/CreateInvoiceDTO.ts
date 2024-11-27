@@ -7,7 +7,6 @@ export type CreateInvoiceDetailDTO = {
 type CreateInvoiceDTO = {
     InvoiceDetailsData: CreateInvoiceDetailDTO[];
     totalCost: number;
-    staffId: number
     customerId: number
 }
 

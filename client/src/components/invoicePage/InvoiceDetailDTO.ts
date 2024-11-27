@@ -1,10 +1,12 @@
 type InvoiceDetailDTO = {
     id: number,  // variantId
     SKU: string, 
+    name: string,
     quantity: number, 
     cost: number,
-    buyingPrice: number,
-    promotion: number
+    price: number,
+    discount: number,
+    discountedPrice: number,
 }
 
 export default InvoiceDetailDTO;

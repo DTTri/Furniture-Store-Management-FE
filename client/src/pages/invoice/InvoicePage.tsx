@@ -14,16 +14,24 @@ import { InvoiceDetailTable } from "../../components";
 import CreateInvoicePopup from "../../components/invoicePage/CreateInvoicePopup";
 import Invoice from "../../entities/Invoice";
 import invoiceService from "../../services/invoiceService";
+import PayInvoicePopup from "../../components/invoicePage/PayInvoicePopup";
 
 export default function InvoicePage() {
   const [isCreateInvoicePopupOpen, setIsCreateInvoicePopupOpen] =
     useState<boolean>(false);
   const [invoiceList, setInvoiceList] = useState<Invoice[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+
   const [isInvoiceDetailPopupOpen, setIsInvoiceDetailPopupOpen] =
     useState(false);
-  const handleOnClose = () => {
+  const [isPayInvoicePopupOpen, setIsPayInvoicePopupOpen] =
+    useState(true);
+
+  const handleOnCloseDetail = () => {
     setIsInvoiceDetailPopupOpen(false);
+  };
+  const handleOnClosePayInvoice = () => {
+    setIsPayInvoicePopupOpen(false);
   };
 
   useEffect(() => {
@@ -171,11 +179,17 @@ export default function InvoicePage() {
           onInvoiceCreated={(createdInvoice: Invoice) => {
             const updatedInvoiceList = [...invoiceList, createdInvoice];
             setInvoiceList(updatedInvoiceList.map((invoice, index) => ({ ...invoice, index: index + 1 })));
+            setIsCreateInvoicePopupOpen(false);
+            setSelectedInvoice(createdInvoice);
+            setIsPayInvoicePopupOpen(true);
           }}
         />
       )}
       {isInvoiceDetailPopupOpen && selectedInvoice && (
-        <InvoiceDetailTable invoice={selectedInvoice} onClose={handleOnClose} />
+        <PayInvoicePopup invoice={selectedInvoice} onClose={handleOnCloseDetail} />
+      )}
+      {isPayInvoicePopupOpen && selectedInvoice && (
+        <PayInvoicePopup invoice={selectedInvoice} onClose={handleOnClosePayInvoice} />
       )}
     </div>
   );
