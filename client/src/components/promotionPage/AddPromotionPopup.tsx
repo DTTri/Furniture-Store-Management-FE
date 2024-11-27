@@ -290,7 +290,7 @@ export default function AddPromotionPopup({
                 <select
                   id="selectedVariant"
                   className="border border-gray-300 rounded-md p-1"
-                  disabled={!selectedProduct}
+                  disabled={promotion && !isEditing && !selectedProduct}
                   onChange={(e) => {
                     const selectedVariantId = parseInt(e.target.value);
                     setSelectedVariant(
@@ -299,7 +299,6 @@ export default function AddPromotionPopup({
                       ) ?? null
                     );
                   }}
-                  disabled={promotion && !isEditing}
                 >
                   <option value="">Choose variant</option>
                   {productVariants.map((variant) => (
