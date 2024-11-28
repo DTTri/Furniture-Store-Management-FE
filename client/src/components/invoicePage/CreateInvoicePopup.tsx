@@ -14,7 +14,7 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Product, ProductVariant } from "../../entities";
 import Customer from "../../entities/Customer";
 import CreateInvoiceDTO, {
@@ -42,10 +42,9 @@ export default function CreateInvoicePopup({
   updatedInvoice?: Invoice | null;
 }) {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
-  const [productList, setProductList] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  //const [productList, setProductList] = useState<Product[]>([]);
+  //const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [variantList, setVariantList] = useState<ProductVariant[]>([]);
-  const [variantFiltered, setvariantFiltered] = useState<ProductVariant[]>([]);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     null
   );
@@ -56,12 +55,10 @@ export default function CreateInvoicePopup({
       try {
         const [
           customersResponse,
-          productResponse,
           variantsResponse,
           promtionResponse,
         ] = await Promise.all([
           customerService.getAllCustomers(),
-          productService.getAllProducts(),
           variantService.getAllVariants(),
           promotionService.getPromotionByDate(
             new Date().toISOString().slice(0, 10)
@@ -73,15 +70,8 @@ export default function CreateInvoicePopup({
           console.log("Failed to fetch customers:", customersResponse.data.EM);
         }
 
-        if (productResponse.data.EC === 0) {
-          setProductList(productResponse.data.DT);
-        } else {
-          console.log("Failed to fetch products:", productResponse.data.EM);
-        }
-
         if (variantsResponse.data.EC === 0) {
           setVariantList(variantsResponse.data.DT);
-          setvariantFiltered(variantsResponse.data.DT);
         } else {
           console.log("Failed to fetch variants:", variantsResponse.data.EM);
         }
@@ -338,14 +328,32 @@ export default function CreateInvoicePopup({
     setReturnedCustomer(true);
   };
 
-  useEffect(() => {
-    if (selectedProduct) {
-      const filtedVariant = variantList.filter(
-        (variant) => variant.productId === selectedProduct.id
-      );
-      setvariantFiltered(filtedVariant);
+  const handleOnSearchVariant = () => {
+    const inputElement = document.getElementById(
+      "searchProductVariantInput"
+    ) as HTMLInputElement;
+    console.log("inputElement", inputElement.value);
+    console.log("variantList", variantList);
+    const searchedVariantInList = variantList.find(
+      (variant) => variant.SKU === inputElement.value
+    );
+    console.log("searchedVariantInList", searchedVariantInList);
+    if (searchedVariantInList) {
+      setSelectedVariant(searchedVariantInList);
     }
-  }, [selectedProduct]);
+    else {
+      setSelectedVariant(null);
+    }
+  };
+
+  // useEffect(() => {
+  //   if (selectedProduct) {
+  //     const filtedVariant = variantList.filter(
+  //       (variant) => variant.productId === selectedProduct.id
+  //     );
+  //     setvariantFiltered(filtedVariant);
+  //   }
+  // }, [selectedProduct]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -381,10 +389,10 @@ export default function CreateInvoicePopup({
                 textTransform: "none",
                 fontSize: "14px",
                 padding: "6px",
-                maxWidth: "100px",
+                maxWidth: "140px",
               }}
             >
-              Search
+              Search Customer
             </Button>
             { (returnedCustomer || updatedInvoice?.Customer) && (customerInfo != null ? (
               <div className="col-span-4 pr-5 w-full flex flex-row justify-between">
@@ -448,8 +456,8 @@ export default function CreateInvoicePopup({
             </FormControl> */}
           </div>
 
-          <div className="row-2 py-2 pb-6 px-4 grid grid-cols-[14%_1fr_14%_1fr] items-center grid-rows-[1fr_20%] gap-x-3 gap-y-4 border-b-[1px] border-b-slate-400">
-            <span className="text-base text-[#667085] block">Product</span>
+          <div className="row-2 py-2 pb-6 px-4 grid grid-cols-[14%_1fr_24%_1fr] items-center grid-rows-[1fr_1fr_20%] gap-x-3 gap-y-4 border-b-[1px] border-b-slate-400">
+            {/* <span className="text-base text-[#667085] block">Product</span>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Product
@@ -474,11 +482,11 @@ export default function CreateInvoicePopup({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
             <InputLabel id="demo-select-small-label">
-              Select Variant SKU
+              Type Variant SKU
             </InputLabel>
-            <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
+            {/* <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Variant SKU
               </InputLabel>
@@ -501,7 +509,23 @@ export default function CreateInvoicePopup({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
+            <input type="text" placeholder="Search SKU" className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3" id="searchProductVariantInput"
+            />
+            <Button onClick={handleOnSearchVariant} className="col-span-2" variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px", padding: "6px", maxWidth: "140px" }}>Search Variant</Button>
+            {selectedVariant && (
+              <div className="col-span-4 pr-5 w-full flex flex-col items-center">
+                <div className="w-full flex flex-row gap-12 items-center">
+                  <p className="font-semibold">SKU: {selectedVariant.SKU}</p>
+                  <p className="font-semibold">Color: {selectedVariant.color}</p>
+                  <p className="font-semibold">Size: {selectedVariant.size}</p>
+                </div>
+                <div className="w-full flex flex-row gap-12 items-center">
+                  <p className="font-semibold">Price: {selectedVariant.price}</p>
+                  <p className="font-semibold">Available: {selectedVariant.Inventories?.[0]?.available || 0}</p>
+                </div>
+              </div>
+            )}
             <span className="text-base text-[#667085] block">Quantanty</span>
             <input
               type="number"
@@ -511,11 +535,11 @@ export default function CreateInvoicePopup({
               onChange={(e) => setQuantanty(Number.parseInt(e.target.value))}
               className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3"
             />
-            <div className="col-span-2 w-full flex flex-row justify-end">
+            <div className="col-span-2 w-full">
               <Button
                 variant="contained"
                 color="primary"
-                style={{ textTransform: "none", marginRight: "100px" }}
+                style={{ textTransform: "none", fontSize: "14px", padding: "6px", width: "140px" }}
                 onClick={handleAddProduct}
               >
                 Add product
