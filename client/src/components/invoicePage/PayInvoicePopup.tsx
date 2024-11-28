@@ -20,6 +20,7 @@ import {
 } from "@mui/x-data-grid";
 import { format } from "date-fns";
 import { Customer, ProductVariant } from "../../entities";
+import ConfirmPopup from "../ConfirmPopup";
 
 export default function PayInvoicePopup({
   onClose,
@@ -39,6 +40,8 @@ export default function PayInvoicePopup({
   const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
   const [totalCost, setTotalCost] = useState<number>(0);
   const[cash, setCash] = useState<number>(0);
+
+  //const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchInvoiceData = async () => {
@@ -100,7 +103,6 @@ export default function PayInvoicePopup({
       const response = await invoiceService.acceptInvoice(invoice.id);
       if (response.EC === 0) {
         onPaymentSuccess(response.DT);
-        onClose();
       } else {
         alert("Payment failed");
       }
@@ -206,7 +208,7 @@ export default function PayInvoicePopup({
           <CloseIcon
             className="cursor-pointer hover:bg-slate-100 mb-2 rounded-full"
             sx={{ width: 25, height: 25 }}
-            onClick={onClose}
+            onClick={() => onClose()}
           />
         </div>
         <div className="w-full grid">
@@ -321,7 +323,7 @@ export default function PayInvoicePopup({
               backgroundColor: "#D91316",
             }}
             id=""
-            onClick={onClose}
+            onClick={() => onClose()}
           >
             Cancle
           </Button>

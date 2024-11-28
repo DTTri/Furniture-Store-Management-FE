@@ -114,7 +114,7 @@ export default function CreateInvoicePopup({
       cost: detail.cost,
     };
   }));
-  const [totalCost, setTotalCost] = useState<number>(0);
+  const [totalCost, setTotalCost] = useState<number>(updatedInvoice?.totalCost || 0);
 
   const [isShowAddCustomerPopup, setIsShowAddCustomerPopup] =
     useState<boolean>(false);

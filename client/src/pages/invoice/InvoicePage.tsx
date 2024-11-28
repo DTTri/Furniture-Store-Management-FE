@@ -22,7 +22,6 @@ export default function InvoicePage() {
     useState<boolean>(false);
   const [invoiceList, setInvoiceList] = useState<Invoice[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-  const [updatedInvoice, setUpdatedInvoice] = useState<Invoice | null>(null);
 
   const [isInvoiceDetailPopupOpen, setIsInvoiceDetailPopupOpen] =
     useState(false);
@@ -31,10 +30,12 @@ export default function InvoicePage() {
 
   const handleOnCloseDetail = () => {
     setIsInvoiceDetailPopupOpen(false);
+    setSelectedInvoice(null);
   };
   const handleOnClosePayInvoice = () => {
     setIsPayInvoicePopupOpen(false);
   };
+
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -192,27 +193,44 @@ export default function InvoicePage() {
         <CreateInvoicePopup
           onClose={() => {
             setIsCreateInvoicePopupOpen(false);
-            setUpdatedInvoice(null);
+            setSelectedInvoice(null);
           }}
           onInvoiceCreated={(createdInvoice: Invoice) => {
-            const updatedInvoiceList = [...invoiceList, createdInvoice];
-            setInvoiceList(updatedInvoiceList.map((invoice, index) => ({ ...invoice, index: index + 1 })));
+            setInvoiceList([...invoiceList, createdInvoice]);
             setIsCreateInvoicePopupOpen(false);
             setSelectedInvoice(createdInvoice);
             setIsPayInvoicePopupOpen(true);
           }}
-          updatedInvoice={updatedInvoice}
+          updatedInvoice={selectedInvoice}
         />
       )}
       {isInvoiceDetailPopupOpen && selectedInvoice && (
         <InvoiceDetailTable invoice={selectedInvoice} onClose={handleOnCloseDetail} />
       )}
-      {isPayInvoicePopupOpen && selectedInvoice && (
+      {(isPayInvoicePopupOpen && selectedInvoice) && (
         <PayInvoicePopup onEditInvoice={(updatedInvoice) => {
           setIsPayInvoicePopupOpen(false);
-          setUpdatedInvoice(updatedInvoice);
+          setSelectedInvoice(updatedInvoice);
           setIsCreateInvoicePopupOpen(true);
-        }} onPaymentSuccess={() => {}} invoice={selectedInvoice} onClose={handleOnClosePayInvoice} />
+        }} 
+        invoice={selectedInvoice}  
+        onPaymentSuccess={(paidInvoice) => {
+          const existedInvoice = invoiceList.find(invoice => invoice.id === paidInvoice.id);
+          if(existedInvoice) {
+            const updatedInvoiceList = invoiceList.map((invoice, index) => invoice.id === paidInvoice.id ? {
+              ...invoice,
+              status: paidInvoice.status,
+              index: index + 1
+            } : invoice);
+            setInvoiceList(updatedInvoiceList);
+          }
+          setSelectedInvoice(null);
+          setIsPayInvoicePopupOpen(false);
+        }} 
+        onClose={() => {
+          setSelectedInvoice(null);
+          setIsPayInvoicePopupOpen(false);
+        }} />
       )}
     </div>
   );
