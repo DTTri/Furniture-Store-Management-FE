@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Invoice from "../../entities/Invoice";
-import { customerService, invoiceService } from "../../services";
+import { customerService, invoiceService, variantService } from "../../services";
 import InvoiceDetailDTO from "./InvoiceDetailDTO";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -19,25 +19,29 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { format } from "date-fns";
-import { Customer } from "../../entities";
+import { Customer, ProductVariant } from "../../entities";
 
 export default function PayInvoicePopup({
   onClose,
+  onPaymentSuccess,
+  onEditInvoice,
   invoice,
 }: {
   onClose: () => void;
+  onPaymentSuccess: (paidInvoice: Invoice) => void;
+  onEditInvoice: (updatedInvoice: Invoice | null) => void;
   invoice: Invoice;
 }) {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice>();
+  const [variantList, setVariantList] = useState<ProductVariant[]>([]);
   const [method, setMethod] = useState<string>("");
   const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
   const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
   const [totalCost, setTotalCost] = useState<number>(0);
-  const [customer, setCustomer] = useState<Customer>();
   const[cash, setCash] = useState<number>(0);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchInvoiceData = async () => {
       try {
         const response = await invoiceService.getInvoiceById(invoice.id);
 
@@ -52,31 +56,58 @@ export default function PayInvoicePopup({
         console.error("Error fetching invoice:", error);
       }
     };
-    fetchData();
+    const fetchVariants = async () => {
+      try {
+        const res = await variantService.getAllVariants();
+        if (res.data.EC === 0) {
+          setVariantList(res.data.DT);
+        } else {
+          console.error("Failed to fetch variants:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching variants:", error);
+      }
+    }
+    Promise.all([fetchInvoiceData(), fetchVariants()]);
   }, []);
 
   console.log(rows);
 
-  useEffect(() => {
-    const fetchCustomer = async () => {
-      try {
-        console.log(selectedInvoice?.customerId);
-        const response = await customerService.getCustomerById(
-          selectedInvoice?.customerId || 0
-        );
-        if (response.data.EC === 0) {
-          console.log(response.data.DT);
-          console.log(selectedInvoice?.customerId);
-          setCustomer(response.data.DT);
-        } else {
-          console.error("Failed to fetch customer:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching customer:", error);
+  const handleOnPayInvoice = async () => {
+    if (method === "") {
+      alert("Please select method payment");
+      return;
+    }
+    if(method === "cash") {
+      if(cash < totalCost) {
+        alert("Cash is not enough");
+        return;
       }
-    };
-    fetchCustomer();
-  }, []);
+    }
+    //consider the quantity of each product variant in the invoice is bigger than the available quantity in stock
+    rows.forEach((row) => {
+      const consideredVariant = variantList.find((variant) => variant.id === row.id);
+      if (consideredVariant) {
+        if (consideredVariant.Inventories && row.quantity > (consideredVariant.Inventories[0]?.available || 0)) {
+
+          alert(`The quantity of ${consideredVariant.SKU} is not enough`);
+          return;
+        }
+      }
+    });
+    //handle credit card payment
+    try {
+      const response = await invoiceService.acceptInvoice(invoice.id);
+      if (response.EC === 0) {
+        onPaymentSuccess(response.DT);
+        onClose();
+      } else {
+        alert("Payment failed");
+      }
+    } catch (error) {
+      console.error("Error paying invoice:", error);
+    }
+  }
 
   console.log(rows);
 
@@ -182,7 +213,7 @@ export default function PayInvoicePopup({
           <div className="w-full px-4 flex flex-row">
             <div className="col-1 mr-[250px]">
               <p>
-                reated Date: {format(invoice.createdAt, "dd/MM/yyyy HH:mm:ss")}
+                Created Date: {format(invoice.createdAt, "dd/MM/yyyy HH:mm:ss")}
               </p>
               <p>Invoice ID: {invoice.id}</p>
               <p>Staff ID: {invoice.staffId}</p>
@@ -190,9 +221,9 @@ export default function PayInvoicePopup({
             </div>
             <div className="col-2 w-fit">
               <p>Customer ID: {invoice.customerId}</p>
-              <p>Customer name: {customer?.name}</p>
-              <p>Customer phone: {customer?.phone}</p>
-              <p>Customer email: {customer?.email}</p>
+              <p>Customer name: {selectedInvoice?.Customer?.name}</p>
+              <p>Customer phone: {selectedInvoice?.Customer?.phone}</p>
+              <p>Customer email: {selectedInvoice?.Customer?.email}</p>
             </div>
           </div>
         </div>
@@ -296,11 +327,24 @@ export default function PayInvoicePopup({
           </Button>
           <Button
             variant="contained"
+            color="success"
+            style={{
+              textTransform: "none",
+              fontSize: "14px",
+            }}
+            onClick={() => onEditInvoice(selectedInvoice || null)}
+            id="addProductButton"
+          >
+            Edit
+          </Button>
+          <Button
+            variant="contained"
             color="primary"
             style={{
               textTransform: "none",
               fontSize: "14px",
             }}
+            onClick={handleOnPayInvoice}
             id="addProductButton"
           >
             Done

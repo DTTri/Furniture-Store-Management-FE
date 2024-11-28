@@ -35,9 +35,11 @@ import Promotion from "../../entities/Promotion";
 export default function CreateInvoicePopup({
   onClose,
   onInvoiceCreated,
+  updatedInvoice,
 }: {
   onClose: () => void;
   onInvoiceCreated: (invoice: Invoice) => void;
+  updatedInvoice?: Invoice | null;
 }) {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
   const [productList, setProductList] = useState<Product[]>([]);
@@ -96,9 +98,22 @@ export default function CreateInvoicePopup({
     fetchData();
   }, []);
 
+  console.log("variantList", variantList);
+
   const [quatanty, setQuantanty] = useState<number>(0);
   const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
-  const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
+  const [rows, setRows] = useState<InvoiceDetailDTO[]>((updatedInvoice?.InvoiceDetails || []).map((detail) => {
+    return {
+      id: detail.ProductVariant?.id || 0,
+      SKU: detail.ProductVariant?.SKU || "",
+      quantity: detail.quantity,
+      name: detail.ProductVariant?.size + " " + detail.ProductVariant?.color,
+      price: detail.ProductVariant?.price || 0,
+      discountedPrice: detail.unitPrice,
+      discount: detail.discountedAmount || 0,
+      cost: detail.cost,
+    };
+  }));
   const [totalCost, setTotalCost] = useState<number>(0);
 
   const [isShowAddCustomerPopup, setIsShowAddCustomerPopup] =
@@ -106,10 +121,23 @@ export default function CreateInvoicePopup({
   const onCustomerCreated = (createdCustomer: Customer) => {
     setCustomerList([...customerList, createdCustomer]);
   };
-  console.log(rows);
 
+  console.log(updatedInvoice?.Customer)
   //Customer information
-  const [customerInfo, setCustomerInfo] = useState<Customer | null>(null);
+  const [customerInfo, setCustomerInfo] = useState<Customer | null>(() => {
+    if(updatedInvoice?.Customer){
+      return {
+        id: updatedInvoice?.customerId || 0,
+        name: updatedInvoice?.Customer?.name || "",
+        phone: updatedInvoice?.Customer?.phone || "",
+        email: updatedInvoice?.Customer?.email || "",
+      };
+    }
+    else{
+      return null;
+    }
+  });
+  console.log("customerInfo", customerInfo);
   const [returnedCustomer, setReturnedCustomer] = useState<boolean>(false);
   const handleAddProduct = () => {
     if (!selectedVariant) {
@@ -118,6 +146,10 @@ export default function CreateInvoicePopup({
     }
     if (quatanty == 0) {
       alert("Please set quatanty");
+      return;
+    }
+    if (selectedVariant.Inventories && quatanty > (selectedVariant.Inventories[0]?.available || 0)) {
+      alert("Not enough product in stock");
       return;
     }
     if (rows.find((row) => row.id === selectedVariant.id)) {
@@ -178,6 +210,9 @@ export default function CreateInvoicePopup({
         variantId: row.id,
         quantity: row.quantity,
         cost: row.cost,
+        discountAmount: row.discount,
+        unitPrice: row.discountedPrice,
+        promotionId: curPromotion?.id || 0,
       };
     });
 
@@ -317,7 +352,7 @@ export default function CreateInvoicePopup({
       <div className="popup bg-white rounded-xl p-4 max-w-[1096px] w-full max-h-[650px] overflow-auto relative">
         <div className="header w-full px-2 py-2 flex flex-row items-center justify-between border-b-[1px] border-b-slate-400">
           <h2 className="text-[22px] font-semibold text-[#383E49]">
-            Create new invoice
+            {updatedInvoice ? "Update Invoice" : "Create Invoice"}
           </h2>
           <CloseIcon
             className="cursor-pointer hover:bg-slate-100 mb-2 rounded-full"
@@ -351,7 +386,7 @@ export default function CreateInvoicePopup({
             >
               Search
             </Button>
-            { returnedCustomer && (customerInfo != null ? (
+            { (returnedCustomer || updatedInvoice?.Customer) && (customerInfo != null ? (
               <div className="col-span-4 pr-5 w-full flex flex-row justify-between">
                 <p className="font-semibold">Customer name: {customerInfo.name}</p>
                 <p className="font-semibold">Customer phone: {customerInfo.phone}</p>
@@ -547,7 +582,7 @@ export default function CreateInvoicePopup({
               handleCreateInvoice();
             }}
           >
-            Create
+            {updatedInvoice ? "Update" : "Create"}
           </Button>
         </div>
       </div>
