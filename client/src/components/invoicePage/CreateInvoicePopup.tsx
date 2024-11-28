@@ -31,15 +31,15 @@ import InvoiceDetailDTO from "./InvoiceDetailDTO";
 import AddCustomerPopup from "../customerPage/AddCustomerPopup";
 import Invoice from "../../entities/Invoice";
 import Promotion from "../../entities/Promotion";
-import { id } from "date-fns/locale";
-import { set } from "date-fns";
 
 export default function CreateInvoicePopup({
   onClose,
   onInvoiceCreated,
+  updatedInvoice,
 }: {
   onClose: () => void;
   onInvoiceCreated: (invoice: Invoice) => void;
+  updatedInvoice?: Invoice | null;
 }) {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
   const [productList, setProductList] = useState<Product[]>([]);
@@ -98,25 +98,47 @@ export default function CreateInvoicePopup({
     fetchData();
   }, []);
 
-  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  console.log("variantList", variantList);
 
-  const [variantSelected, setVariantSelected] = useState<number>(0);
-  const [promotionSelected, setPromotionSelected] = useState<number>(1);
   const [quatanty, setQuantanty] = useState<number>(0);
   const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
-  const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
-  const [prevRows, setPrevRows] = useState<InvoiceDetailDTO[]>([]);
-  const [totalCost, setTotalCost] = useState<number>(0);
+  const [rows, setRows] = useState<InvoiceDetailDTO[]>((updatedInvoice?.InvoiceDetails || []).map((detail) => {
+    return {
+      id: detail.ProductVariant?.id || 0,
+      SKU: detail.ProductVariant?.SKU || "",
+      quantity: detail.quantity,
+      name: detail.ProductVariant?.size + " " + detail.ProductVariant?.color,
+      price: detail.ProductVariant?.price || 0,
+      discountedPrice: detail.unitPrice,
+      discount: detail.discountedAmount || 0,
+      cost: detail.cost,
+    };
+  }));
+  const [totalCost, setTotalCost] = useState<number>(updatedInvoice?.totalCost || 0);
 
   const [isShowAddCustomerPopup, setIsShowAddCustomerPopup] =
     useState<boolean>(false);
   const onCustomerCreated = (createdCustomer: Customer) => {
     setCustomerList([...customerList, createdCustomer]);
   };
-  console.log(rows);
 
+  console.log(updatedInvoice?.Customer)
   //Customer information
-  const [customerInfo, setCustomerInfo] = useState<Customer | null>(null);
+  const [customerInfo, setCustomerInfo] = useState<Customer | null>(() => {
+    if(updatedInvoice?.Customer){
+      return {
+        id: updatedInvoice?.customerId || 0,
+        name: updatedInvoice?.Customer?.name || "",
+        phone: updatedInvoice?.Customer?.phone || "",
+        email: updatedInvoice?.Customer?.email || "",
+      };
+    }
+    else{
+      return null;
+    }
+  });
+  console.log("customerInfo", customerInfo);
+  const [returnedCustomer, setReturnedCustomer] = useState<boolean>(false);
   const handleAddProduct = () => {
     if (!selectedVariant) {
       alert("Please select variant");
@@ -126,21 +148,52 @@ export default function CreateInvoicePopup({
       alert("Please set quatanty");
       return;
     }
+    if (selectedVariant.Inventories && quatanty > (selectedVariant.Inventories[0]?.available || 0)) {
+      alert("Not enough product in stock");
+      return;
+    }
     if (rows.find((row) => row.id === selectedVariant.id)) {
       alert("This variant already exists");
       return;
     }
-    const newRow: InvoiceDetailDTO = {
-      id: selectedVariant?.id,
-      SKU: selectedVariant.SKU,
-      buyingPrice: selectedVariant.buyingPrice,
-      promotion: promotionSelected,
-      quantity: quatanty,
-      cost: selectedVariant.buyingPrice * quatanty,
-    };
-    console.log(newRow);
-    setRows([...rows, newRow]);
-    setTotalCost((prev) => prev + newRow.cost);
+    console.log(selectedVariant);
+    if(curPromotion){
+      const promotionProduct = curPromotion.PromotionProducts.find(
+        (promo) => promo.variantId === selectedVariant.id
+      );
+      if (promotionProduct) {
+        const discountedCost = selectedVariant.price - (selectedVariant.price * promotionProduct.discount) / 100;
+        const newRow: InvoiceDetailDTO = {
+          id: selectedVariant.id,
+          SKU: selectedVariant.SKU,
+          name: selectedVariant.size + " " + selectedVariant.color,
+          price: selectedVariant.price,
+          discountedPrice: discountedCost,
+          discount: promotionProduct.discount,
+          quantity: quatanty,
+          cost: discountedCost * quatanty,
+        };
+        console.log(newRow);
+        setRows([...rows, newRow]);
+        setTotalCost((prev) => prev + newRow.cost);
+        return;
+      }
+    }
+    else{
+      const newRow: InvoiceDetailDTO = {
+        id: selectedVariant?.id,
+        SKU: selectedVariant.SKU,
+        name: selectedVariant.size + " " + selectedVariant.color,
+        price: selectedVariant.price,
+        discountedPrice: selectedVariant.price,
+        discount: 0,
+        quantity: quatanty,
+        cost: selectedVariant.price * quatanty,
+      };
+      console.log(newRow);
+      setRows([...rows, newRow]);
+      setTotalCost((prev) => prev + newRow.cost);
+    }
   };
 
   const handleCreateInvoice = async () => {
@@ -157,13 +210,16 @@ export default function CreateInvoicePopup({
         variantId: row.id,
         quantity: row.quantity,
         cost: row.cost,
+        discountAmount: row.discount,
+        unitPrice: row.discountedPrice,
+        promotionId: curPromotion?.id || 0,
       };
     });
+
     const createdInvoice: CreateInvoiceDTO = {
       //missing customerId, paymentMethod, createdDate
       //wait for staff global state
-      staffId: 0,
-      customerId: customerInfo.id || 0,
+      customerId: customerInfo.id,
       totalCost: totalCost,
       InvoiceDetailsData: rowInvoice,
     };
@@ -171,7 +227,6 @@ export default function CreateInvoicePopup({
     const response = await invoiceService.createInvoice(createdInvoice);
     if (response.EC === 0) {
       onInvoiceCreated(response.DT);
-      onClose();
     } else {
       console.log("Failed to create invoice:", response.EM);
     }
@@ -194,15 +249,32 @@ export default function CreateInvoicePopup({
       align: "center",
     },
     {
-      field: "variantName",
+      field: "name",
       headerName: "Variant Name",
+      flex: 1.2,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "price",
+      headerName: "Price",
       flex: 1,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "buyingPrice",
-      headerName: "Buying Price",
+      field: "discount",
+      headerName: "Discount %",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (params, row) => {
+        return row.discount + "%";
+      },
+    },
+    {
+      field: "discountedPrice",
+      headerName: "Discounted Price",
       flex: 1,
       headerAlign: "center",
       align: "center",
@@ -210,15 +282,15 @@ export default function CreateInvoicePopup({
     {
       field: "quantity",
       headerName: "Quantity",
-      flex: 0.5,
+      flex: 0.8,
       headerAlign: "center",
       align: "center",
       editable: true,
     },
     {
       field: "cost",
-      headerName: "Cost",
-      flex: 1,
+      headerName: "Total",
+      flex: 0.8,
       headerAlign: "center",
       align: "center",
     },
@@ -259,9 +331,11 @@ export default function CreateInvoicePopup({
     );
     if (searchedCustomer) {
       setCustomerInfo(searchedCustomer);
-    } else {
+    }
+    else {
       setCustomerInfo(null);
     }
+    setReturnedCustomer(true);
   };
 
   useEffect(() => {
@@ -278,7 +352,7 @@ export default function CreateInvoicePopup({
       <div className="popup bg-white rounded-xl p-4 max-w-[1096px] w-full max-h-[650px] overflow-auto relative">
         <div className="header w-full px-2 py-2 flex flex-row items-center justify-between border-b-[1px] border-b-slate-400">
           <h2 className="text-[22px] font-semibold text-[#383E49]">
-            Create new invoice
+            {updatedInvoice ? "Update Invoice" : "Create Invoice"}
           </h2>
           <CloseIcon
             className="cursor-pointer hover:bg-slate-100 mb-2 rounded-full"
@@ -312,11 +386,11 @@ export default function CreateInvoicePopup({
             >
               Search
             </Button>
-            {customerInfo ? (
+            { (returnedCustomer || updatedInvoice?.Customer) && (customerInfo != null ? (
               <div className="col-span-4 pr-5 w-full flex flex-row justify-between">
-                <p>Customer name: {customerInfo.name}</p>
-                <p>Customer phone: {customerInfo.phone}</p>
-                <p>Customer email: {customerInfo.email}</p>
+                <p className="font-semibold">Customer name: {customerInfo.name}</p>
+                <p className="font-semibold">Customer phone: {customerInfo.phone}</p>
+                <p className="font-semibold">Customer email: {customerInfo.email}</p>
               </div>
             ) : (
               <div className="col-span-4 ro w-full flex flex-row items-center gap-2">
@@ -330,7 +404,7 @@ export default function CreateInvoicePopup({
                   Add new Customer
                 </a>
               </div>
-            )}
+            ))}
             {/* <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Customer Name
@@ -477,45 +551,7 @@ export default function CreateInvoicePopup({
             />
           )}
         </div>
-        <div className="px-3 w-full flex flex-row items-center justify-between mb-3">
-          <div className="flex flex-row items-center gap-3 px-2">
-            <input
-              className="w-4 h-4"
-              type="checkbox"
-              onChange={(e) => {
-                if (!curPromotion) {
-                  alert("There is no promotion event today");
-                  e.target.checked = false;
-                  return;
-                }
-                if (e.target.checked) {                  
-                  const discountedRows = rows.map((row) => {
-                    const promotionProduct = curPromotion.PromotionProducts.find(
-                        (promo) => promo.variantId === row.id
-                      );
-                      if (promotionProduct) {
-                      console.log("discount"  + promotionProduct.discount);
-                      const discountedCost = row.cost - (row.cost * promotionProduct.discount) / 100;
-                      return {
-                        ...row,
-                        cost: discountedCost
-                      };
-                    }
-                    return row;
-                  });
-                  setRows(discountedRows);
-                  setPrevRows(rows);
-                  setTotalCost(discountedRows.reduce((acc, row) => acc + row.cost, 0));
-                } else {
-                  setRows(prevRows);
-                  setTotalCost(prevRows.reduce((acc, row) => acc + row.cost, 0));
-                }
-              }}
-            />
-            <span className="font-medium text-[16px]">
-              Apply promotion event
-            </span>
-          </div>
+        <div className="px-3 w-full mb-3">
           <p className="text-[20px] text-[#D91316] font-bold text-end">
             Total Cost: {totalCost}
           </p>
@@ -546,7 +582,7 @@ export default function CreateInvoicePopup({
               handleCreateInvoice();
             }}
           >
-            Create
+            {updatedInvoice ? "Update" : "Create"}
           </Button>
         </div>
       </div>

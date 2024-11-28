@@ -1,5 +1,6 @@
 import InfoIcon from "@mui/icons-material/Info";
 import SearchIcon from "@mui/icons-material/Search";
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { Button } from "@mui/material";
 import {
   DataGrid,
@@ -14,17 +15,27 @@ import { InvoiceDetailTable } from "../../components";
 import CreateInvoicePopup from "../../components/invoicePage/CreateInvoicePopup";
 import Invoice from "../../entities/Invoice";
 import invoiceService from "../../services/invoiceService";
+import PayInvoicePopup from "../../components/invoicePage/PayInvoicePopup";
 
 export default function InvoicePage() {
   const [isCreateInvoicePopupOpen, setIsCreateInvoicePopupOpen] =
     useState<boolean>(false);
   const [invoiceList, setInvoiceList] = useState<Invoice[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+
   const [isInvoiceDetailPopupOpen, setIsInvoiceDetailPopupOpen] =
     useState(false);
-  const handleOnClose = () => {
+  const [isPayInvoicePopupOpen, setIsPayInvoicePopupOpen] =
+    useState(false);
+
+  const handleOnCloseDetail = () => {
     setIsInvoiceDetailPopupOpen(false);
+    setSelectedInvoice(null);
   };
+  const handleOnClosePayInvoice = () => {
+    setIsPayInvoicePopupOpen(false);
+  };
+
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -100,16 +111,29 @@ export default function InvoicePage() {
       field: "actions",
       type: "actions",
       flex: 0.5,
-      getActions: (params: GridRowParams) => [
-        <GridActionsCellItem
-          icon={<InfoIcon />}
-          label="Delete"
-          onClick={() => {
-            setSelectedInvoice(params.row as Invoice);
-            setIsInvoiceDetailPopupOpen(true);
-          }}
-        />,
-      ],
+      getActions: (params: GridRowParams) => {
+        return (params.row.status === "paid" || params.row.status === "canceled")
+          ? [
+            <GridActionsCellItem
+              icon={<InfoIcon />}
+              label="Delete"
+              onClick={() => {
+                setSelectedInvoice(params.row as Invoice);
+                setIsInvoiceDetailPopupOpen(true);
+              }}
+            />,
+          ]
+          : [
+            <GridActionsCellItem
+              icon={<MonetizationOnIcon />}
+              label="Pay"
+              onClick={() => {
+                setSelectedInvoice(params.row as Invoice);
+                setIsPayInvoicePopupOpen(true);
+              }}
+            />,
+          ];
+      }
     },
   ];
   return (
@@ -145,7 +169,7 @@ export default function InvoicePage() {
         style={{
           borderRadius: "10px",
           backgroundColor: "white",
-          height: "480px",
+          height: "fit-content",
         }}
         columns={columns}
         rows={invoiceList}
@@ -167,15 +191,46 @@ export default function InvoicePage() {
       />
       {isCreateInvoicePopupOpen && (
         <CreateInvoicePopup
-          onClose={() => setIsCreateInvoicePopupOpen(false)}
-          onInvoiceCreated={(createdInvoice: Invoice) => {
-            const updatedInvoiceList = [...invoiceList, createdInvoice];
-            setInvoiceList(updatedInvoiceList.map((invoice, index) => ({ ...invoice, index: index + 1 })));
+          onClose={() => {
+            setIsCreateInvoicePopupOpen(false);
+            setSelectedInvoice(null);
           }}
+          onInvoiceCreated={(createdInvoice: Invoice) => {
+            setInvoiceList([...invoiceList, createdInvoice]);
+            setIsCreateInvoicePopupOpen(false);
+            setSelectedInvoice(createdInvoice);
+            setIsPayInvoicePopupOpen(true);
+          }}
+          updatedInvoice={selectedInvoice}
         />
       )}
       {isInvoiceDetailPopupOpen && selectedInvoice && (
-        <InvoiceDetailTable invoice={selectedInvoice} onClose={handleOnClose} />
+        <InvoiceDetailTable invoice={selectedInvoice} onClose={handleOnCloseDetail} />
+      )}
+      {(isPayInvoicePopupOpen && selectedInvoice) && (
+        <PayInvoicePopup onEditInvoice={(updatedInvoice) => {
+          setIsPayInvoicePopupOpen(false);
+          setSelectedInvoice(updatedInvoice);
+          setIsCreateInvoicePopupOpen(true);
+        }} 
+        invoice={selectedInvoice}  
+        onPaymentSuccess={(paidInvoice) => {
+          const existedInvoice = invoiceList.find(invoice => invoice.id === paidInvoice.id);
+          if(existedInvoice) {
+            const updatedInvoiceList = invoiceList.map((invoice, index) => invoice.id === paidInvoice.id ? {
+              ...invoice,
+              status: paidInvoice.status,
+              index: index + 1
+            } : invoice);
+            setInvoiceList(updatedInvoiceList);
+          }
+          setSelectedInvoice(null);
+          setIsPayInvoicePopupOpen(false);
+        }} 
+        onClose={() => {
+          setSelectedInvoice(null);
+          setIsPayInvoicePopupOpen(false);
+        }} />
       )}
     </div>
   );
