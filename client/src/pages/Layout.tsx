@@ -15,9 +15,11 @@ export default function Layout() {
         <NavBar />
 
         {/* Main content */}
-        <div className="w-full h-full flex flex-col mt-[40px]">
+        <div className="w-full h-full flex flex-col mt-[40px] p-4 pb-8 bg-gray-200">
           {/* Outlet renders the child route components */}
-          <Outlet />
+          <div className=" bg-white rounded-md shadow-md max-h-screen overflow-hidden">
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
