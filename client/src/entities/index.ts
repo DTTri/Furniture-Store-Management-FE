@@ -9,6 +9,7 @@ import Customer from "./Customer";
 import WarrantyOrder from "./WarrantyOrder";
 import RepairOrder from "./RepairOrder";
 import Staff from "./Staff";
+import Permission from "./Permission";
 export type {
   Product,
   ProductVariant,
@@ -21,4 +22,5 @@ export type {
   WarrantyOrder,
   RepairOrder,
   Staff,
+  Permission,
 };

@@ -46,7 +46,7 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <div className="NavBar w-64 bg-white h-full flex flex-col shadow-md transition-all duration-300">
+    <div className="NavBar w-52 bg-white h-full flex flex-col shadow-md transition-all duration-300">
       {" "}
       {/* Thêm margin-top ở đây */}
       {/* Logo đã xóa */}

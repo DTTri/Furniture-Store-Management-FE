@@ -19,8 +19,28 @@ import LoginPage from "./pages/auth/LoginPage";
 import UserProtect from "./pages/UserProtect";
 import ForgotPasswordPage from "./pages/auth/ForgotPassword";
 import RolePage from "./pages/role/RolePage";
+import { useEffect } from "react";
+import { permissionService } from "./services";
+import { sPermission, sUser } from "./store";
 
 function App() {
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      try {
+        const res = await permissionService.getAllPermissions();
+        console.log(res);
+        if (res.data.EC === 0) {
+          sPermission.set((v) => (v.value.permissions = res.data.DT));
+        } else {
+          console.error("Failed to fetch permissions:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching permissions:", error);
+      }
+    };
+    fetchPermissions();
+  }, []);
+
   return (
     <Routes>
       <Route path="/loginpage" element={<LoginPage />} />
