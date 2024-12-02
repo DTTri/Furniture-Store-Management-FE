@@ -115,7 +115,7 @@ export default function InvoiceDetailTable({
             <Button variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px" }}>In hóa đơn</Button>
           </div>
         </div>
-        <div className="w-full px-4 flex flex-row">
+        <div className="w-full px-3 flex flex-row">
           <div className="col-1 mr-[250px]">
             <p>
               Created Date: {format(invoice.createdAt, "dd/MM/yyyy HH:mm:ss")}
@@ -135,6 +135,7 @@ export default function InvoiceDetailTable({
           <DataGrid
             style={{
               borderRadius: "20px",
+              border: "none",
               backgroundColor: "white",
               height: "100%",
             }}

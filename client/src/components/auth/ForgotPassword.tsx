@@ -2,27 +2,58 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Để điều hướng
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Icon mũi tên quay lại
 import { TextField } from "@mui/material";
+import authenService from "../../services/authen.service";
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     setShow(true);
   }, []);
+
   const handleGoBack = () => {
     navigate("/login"); // Điều hướng về trang login
   };
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Gửi email xác nhận
+    if(email === ""){
+      alert("Email is required");
+      return;
+    }
+    if(!email.match(emailRegex)){
+      alert("Email is invalid");
+      return;
+    }
+    try {
+      const response = await authenService.forgotPassword(email);
+      if(response.EC === 0){
+        setIsSuccess(true);
+      }
+      else{
+        setIsSuccess(false);
+        setError(response.EM);
+      }
+    } catch (error) {
+      console.log("Fail to send email" + error);
+    }
+  }
+
+  const handleVerifyToken = () => {
+    navigate(`/verify-token`);
+  }
 
   return (
     <div
       className={`duration-700 max-w-[420px] w-full bg-white shadow-xl ${
         show ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
-      } px-9 py-11 flex flex-col mx-auto rounded-xl transform transition duration-500 hover:scale-105`}
-      style={{ transition: "all 0.7s ease" }}
+      } px-9 py-11 flex flex-col mx-auto rounded-xl`}
     >
       <button
         onClick={handleGoBack}
@@ -76,13 +107,31 @@ const ForgotPassword: React.FC = () => {
             helperText="Example@gmail.com"
           />
         )}
-        <button
+        {!isSuccess ? (
+          <button
           type="submit"
           className="w-full font-semibold bg-blue-500 text-white py-2 px-4 rounded-md mt-3"
+          onClick={handleForgotPassword}
         >
           Send verification 
         </button>
-      </form>
+        ) : (
+          <button
+          type="submit"
+          className="w-full font-semibold bg-green-600 text-white py-2 px-4 rounded-md mt-3"
+          onClick={handleVerifyToken}
+        >
+          Verify Code
+        </button>
+        )}
+        {isSuccess ? (
+          <p className="text-green-600 text-center mt-2">
+            We sent you a verification code in your email
+          </p>
+        ) : (
+          error && <p className="text-red-600 text-center mt-2">{error}</p>
+        )}
+        </form>
     </div>
   );
 };

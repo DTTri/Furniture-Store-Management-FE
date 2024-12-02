@@ -15,12 +15,16 @@ import WarrantyPage from "./pages/warranty/WarrantyPage";
 import LoginPage from "./pages/auth/LoginPage";
 import UserProtect from "./pages/UserProtect";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import VerifyTokenPage from "./pages/auth/VerifyTokenPage";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage/>} />
+      <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/verify-token" element={<VerifyTokenPage />} />
       <Route path="/" element={<UserProtect><Layout/></UserProtect>}>
         <Route path="/" element={<ProductPage />} />
         <Route path="/inventory" element={<InventoryPage />} />

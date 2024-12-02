@@ -15,6 +15,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import authenService from "../../services/authen.service";
 import LoadingProgress from "../LoadingProgress";
 import LoginDTO from "../../entities/DTO/LoginDTO";
+import { setUserInfo } from "../../store/userSlice";
+import { useDispatch } from "react-redux";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -55,7 +57,6 @@ export default function LoginForm() {
     }
     setLoading(false);
   };
-
 
   return (
     <div
@@ -117,16 +118,24 @@ export default function LoginForm() {
           </FormControl>
         </div>
         <div className="flex flex-row items-center justify-between w-full mt-3 mb-3">
-          <FormControlLabel
-            control={
-              <Checkbox
-                value={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-            }
-            label="Remember me"
-            style={{ fontSize: "12px" }}
-          />
+          <div className="flex flex-row gap-2 items-center">
+            <input
+              onChange={(e) => {
+                setRememberMe(e.target.checked);
+              }}
+              checked={rememberMe}
+              type="checkbox"
+              name="remember"
+              id="remember"
+              className="w-[15px] h-[15px]"
+            />
+            <label
+              htmlFor="remember"
+              className="text-[#000] text-[16px] font-normal"
+            >
+              Remember me
+            </label>
+          </div>
         </div>
         <Button
           onClick={handleOnLogin}
