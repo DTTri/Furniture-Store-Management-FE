@@ -18,6 +18,7 @@ import {
 import LoginPage from "./pages/auth/LoginPage";
 import UserProtect from "./pages/UserProtect";
 import ForgotPasswordPage from "./pages/auth/ForgotPassword";
+import RolePage from "./pages/role/RolePage";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/repair" element={<RepairPage />} />
         <Route path="/warranty" element={<WarrantyPage />} />
         <Route path="/report" element={<ReportPage />} />
+        <Route path="/role" element={<RolePage />} />
       </Route>
     </Routes>
   );

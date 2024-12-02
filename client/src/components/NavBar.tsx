@@ -12,6 +12,7 @@ import {
   FaGift,
   FaShieldAlt,
   FaHammer,
+  FaUserEdit,
 } from "react-icons/fa";
 
 const NavBar: React.FC = () => {
@@ -32,6 +33,7 @@ const NavBar: React.FC = () => {
     { name: "Promotion", icon: <FaGift />, path: "/promotion" },
     { name: "Warranty", icon: <FaShieldAlt />, path: "/warranty" },
     { name: "Repair", icon: <FaHammer />, path: "/repair" },
+    { name: "Role", icon: <FaUserEdit />, path: "/role" },
   ];
 
   // State để lưu trữ menu item được chọn

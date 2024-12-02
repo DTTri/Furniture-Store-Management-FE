@@ -10,7 +10,7 @@ export default function Layout() {
       <div className="flex flex-1">
         <NavBar />
         <div className="w-full h-full p-4 bg-gray-200 overflow-hidden">
-          <div className="bg-white rounded-md shadow-md h-full max-h-full overflow-hidden">
+          <div className="bg-white rounded-md shadow-md h-[95%] max-h-[95%] overflow-hidden">
             <Outlet />
           </div>
         </div>
