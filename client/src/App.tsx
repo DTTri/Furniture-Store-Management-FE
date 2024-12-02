@@ -17,7 +17,9 @@ import {
 
 import LoginPage from "./pages/auth/LoginPage";
 import UserProtect from "./pages/UserProtect";
-import ForgotPasswordPage from "./pages/auth/ForgotPassword";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import VerifyTokenPage from "./pages/auth/VerifyTokenPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import RolePage from "./pages/role/RolePage";
 import { useEffect } from "react";
 import { permissionService } from "./services";
@@ -43,8 +45,11 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/loginpage" element={<LoginPage />} />
+      <Route path="/login" element={<LoginPage/>} />
+      <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/verify-token" element={<VerifyTokenPage />} />
+      <Route path="/loginpage" element={<LoginPage />} />
       <Route
         path="/"
         element={
