@@ -26,7 +26,7 @@ export default function AddProviderPopup({
     }
     // validate phone and email
     if (
-      !/^\d+$/.test(phone) ||
+      !/^\d{10}$/.test(phone) ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
     ) {
       return false;

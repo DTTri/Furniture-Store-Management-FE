@@ -29,6 +29,12 @@ export default function AddStaffPopup({
     if (!fullname || !birth || !idNumber || !startDate || !phone || !email) {
       return false;
     }
+    if (
+      !/^\d{10}$/.test(phone) ||
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
+      return false;
+    }
     return true;
   };
 

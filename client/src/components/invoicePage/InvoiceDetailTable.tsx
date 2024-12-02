@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Invoice from "../../entities/Invoice";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { format } from "date-fns";
-import InvoiceDetail from "../../entities/InvoiceDetail";
 import http from "../../api/http";
 import Customer from "../../entities/Customer";
 import { Button } from "@mui/material";
@@ -51,7 +50,7 @@ export default function InvoiceDetailTable({
         }
       };
       fetchCustomer();
-    });
+    }, []);
 
   const columns: GridColDef[] = [
     {

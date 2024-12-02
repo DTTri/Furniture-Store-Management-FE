@@ -15,7 +15,9 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import IconButton from "@mui/material/IconButton";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { Edit } from "@mui/icons-material";
 export default function AddPromotionPopup({
   onClose,
   onPromotionCreated,
@@ -27,6 +29,8 @@ export default function AddPromotionPopup({
   promotion?: Promotion;
   onPromotionUpdated: (promotion: Promotion) => void;
 }) {
+  console.log(promotion);
+  const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(promotion?.name || "");
   const [description, setDescription] = useState(promotion?.description || "");
   const [startDate, setStartDate] = useState(promotion?.startDate || "");
@@ -39,7 +43,6 @@ export default function AddPromotionPopup({
     null
   );
   const [rows, setRows] = useState<CreatePromotionDTO["promotionProducts"]>([]);
-
   useEffect(() => {
     const fetchProductsAndVariants = async () => {
       const response = Promise.all([
@@ -58,8 +61,27 @@ export default function AddPromotionPopup({
         console.error("Failed to fetch variants:", variantsResponse.data.EM);
       }
     };
+
     fetchProductsAndVariants();
-  }, []);
+    if (promotion) {
+      const fetchPromotionDetails = async () => {
+        try {
+          const res = await promotionService.getPromotionById(promotion?.id);
+          if (res.data.EC === 0) {
+            const promotion = res.data.DT;
+            console.log(res.data.DT);
+
+            setRows(promotion.PromotionProducts);
+          } else {
+            console.error("Failed to fetch promotion details:", res.data.EM);
+          }
+        } catch (error) {
+          console.error("Error fetching promotion details:", error);
+        }
+      };
+      fetchPromotionDetails();
+    }
+  }, [promotion]);
 
   useEffect(() => {
     if (selectedProduct) {
@@ -174,177 +196,191 @@ export default function AddPromotionPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 w-2/3 min-w-[420px] h-[80vh] max-h-[80vh] overflow-auto">
-        <button className="absolute top-2 right-2" onClick={onClose}>
-          x
-        </button>
+      <div className="popup bg-white rounded-xl p-4 w-2/3 min-w-[420px] h-[70vh] max-h-[80vh] overflow-auto relative">
+        {promotion && (
+          <Edit
+            sx={{ width: 27, height: 27 }}
+            className="absolute top-2 right-[14px] hover:bg-slate-100 rounded-full cursor-pointer p-[2px]"
+            onClick={() => setIsEditing(!isEditing)}
+          />
+        )}
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name">Name</label>
-            <input
-              id="name"
-              name="name"
-              placeholder="Name"
-              className="border border-gray-300 px-2 py-1 rounded-md"
-              required
-              onChange={(e) => setName(e.target.value)}
-              defaultValue={promotion?.name}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="description">Description</label>
-            <input
-              id="description"
-              name="description"
-              placeholder="Description"
-              className="border border-gray-300 px-2 py-1 rounded-md"
-              required
-              onChange={(e) => setDescription(e.target.value)}
-              defaultValue={promotion?.description}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="startDate">Start Date</label>
-            <input
-              id="startDate"
-              name="startDate"
-              type="date"
-              className="border border-gray-300 px-2 py-1 rounded-md"
-              required
-              onChange={(e) => setStartDate(e.target.value)}
-              defaultValue={promotion?.startDate.split("-").reverse().join("/")}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="finishDate">Finish Date</label>
-            <input
-              id="finishDate"
-              name="finishDate"
-              type="date"
-              className="border border-gray-300 px-2 py-1 rounded-md"
-              required
-              onChange={(e) => setFinishDate(e.target.value)}
-              defaultValue={promotion?.finishDate
-                .split("-")
-                .reverse()
-                .join("/")}
-            />
-          </div>
-          <form
-            id="addRowForm"
-            className="flex flex-col gap-4 p-4"
-            onSubmit={handleAddRow}
-          >
-            <select
-              id="selectedProduct"
-              className="border border-gray-300 rounded-md p-1"
-              onChange={(e) => {
-                setSelectedVariant(null);
-                const selectedProductId = parseInt(e.target.value);
-                setSelectedProduct(
-                  products.find(
-                    (product) => product.id === selectedProductId
-                  ) ?? null
-                );
-              }}
-            >
-              <option value="">Choose product</option>
-              {products.map((product) => (
-                <option key={product.id} value={product.id}>
-                  {product.name}
-                </option>
-              ))}
-            </select>
-            <select
-              id="selectedVariant"
-              className="border border-gray-300 rounded-md p-1"
-              disabled={!selectedProduct}
-              onChange={(e) => {
-                const selectedVariantId = parseInt(e.target.value);
-                setSelectedVariant(
-                  productVariants.find(
-                    (variant) => variant.id === selectedVariantId
-                  ) ?? null
-                );
-              }}
-            >
-              <option value="">Choose variant</option>
-              {productVariants.map((variant) => (
-                <option key={variant.id} value={variant.id}>
-                  {`${variant.color} - ${variant.size}`}
-                </option>
-              ))}
-            </select>
-            <Button
-              type="submit"
-              variant="contained"
-              style={{
-                textTransform: "none",
-              }}
-              id="addRowButton"
-            >
-              Add
-            </Button>
-          </form>
-          <div className="table-container w-full h-full overflow-hidden">
-            <DataGrid
-              style={{
-                borderRadius: "20px",
-                backgroundColor: "white",
-                height: "100%",
-              }}
-              rows={rows.map((row, index) => ({
-                ...row,
-                id: index + 1,
-              }))}
-              columns={[
-                { field: "id", headerName: "ID", flex: 0.5 },
-                { field: "variantId", headerName: "Variant ID", flex: 1 },
-                {
-                  field: "discount",
-                  headerName: "Discount Rate",
-                  flex: 1,
-                  renderCell: (params) => (
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={params.row.discount}
-                      onChange={(e) =>
-                        handleDiscountRateChange(
-                          params.row.variantId,
-                          parseInt(e.target.value)
-                        )
-                      }
-                    />
-                  ),
-                },
-                {
-                  field: "actions",
-                  type: "actions",
-                  flex: 0.5,
-                  getActions: (params: GridRowParams) => [
-                    <GridActionsCellItem
-                      icon={<DeleteIcon />}
-                      label="Delete"
-                      onClick={() => handleDeleteRow(params.row.variantId)}
-                    />,
-                  ],
-                },
-              ]}
-              disableDensitySelector
-              rowHeight={40}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 6,
-                  },
-                },
-              }}
-              pageSizeOptions={[6, rows.length + 1]}
-              slots={{ toolbar: GridToolbar }}
-              rowSelection={false}
-            />
+          <div className="flex justify-around">
+            <div className="flex flex-col gap-4 w-[40%]">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="name">Name</label>
+                <input
+                  id="name"
+                  name="name"
+                  placeholder="Name"
+                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  required
+                  onChange={(e) => setName(e.target.value)}
+                  defaultValue={promotion?.name}
+                  disabled={promotion && !isEditing}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="description">Description</label>
+                <input
+                  id="description"
+                  name="description"
+                  placeholder="Description"
+                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  required
+                  onChange={(e) => setDescription(e.target.value)}
+                  defaultValue={promotion?.description}
+                  disabled={promotion && !isEditing}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="startDate">Start Date</label>
+                <input
+                  id="startDate"
+                  name="startDate"
+                  type="date"
+                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  required
+                  onChange={(e) => setStartDate(e.target.value)}
+                  defaultValue={promotion?.startDate}
+                  disabled={promotion && !isEditing}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="finishDate">Finish Date</label>
+                <input
+                  id="finishDate"
+                  name="finishDate"
+                  type="date"
+                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  required
+                  onChange={(e) => setFinishDate(e.target.value)}
+                  defaultValue={promotion?.finishDate}
+                  disabled={promotion && !isEditing}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 w-1/2">
+              <form
+                id="addRowForm"
+                className="flex flex-col gap-4 p-4"
+                onSubmit={handleAddRow}
+              >
+                <select
+                  id="selectedProduct"
+                  className="border border-gray-300 rounded-md p-1"
+                  onChange={(e) => {
+                    setSelectedVariant(null);
+                    const selectedProductId = parseInt(e.target.value);
+                    setSelectedProduct(
+                      products.find(
+                        (product) => product.id === selectedProductId
+                      ) ?? null
+                    );
+                  }}
+                  disabled={promotion && !isEditing}
+                >
+                  <option value="">Choose product</option>
+                  {products.map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.name}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  id="selectedVariant"
+                  className="border border-gray-300 rounded-md p-1"
+                  disabled={promotion && !isEditing && !selectedProduct}
+                  onChange={(e) => {
+                    const selectedVariantId = parseInt(e.target.value);
+                    setSelectedVariant(
+                      productVariants.find(
+                        (variant) => variant.id === selectedVariantId
+                      ) ?? null
+                    );
+                  }}
+                >
+                  <option value="">Choose variant</option>
+                  {productVariants.map((variant) => (
+                    <option key={variant.id} value={variant.id}>
+                      {`${variant.color} - ${variant.size}`}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  style={{
+                    textTransform: "none",
+                  }}
+                  id="addRowButton"
+                  disabled={promotion && !isEditing}
+                >
+                  Add
+                </Button>
+              </form>
+              <div className="table-container w-full h-full overflow-hidden">
+                <DataGrid
+                  style={{
+                    borderRadius: "20px",
+                    backgroundColor: "white",
+                    height: "100%",
+                  }}
+                  rows={rows.map((row, index) => ({
+                    ...row,
+                    id: index + 1,
+                  }))}
+                  columns={[
+                    { field: "id", headerName: "ID", flex: 0.5 },
+                    { field: "variantId", headerName: "Variant ID", flex: 1 },
+                    {
+                      field: "discount",
+                      headerName: "Discount Rate",
+                      flex: 1,
+                      renderCell: (params) => (
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={params.row.discount}
+                          onChange={(e) =>
+                            handleDiscountRateChange(
+                              params.row.variantId,
+                              parseInt(e.target.value)
+                            )
+                          }
+                        />
+                      ),
+                    },
+                    {
+                      field: "actions",
+                      type: "actions",
+                      flex: 0.5,
+                      getActions: (params: GridRowParams) => [
+                        <GridActionsCellItem
+                          icon={<DeleteIcon />}
+                          label="Delete"
+                          onClick={() => handleDeleteRow(params.row.variantId)}
+                          disabled={promotion && !isEditing}
+                        />,
+                      ],
+                    },
+                  ]}
+                  disableDensitySelector
+                  rowHeight={40}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 6,
+                      },
+                    },
+                  }}
+                  pageSizeOptions={[6, rows.length + 1]}
+                  slots={{ toolbar: GridToolbar }}
+                  rowSelection={false}
+                />
+              </div>
+            </div>
           </div>
           <div className="buttons-container w-full flex justify-end gap-2">
             <Button
@@ -366,6 +402,7 @@ export default function AddPromotionPopup({
                 }}
                 onClick={handleUpdatePromotion}
                 id="confirmUpdatePromotionButton"
+                disabled={promotion && !isEditing}
               >
                 Update
               </Button>

@@ -15,7 +15,11 @@ export default function ProductCard({
     >
       <div className="product-image w-full h-1/2 overflow-hidden rounded-t-lg">
         <img
-          src={product.image !== "" ? product.image : "/images/chair.jpg"}
+          src={
+            product.image && product.image !== ""
+              ? product.image
+              : "/images/chair.jpg"
+          }
           alt="product"
           className="object-cover"
         />

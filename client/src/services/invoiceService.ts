@@ -25,6 +25,12 @@ class invoiceService {
   async deleteInvoice(id: number) {
     return http.delete(this.getURI(`delete-catalogue/${id}`));
   }
+  async acceptInvoice(id: number) {
+    return http.put(this.getURI(`accept-invoice/${id}`), {});
+  }
+  async rejectInvoice(id: number) {
+    return http.put(this.getURI(`reject-invoice/${id}`), {});
+  }
 }
 
 export default new invoiceService();

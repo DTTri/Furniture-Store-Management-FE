@@ -14,7 +14,7 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Product, ProductVariant } from "../../entities";
 import Customer from "../../entities/Customer";
 import CreateInvoiceDTO, {
@@ -35,15 +35,16 @@ import Promotion from "../../entities/Promotion";
 export default function CreateInvoicePopup({
   onClose,
   onInvoiceCreated,
+  updatedInvoice,
 }: {
   onClose: () => void;
   onInvoiceCreated: (invoice: Invoice) => void;
+  updatedInvoice?: Invoice | null;
 }) {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
-  const [productList, setProductList] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  //const [productList, setProductList] = useState<Product[]>([]);
+  //const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [variantList, setVariantList] = useState<ProductVariant[]>([]);
-  const [variantFiltered, setvariantFiltered] = useState<ProductVariant[]>([]);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     null
   );
@@ -54,12 +55,10 @@ export default function CreateInvoicePopup({
       try {
         const [
           customersResponse,
-          productResponse,
           variantsResponse,
           promtionResponse,
         ] = await Promise.all([
           customerService.getAllCustomers(),
-          productService.getAllProducts(),
           variantService.getAllVariants(),
           promotionService.getPromotionByDate(
             new Date().toISOString().slice(0, 10)
@@ -71,15 +70,8 @@ export default function CreateInvoicePopup({
           console.log("Failed to fetch customers:", customersResponse.data.EM);
         }
 
-        if (productResponse.data.EC === 0) {
-          setProductList(productResponse.data.DT);
-        } else {
-          console.log("Failed to fetch products:", productResponse.data.EM);
-        }
-
         if (variantsResponse.data.EC === 0) {
           setVariantList(variantsResponse.data.DT);
-          setvariantFiltered(variantsResponse.data.DT);
         } else {
           console.log("Failed to fetch variants:", variantsResponse.data.EM);
         }
@@ -96,25 +88,47 @@ export default function CreateInvoicePopup({
     fetchData();
   }, []);
 
-  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  console.log("variantList", variantList);
 
-  const [variantSelected, setVariantSelected] = useState<number>(0);
-  const [promotionSelected, setPromotionSelected] = useState<number>(1);
   const [quatanty, setQuantanty] = useState<number>(0);
   const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
-  const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
-  const [prevRows, setPrevRows] = useState<InvoiceDetailDTO[]>([]);
-  const [totalCost, setTotalCost] = useState<number>(0);
+  const [rows, setRows] = useState<InvoiceDetailDTO[]>((updatedInvoice?.InvoiceDetails || []).map((detail) => {
+    return {
+      id: detail.ProductVariant?.id || 0,
+      SKU: detail.ProductVariant?.SKU || "",
+      quantity: detail.quantity,
+      name: detail.ProductVariant?.size + " " + detail.ProductVariant?.color,
+      price: detail.ProductVariant?.price || 0,
+      discountedPrice: detail.unitPrice,
+      discount: detail.discountedAmount || 0,
+      cost: detail.cost,
+    };
+  }));
+  const [totalCost, setTotalCost] = useState<number>(updatedInvoice?.totalCost || 0);
 
   const [isShowAddCustomerPopup, setIsShowAddCustomerPopup] =
     useState<boolean>(false);
   const onCustomerCreated = (createdCustomer: Customer) => {
     setCustomerList([...customerList, createdCustomer]);
   };
-  console.log(rows);
 
+  console.log(updatedInvoice?.Customer)
   //Customer information
-  const [customerInfo, setCustomerInfo] = useState<Customer | null>(null);
+  const [customerInfo, setCustomerInfo] = useState<Customer | null>(() => {
+    if(updatedInvoice?.Customer){
+      return {
+        id: updatedInvoice?.customerId || 0,
+        name: updatedInvoice?.Customer?.name || "",
+        phone: updatedInvoice?.Customer?.phone || "",
+        email: updatedInvoice?.Customer?.email || "",
+      };
+    }
+    else{
+      return null;
+    }
+  });
+  console.log("customerInfo", customerInfo);
+  const [returnedCustomer, setReturnedCustomer] = useState<boolean>(false);
   const handleAddProduct = () => {
     if (!selectedVariant) {
       alert("Please select variant");
@@ -124,21 +138,52 @@ export default function CreateInvoicePopup({
       alert("Please set quatanty");
       return;
     }
+    if (selectedVariant.Inventories && quatanty > (selectedVariant.Inventories[0]?.available || 0)) {
+      alert("Not enough product in stock");
+      return;
+    }
     if (rows.find((row) => row.id === selectedVariant.id)) {
       alert("This variant already exists");
       return;
     }
-    const newRow: InvoiceDetailDTO = {
-      id: selectedVariant?.id,
-      SKU: selectedVariant.SKU,
-      price: selectedVariant.price,
-      promotion: promotionSelected,
-      quantity: quatanty,
-      cost: selectedVariant.price * quatanty,
-    };
-    console.log(newRow);
-    setRows([...rows, newRow]);
-    setTotalCost((prev) => prev + newRow.cost);
+    console.log(selectedVariant);
+    if(curPromotion){
+      const promotionProduct = curPromotion.PromotionProducts.find(
+        (promo) => promo.variantId === selectedVariant.id
+      );
+      if (promotionProduct) {
+        const discountedCost = selectedVariant.price - (selectedVariant.price * promotionProduct.discount) / 100;
+        const newRow: InvoiceDetailDTO = {
+          id: selectedVariant.id,
+          SKU: selectedVariant.SKU,
+          name: selectedVariant.size + " " + selectedVariant.color,
+          price: selectedVariant.price,
+          discountedPrice: discountedCost,
+          discount: promotionProduct.discount,
+          quantity: quatanty,
+          cost: discountedCost * quatanty,
+        };
+        console.log(newRow);
+        setRows([...rows, newRow]);
+        setTotalCost((prev) => prev + newRow.cost);
+        return;
+      }
+    }
+    else{
+      const newRow: InvoiceDetailDTO = {
+        id: selectedVariant?.id,
+        SKU: selectedVariant.SKU,
+        name: selectedVariant.size + " " + selectedVariant.color,
+        price: selectedVariant.price,
+        discountedPrice: selectedVariant.price,
+        discount: 0,
+        quantity: quatanty,
+        cost: selectedVariant.price * quatanty,
+      };
+      console.log(newRow);
+      setRows([...rows, newRow]);
+      setTotalCost((prev) => prev + newRow.cost);
+    }
   };
 
   const handleCreateInvoice = async () => {
@@ -155,13 +200,16 @@ export default function CreateInvoicePopup({
         variantId: row.id,
         quantity: row.quantity,
         cost: row.cost,
+        discountAmount: row.discount,
+        unitPrice: row.discountedPrice,
+        promotionId: curPromotion?.id || 0,
       };
     });
+
     const createdInvoice: CreateInvoiceDTO = {
       //missing customerId, paymentMethod, createdDate
       //wait for staff global state
-      staffId: 0,
-      customerId: customerInfo.id || 0,
+      customerId: customerInfo.id,
       totalCost: totalCost,
       InvoiceDetailsData: rowInvoice,
     };
@@ -169,7 +217,6 @@ export default function CreateInvoicePopup({
     const response = await invoiceService.createInvoice(createdInvoice);
     if (response.EC === 0) {
       onInvoiceCreated(response.DT);
-      onClose();
     } else {
       console.log("Failed to create invoice:", response.EM);
     }
@@ -192,15 +239,32 @@ export default function CreateInvoicePopup({
       align: "center",
     },
     {
-      field: "variantName",
+      field: "name",
       headerName: "Variant Name",
-      flex: 1,
+      flex: 1.2,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "price",
-      headerName: "Unit Price",
+      headerName: "Price",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "discount",
+      headerName: "Discount %",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (params, row) => {
+        return row.discount + "%";
+      },
+    },
+    {
+      field: "discountedPrice",
+      headerName: "Discounted Price",
       flex: 1,
       headerAlign: "center",
       align: "center",
@@ -208,15 +272,15 @@ export default function CreateInvoicePopup({
     {
       field: "quantity",
       headerName: "Quantity",
-      flex: 0.5,
+      flex: 0.8,
       headerAlign: "center",
       align: "center",
       editable: true,
     },
     {
       field: "cost",
-      headerName: "Cost",
-      flex: 1,
+      headerName: "Total",
+      flex: 0.8,
       headerAlign: "center",
       align: "center",
     },
@@ -257,26 +321,46 @@ export default function CreateInvoicePopup({
     );
     if (searchedCustomer) {
       setCustomerInfo(searchedCustomer);
-    } else {
+    }
+    else {
       setCustomerInfo(null);
+    }
+    setReturnedCustomer(true);
+  };
+
+  const handleOnSearchVariant = () => {
+    const inputElement = document.getElementById(
+      "searchProductVariantInput"
+    ) as HTMLInputElement;
+    console.log("inputElement", inputElement.value);
+    console.log("variantList", variantList);
+    const searchedVariantInList = variantList.find(
+      (variant) => variant.SKU === inputElement.value
+    );
+    console.log("searchedVariantInList", searchedVariantInList);
+    if (searchedVariantInList) {
+      setSelectedVariant(searchedVariantInList);
+    }
+    else {
+      setSelectedVariant(null);
     }
   };
 
-  useEffect(() => {
-    if (selectedProduct) {
-      const filtedVariant = variantList.filter(
-        (variant) => variant.productId === selectedProduct.id
-      );
-      setvariantFiltered(filtedVariant);
-    }
-  }, [selectedProduct]);
+  // useEffect(() => {
+  //   if (selectedProduct) {
+  //     const filtedVariant = variantList.filter(
+  //       (variant) => variant.productId === selectedProduct.id
+  //     );
+  //     setvariantFiltered(filtedVariant);
+  //   }
+  // }, [selectedProduct]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup bg-white rounded-xl p-4 max-w-[1096px] w-full max-h-[650px] overflow-auto relative">
         <div className="header w-full px-2 py-2 flex flex-row items-center justify-between border-b-[1px] border-b-slate-400">
           <h2 className="text-[22px] font-semibold text-[#383E49]">
-            Create new invoice
+            {updatedInvoice ? "Update Invoice" : "Create Invoice"}
           </h2>
           <CloseIcon
             className="cursor-pointer hover:bg-slate-100 mb-2 rounded-full"
@@ -305,16 +389,16 @@ export default function CreateInvoicePopup({
                 textTransform: "none",
                 fontSize: "14px",
                 padding: "6px",
-                maxWidth: "100px",
+                maxWidth: "140px",
               }}
             >
-              Search
+              Search Customer
             </Button>
-            {customerInfo ? (
+            { (returnedCustomer || updatedInvoice?.Customer) && (customerInfo != null ? (
               <div className="col-span-4 pr-5 w-full flex flex-row justify-between">
-                <p>Customer name: {customerInfo.name}</p>
-                <p>Customer phone: {customerInfo.phone}</p>
-                <p>Customer email: {customerInfo.email}</p>
+                <p className="font-semibold">Customer name: {customerInfo.name}</p>
+                <p className="font-semibold">Customer phone: {customerInfo.phone}</p>
+                <p className="font-semibold">Customer email: {customerInfo.email}</p>
               </div>
             ) : (
               <div className="col-span-4 ro w-full flex flex-row items-center gap-2">
@@ -328,7 +412,7 @@ export default function CreateInvoicePopup({
                   Add new Customer
                 </a>
               </div>
-            )}
+            ))}
             {/* <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Customer Name
@@ -372,8 +456,8 @@ export default function CreateInvoicePopup({
             </FormControl> */}
           </div>
 
-          <div className="row-2 py-2 pb-6 px-4 grid grid-cols-[14%_1fr_14%_1fr] items-center grid-rows-[1fr_20%] gap-x-3 gap-y-4 border-b-[1px] border-b-slate-400">
-            <span className="text-base text-[#667085] block">Product</span>
+          <div className="row-2 py-2 pb-6 px-4 grid grid-cols-[14%_1fr_24%_1fr] items-center grid-rows-[1fr_1fr_20%] gap-x-3 gap-y-4 border-b-[1px] border-b-slate-400">
+            {/* <span className="text-base text-[#667085] block">Product</span>
             <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Product
@@ -398,11 +482,11 @@ export default function CreateInvoicePopup({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
             <InputLabel id="demo-select-small-label">
-              Select Variant SKU
+              Type Variant SKU
             </InputLabel>
-            <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
+            {/* <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Variant SKU
               </InputLabel>
@@ -425,7 +509,23 @@ export default function CreateInvoicePopup({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
+            <input type="text" placeholder="Search SKU" className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3" id="searchProductVariantInput"
+            />
+            <Button onClick={handleOnSearchVariant} className="col-span-2" variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px", padding: "6px", maxWidth: "140px" }}>Search Variant</Button>
+            {selectedVariant && (
+              <div className="col-span-4 pr-5 w-full flex flex-col items-center">
+                <div className="w-full flex flex-row gap-12 items-center">
+                  <p className="font-semibold">SKU: {selectedVariant.SKU}</p>
+                  <p className="font-semibold">Color: {selectedVariant.color}</p>
+                  <p className="font-semibold">Size: {selectedVariant.size}</p>
+                </div>
+                <div className="w-full flex flex-row gap-12 items-center">
+                  <p className="font-semibold">Price: {selectedVariant.price}</p>
+                  <p className="font-semibold">Available: {selectedVariant.Inventories?.[0]?.available || 0}</p>
+                </div>
+              </div>
+            )}
             <span className="text-base text-[#667085] block">Quantanty</span>
             <input
               type="number"
@@ -435,11 +535,11 @@ export default function CreateInvoicePopup({
               onChange={(e) => setQuantanty(Number.parseInt(e.target.value))}
               className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3"
             />
-            <div className="col-span-2 w-full flex flex-row justify-end">
+            <div className="col-span-2 w-full">
               <Button
                 variant="contained"
                 color="primary"
-                style={{ textTransform: "none", marginRight: "100px" }}
+                style={{ textTransform: "none", fontSize: "14px", padding: "6px", width: "140px" }}
                 onClick={handleAddProduct}
               >
                 Add product
@@ -475,45 +575,7 @@ export default function CreateInvoicePopup({
             />
           )}
         </div>
-        <div className="px-3 w-full flex flex-row items-center justify-between mb-3">
-          <div className="flex flex-row items-center gap-3 px-2">
-            <input
-              className="w-4 h-4"
-              type="checkbox"
-              onChange={(e) => {
-                if (!curPromotion) {
-                  alert("There is no promotion event today");
-                  e.target.checked = false;
-                  return;
-                }
-                if (e.target.checked) {                  
-                  const discountedRows = rows.map((row) => {
-                    const promotionProduct = curPromotion.PromotionProducts.find(
-                        (promo) => promo.variantId === row.id
-                      );
-                      if (promotionProduct) {
-                      console.log("discount"  + promotionProduct.discount);
-                      const discountedCost = row.cost - (row.cost * promotionProduct.discount) / 100;
-                      return {
-                        ...row,
-                        cost: discountedCost
-                      };
-                    }
-                    return row;
-                  });
-                  setRows(discountedRows);
-                  setPrevRows(rows);
-                  setTotalCost(discountedRows.reduce((acc, row) => acc + row.cost, 0));
-                } else {
-                  setRows(prevRows);
-                  setTotalCost(prevRows.reduce((acc, row) => acc + row.cost, 0));
-                }
-              }}
-            />
-            <span className="font-medium text-[16px]">
-              Apply promotion event
-            </span>
-          </div>
+        <div className="px-3 w-full mb-3">
           <p className="text-[20px] text-[#D91316] font-bold text-end">
             Total Cost: {totalCost}
           </p>
@@ -544,7 +606,7 @@ export default function CreateInvoicePopup({
               handleCreateInvoice();
             }}
           >
-            Create
+            {updatedInvoice ? "Update" : "Create"}
           </Button>
         </div>
       </div>
