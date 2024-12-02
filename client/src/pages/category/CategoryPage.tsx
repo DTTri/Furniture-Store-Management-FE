@@ -46,7 +46,6 @@ export default function CategoryPage() {
     fetchCategory();
   }, []);
 
-  
   const columns: GridColDef[] = [
     {
       field: "index",
@@ -84,9 +83,7 @@ export default function CategoryPage() {
       getActions: (params: GridRowParams) => [
         <GridActionsCellItem
           className="hover:bg-transparent"
-          icon={
-            <InfoIcon/>
-            }
+          icon={<InfoIcon />}
           label="Update"
           onClick={() => {
             setUpdatedCategory(params.row as Category);
@@ -102,19 +99,16 @@ export default function CategoryPage() {
       getActions: (params: GridRowParams) => [
         <GridActionsCellItem
           className="hover:bg-transparent"
-          icon={
-            <DeleteIcon/>}
+          icon={<DeleteIcon />}
           label="Delete"
-          onClick={() => {
-            
-          }}
+          onClick={() => {}}
         />,
       ],
     },
   ];
 
   return (
-    <div className="bg-white w-full h-screen py-6 px-7">
+    <div className="bg-white w-full py-6 px-7">
       <div className="header buttons flex flex-row justify-between items-center bg-white mb-4">
         <div className="search-bar w-[30%] px-1 mr-4 flex flex-row items-center border border-slate-400 rounded-xl overflow-hidden">
           <input
@@ -185,18 +179,20 @@ export default function CategoryPage() {
             setIsUpdateCategoryPopupOpen(false);
           }}
           onCategoryUpdated={(category: Category) => {
-            setCategoryList(categoryList.map((itemCategory, index) => {
-              if (itemCategory.id === category.id) {
-                return {
-                  ...category,
-                  index: index + 1,
+            setCategoryList(
+              categoryList.map((itemCategory, index) => {
+                if (itemCategory.id === category.id) {
+                  return {
+                    ...category,
+                    index: index + 1,
+                  };
                 }
-              }
-              return {
-                ...itemCategory,
-                index: index + 1,
-              }
-            }))
+                return {
+                  ...itemCategory,
+                  index: index + 1,
+                };
+              })
+            );
           }}
           updatedCategory={updatedCategory || categoryList[0]}
         />

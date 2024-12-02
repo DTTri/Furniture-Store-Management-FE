@@ -32,7 +32,7 @@ export default function PromotionPage() {
   const [isForUpdate, setIsForUpdate] = useState(false);
 
   return (
-    <div className="bg-white w-full h-screen">
+    <div className="bg-white w-full h-full">
       <div className="header w-full flex gap-4 p-4">
         <Button
           variant="contained"

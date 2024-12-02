@@ -2,16 +2,19 @@ import { Route, Routes } from "react-router-dom";
 import {
   CategoryPage,
   CustomerPage,
+  DashboardPage,
   InventoryPage,
   InvoicePage,
   Layout,
   ProductPage,
   PromotionPage,
   ProviderPage,
+  RepairPage,
+  ReportPage,
+  StaffPage,
+  WarrantyPage,
 } from "./pages";
-import StaffPage from "./pages/staff/StaffPage";
-import RepairPage from "./pages/repair/RepairPage";
-import WarrantyPage from "./pages/warranty/WarrantyPage";
+
 import LoginPage from "./pages/auth/LoginPage";
 import UserProtect from "./pages/UserProtect";
 import ForgotPasswordPage from "./pages/auth/ForgotPassword";
@@ -29,7 +32,8 @@ function App() {
           </UserProtect>
         }
       >
-        <Route path="/" element={<ProductPage />} />
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/product" element={<ProductPage />} />
         <Route path="/inventory" element={<InventoryPage />} />
         <Route path="/invoice" element={<InvoicePage />} />
         <Route path="/provider" element={<ProviderPage />} />
@@ -39,6 +43,7 @@ function App() {
         <Route path="/staff" element={<StaffPage />} />
         <Route path="/repair" element={<RepairPage />} />
         <Route path="/warranty" element={<WarrantyPage />} />
+        <Route path="/report" element={<ReportPage />} />
       </Route>
     </Routes>
   );

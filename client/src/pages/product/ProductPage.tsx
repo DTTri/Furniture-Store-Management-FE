@@ -15,7 +15,6 @@ export default function ProductPage() {
     const fetchProducts = async () => {
       try {
         const response = await http.get("/products/get-all-products");
-        //console.log(response);
         if (response.data.EC === 0) {
           setProducts(response.data.DT);
         } else {
@@ -42,8 +41,9 @@ export default function ProductPage() {
       )
     );
   }, [searchValue, products]);
+
   return (
-    <div className="bg-white w-full h-screen">
+    <div className="w-full h-full flex flex-col">
       <div className="header w-full flex gap-4 p-4">
         <div className="search-bar w-2/5">
           <input
@@ -71,7 +71,7 @@ export default function ProductPage() {
 
       <div
         id="productGallery"
-        className="product-gallery w-full h-full pb-24 overflow-y-auto flex flex-wrap gap-4 p-4"
+        className="product-gallery w-full overflow-y-auto max-h-[500px] flex flex-wrap gap-4 p-4"
       >
         {filteredProducts.map((product) => (
           <ProductCard
