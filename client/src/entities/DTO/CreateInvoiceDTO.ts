@@ -11,6 +11,6 @@ type CreateInvoiceDTO = {
     InvoiceDetailsData: CreateInvoiceDetailDTO[];
     totalCost: number;
     customerId: number
-}
+}   
 
 export default CreateInvoiceDTO;

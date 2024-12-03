@@ -19,8 +19,8 @@ export default function DashboardPage() {
 
   const report = sReport.use();
   const [reportData, setReportData] = useState<Report>(report.reportByDate);
-  const [reportStaffData, setStaffReportData] = useState<StaffReport>(report.staffReport);
-  const [reportIncomeData, setReportIncomeData] = useState<IncomeReport>(report.incomeReport);
+  const [reportStaffData, setStaffReportData] = useState<StaffReport[]>(report.staffReport);
+  const [reportIncomeData, setReportIncomeData] = useState<IncomeReport[]>(report.incomeReport);
 
   console.log("report by DAte", report);
   console.log("report general data", reportData);
@@ -172,8 +172,15 @@ export default function DashboardPage() {
   }]
   const staffColumns: GridColDef[] = [
     {
+      field: "id",
+      headerName: "Index",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
       field: "staffId",
-      headerName: "Id",
+      headerName: "Staff Id",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
@@ -207,51 +214,58 @@ export default function DashboardPage() {
       align: "center",
     },
   ];
-  const staffRows = [{
-    id: reportStaffData.staffId,
-    ...reportStaffData,
-  }]
+  const staffRows = reportStaffData.map((staff, index) => ({
+    id: index + 1,
+    ...staff,
+  }));
   const incomeColumns: GridColDef[] = [
     {
-      field: "productVariantId",
-      headerName: "Id",
+      field: "id",
+      headerName: "Index",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "SKU",
+      field: "productvariantid",
+      headerName: "Product Variant Id",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "sku",
       headerName: "SKU",
       flex: 1.5,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "importPrice",
+      field: "buyingprice",
       headerName: "Import Price",
       flex: 0.8,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "sumQuantity",
+      field: "sumquantity",
       headerName: "Sum Quantity",
       flex: 0.8,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "sumCost",
+      field: "sumcost",
       headerName: "Sum Cost",
       flex: 0.8,
       headerAlign: "center",
       align: "center",
     },
   ];
-  const incomeRows = [{
-    id: reportIncomeData.productVariantId,
-    ...reportIncomeData,
-  }]
+  const incomeRows = reportIncomeData.map((income, index) => ({
+    id: index + 1,
+    ...income,
+  }));
   const paymentRows = [
     {
       id: 1,
@@ -305,11 +319,9 @@ export default function DashboardPage() {
           <Tab label="Ongoing Promotion" />
           <Tab label="Staff" />
         </Tabs>
+        
       </div>
-
-      {activeTab === 0 && (
-        <div className="flex flex-col gap-2">
-              <div className="w-full flex justify-end space-x-2">
+      <div className="w-full flex justify-end space-x-2">
             <select
               value={selectedMonth}
               onChange={(e) => {
@@ -337,6 +349,9 @@ export default function DashboardPage() {
               ))}
             </select>
           </div>
+
+      {activeTab === 0 && (
+        <div className="flex flex-col gap-2">
           <div className="w-full grid grid-cols-4 gap-2 mb-2">
             <TotalCard
               isIncrease={true}
@@ -385,7 +400,7 @@ export default function DashboardPage() {
 
       {activeTab === 1 && (
         <div className="p-5">
-          <BarChart
+          {/* <BarChart
             dataset={data}
             yAxis={[
               {
@@ -404,8 +419,8 @@ export default function DashboardPage() {
               { dataKey: "pv", label: "PV" },
             ]}
             xAxis={[{ scaleType: "band", dataKey: "name" }]}
-          ></BarChart>
-          <div className="p-5">
+          ></BarChart> */}
+          <div className="p-2">
           <DataGrid
             style={{
               borderRadius: "10px",
@@ -416,6 +431,11 @@ export default function DashboardPage() {
             columns={incomeColumns}
             rows={incomeRows}
             rowHeight={40}
+            pageSizeOptions={
+              incomeRows.length < 8
+                ? [8, incomeRows.length]
+                : [8, incomeRows.length + 1]
+            }
             initialState={{
               pagination: {
                 paginationModel: {
@@ -426,7 +446,10 @@ export default function DashboardPage() {
             slots={{ toolbar: GridToolbar }}
             rowSelection={false}
           />
-        </div>
+            <p className="font-bold text-[20px] text-end mt-2 text-[#C71026]">
+            Total Cost: {incomeRows.reduce((acc, row) => acc + parseFloat(row.sumcost.toString()), 0)} USD            
+            </p>        
+          </div>
         </div>
       )}
       {activeTab === 2 && (
@@ -465,6 +488,11 @@ export default function DashboardPage() {
             columns={staffColumns}
             rows={staffRows}
             rowHeight={40}
+            pageSizeOptions={
+              staffRows.length < 8
+                ? [8, staffRows.length]
+                : [8, staffRows.length + 1]
+            }
             initialState={{
               pagination: {
                 paginationModel: {

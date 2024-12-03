@@ -1,9 +1,9 @@
 type IncomeReport = {
-    productVariantId: number;
-    SKU: string;
-    importPrice: number;
-    sumQuantity: number;
-    sumCost: number;
+    productvariantid: number;
+    sku: string;
+    sumquantity: number;
+    sumcost: number;
+    buyingprice: number;
 }
 
 export default IncomeReport;
