@@ -126,9 +126,21 @@ export default function DashboardPage() {
     return <LoadingProgress />;
   }
   const rows = [{
-    ...reportByDate.currentPromotion,
+    ...reportData.currentPromotion,
     id: 1,
   }]
+  const paymentRows = [
+    {
+      id: 1,
+      label: "Cash",
+      value: 10, //reportData.paymentMethodStatistic.cash 
+    },
+    {
+      label: "QR",
+      id: 2,
+      value:  10, //reportData.paymentMethodStatistic.qr
+    },
+  ]
   const data = [
     { name: "January", uv: 4000, pv: 2400, amt: 2400 },
     { name: "February", uv: 3000, pv: 1398, amt: 2210 },
@@ -137,11 +149,6 @@ export default function DashboardPage() {
     { name: "May", uv: 1890, pv: 4800, amt: 2181 },
     { name: "June", uv: 2390, pv: 3800, amt: 2500 },
     { name: "July", uv: 3490, pv: 4300, amt: 2100 },
-  ];
-
-  const methodData = [
-    { method: "Direct", value: 400 },
-    { method: "Referral", value: 300 },
   ];
 
   const years = Array.from(
@@ -234,11 +241,7 @@ export default function DashboardPage() {
               <PieChart
                 series={[
                   {
-                    data: methodData.map((item, index) => ({
-                      id: index + 1,
-                      label: item.method,
-                      value: item.value,
-                    })),
+                    data: paymentRows,
                     highlightScope: { fade: "global", highlight: "item" },
                     faded: {
                       innerRadius: 30,
