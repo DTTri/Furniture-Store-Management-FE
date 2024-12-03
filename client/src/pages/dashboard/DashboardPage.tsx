@@ -9,24 +9,31 @@ import Report from "../../entities/Report";
 import LoadingProgress from "../../components/LoadingProgress";
 import reportService from "../../services/report.service";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import StaffReport from "../../entities/StaffReport";
+import IncomeReport from "../../entities/IncomeReport";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  const reportByDate = sReport.use((state) => state.reportByDate);
+  const report = sReport.use();
+  const [reportData, setReportData] = useState<Report>(report.reportByDate);
+  const [reportStaffData, setStaffReportData] = useState<StaffReport>(report.staffReport);
+  const [reportIncomeData, setReportIncomeData] = useState<IncomeReport>(report.incomeReport);
 
-  const [reportData, setReportData] = useState<Report>(reportByDate);
-
-  console.log("report by DAte", reportByDate);
-  console.log("report data", reportData);
+  console.log("report by DAte", report);
+  console.log("report general data", reportData);
+  console.log("report staff data", reportStaffData);
+  console.log("report income data", reportIncomeData);
   
   useEffect(() => {
-    if (reportByDate) {
-      setReportData(reportByDate);
+    if (report.reportByDate && report.staffReport && report.incomeReport) {
+      setReportData(report.reportByDate);
+      setReportIncomeData(report.incomeReport);
+      setStaffReportData(report.staffReport);
     }
-  }, [reportByDate]);
+  }, [report]);
 
   const handleOnDateChange = async () => {
     const startDate =
@@ -59,22 +66,59 @@ export default function DashboardPage() {
         .split("T")[0];
     }
     console.log("Date", startDate, endDate);
-    try {
-      const res = await reportService.getReprotByDate(startDate, endDate);
-      if (res.data.EC === 0) {
-        sReport.set((prev) => (prev.value.reportByDate = res.data.DT));
-      } else {
-        console.error("Failed to fetch report by date:", res.data.EM);
-      }
-    } catch (error) {
-      console.error("Error fetching report by date:", error);
+    const fetchGeneralReportByDate = async () => {
+      try {
+        const res = await reportService.getReprotByDate(startDate, endDate);
+        if(res.data.EC === 0) {
+          console.log("report data successfully", res.data.DT);
+          sReport.set(prev => prev.value.reportByDate = res.data.DT);
+        }
+        else {
+          console.error("Failed to fetch report by date:", res.data.EM);
+        }
+      } catch (error) { 
+        console.error("Error fetching report by date:", error);
+      }      
     }
+    const fetchStaffReportByDate = async () => {
+      try {
+        const res = await reportService.getStaffReprotByDate(startDate, endDate);
+        if(res.data.EC === 0) {
+          console.log("report data successfully", res.data.DT);
+          sReport.set(prev => prev.value.staffReport = res.data.DT);
+        }
+        else {
+          console.error("Failed to fetch staff report by date:", res.data.EM);
+        }
+      } catch (error) { 
+        console.error("Error fetching staff report by date:", error);
+      }      
+    }
+    const fetchIncomeReportByDate = async () => {
+      try {
+        const res = await reportService.getIncomeReprotByDate(startDate, endDate);
+        if(res.data.EC === 0) {
+          console.log("report data successfully", res.data.DT);
+          sReport.set(prev => prev.value.incomeReport = res.data.DT);
+        }
+        else {
+          console.error("Failed to fetch income report by date:", res.data.EM);
+        }
+      } catch (error) { 
+        console.error("Error fetching income report by date:", error);
+      }      
+    }
+    Promise.all([fetchGeneralReportByDate(), fetchStaffReportByDate(), fetchIncomeReportByDate()]);
   };
 
-  const columns: GridColDef[] = [
+  if (!reportData || !reportStaffData || !reportIncomeData) {
+    return <LoadingProgress />;
+  }
+
+  const promotionColumns: GridColDef[] = [
     {
       field: "id",
-      headerName: "Index",
+      headerName: "Id",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
@@ -122,12 +166,91 @@ export default function DashboardPage() {
       align: "center",
     },
   ];
-  if (!reportData) {
-    return <LoadingProgress />;
-  }
-  const rows = [{
+  const promotionRows = [{
     ...reportData.currentPromotion,
     id: 1,
+  }]
+  const staffColumns: GridColDef[] = [
+    {
+      field: "staffId",
+      headerName: "Id",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "staffName",
+      headerName: "Staff Name",
+      flex: 1.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "countInvoice",
+      headerName: "Number of Invoice",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "sumTotal",
+      headerName: "Total",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "sumQuantity",
+      headerName: "Quantity",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+    },
+  ];
+  const staffRows = [{
+    id: reportStaffData.staffId,
+    ...reportStaffData,
+  }]
+  const incomeColumns: GridColDef[] = [
+    {
+      field: "productVariantId",
+      headerName: "Id",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "SKU",
+      headerName: "SKU",
+      flex: 1.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "importPrice",
+      headerName: "Import Price",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "sumQuantity",
+      headerName: "Sum Quantity",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "sumCost",
+      headerName: "Sum Cost",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+    },
+  ];
+  const incomeRows = [{
+    id: reportIncomeData.productVariantId,
+    ...reportIncomeData,
   }]
   const paymentRows = [
     {
@@ -180,9 +303,13 @@ export default function DashboardPage() {
           <Tab label="General" />
           <Tab label="Revenue" />
           <Tab label="Ongoing Promotion" />
+          <Tab label="Staff" />
         </Tabs>
       </div>
-      <div className="w-full flex justify-end space-x-2">
+
+      {activeTab === 0 && (
+        <div className="flex flex-col gap-2">
+              <div className="w-full flex justify-end space-x-2">
             <select
               value={selectedMonth}
               onChange={(e) => {
@@ -210,9 +337,6 @@ export default function DashboardPage() {
               ))}
             </select>
           </div>
-
-      {activeTab === 0 && (
-        <div className="flex flex-col gap-2">
           <div className="w-full grid grid-cols-4 gap-2 mb-2">
             <TotalCard
               isIncrease={true}
@@ -281,6 +405,28 @@ export default function DashboardPage() {
             ]}
             xAxis={[{ scaleType: "band", dataKey: "name" }]}
           ></BarChart>
+          <div className="p-5">
+          <DataGrid
+            style={{
+              borderRadius: "10px",
+              backgroundColor: "white",
+              minHeight: "300px",
+              height: "fit-content",
+            }}
+            columns={incomeColumns}
+            rows={incomeRows}
+            rowHeight={40}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 8,
+                },
+              },
+            }}
+            slots={{ toolbar: GridToolbar }}
+            rowSelection={false}
+          />
+        </div>
         </div>
       )}
       {activeTab === 2 && (
@@ -292,8 +438,32 @@ export default function DashboardPage() {
               minHeight: "300px",
               height: "fit-content",
             }}
-            columns={columns}
-            rows={rows}
+            columns={promotionColumns}
+            rows={promotionRows}
+            rowHeight={40}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 8,
+                },
+              },
+            }}
+            slots={{ toolbar: GridToolbar }}
+            rowSelection={false}
+          />
+        </div>
+      )}
+      {activeTab === 3 && (
+        <div className="p-5">
+          <DataGrid
+            style={{
+              borderRadius: "10px",
+              backgroundColor: "white",
+              minHeight: "300px",
+              height: "fit-content",
+            }}
+            columns={staffColumns}
+            rows={staffRows}
             rowHeight={40}
             initialState={{
               pagination: {

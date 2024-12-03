@@ -42,7 +42,7 @@ function App() {
         console.error("Error fetching permissions:", error);
       }
     };
-    const fetchReportByDate = async () => {
+    const fetchGeneralReportByDate = async () => {
       const today = new Date().toISOString().split('T')[0];
       const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0];
       try {
@@ -58,7 +58,39 @@ function App() {
         console.error("Error fetching report by date:", error);
       }      
     }
-    Promise.all([fetchPermissions(), fetchReportByDate()]);
+    const fetchStaffReportByDate = async () => {
+      const today = new Date().toISOString().split('T')[0];
+      const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0];
+      try {
+        const res = await reportService.getStaffReprotByDate(firstDayOfYear ,today);
+        if(res.data.EC === 0) {
+          console.log("report data successfully", res.data.DT);
+          sReport.set(prev => prev.value.staffReport = res.data.DT);
+        }
+        else {
+          console.error("Failed to fetch staff report by date:", res.data.EM);
+        }
+      } catch (error) { 
+        console.error("Error fetching staff report by date:", error);
+      }      
+    }
+    const fetchIncomeReportByDate = async () => {
+      const today = new Date().toISOString().split('T')[0];
+      const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0];
+      try {
+        const res = await reportService.getIncomeReprotByDate(firstDayOfYear ,today);
+        if(res.data.EC === 0) {
+          console.log("report data successfully", res.data.DT);
+          sReport.set(prev => prev.value.incomeReport = res.data.DT);
+        }
+        else {
+          console.error("Failed to fetch income report by date:", res.data.EM);
+        }
+      } catch (error) { 
+        console.error("Error fetching income report by date:", error);
+      }      
+    }
+    Promise.all([fetchPermissions(), fetchGeneralReportByDate(), fetchStaffReportByDate(), fetchIncomeReportByDate()]);
   }, []);
 
   return (

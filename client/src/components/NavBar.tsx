@@ -22,7 +22,6 @@ const NavBar: React.FC = () => {
   // Danh sách menu items với tên và biểu tượng
   const menuItems = [
     { name: "Dashboard", icon: <FaChartBar />, path: "/" },
-    { name: "Report", icon: <FaChartBar />, path: "/report" },
     { name: "Invoice", icon: <FaFileInvoice />, path: "/invoice" },
     { name: "Inventory", icon: <FaBoxes />, path: "/inventory" },
     { name: "Product", icon: <FaShoppingCart />, path: "/product" },
