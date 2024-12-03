@@ -37,7 +37,7 @@ const NavBar: React.FC = () => {
   ];
 
   // State để lưu trữ menu item được chọn
-  const [selectedMenu, setSelectedMenu] = useState<string>("Report");
+  const [selectedMenu, setSelectedMenu] = useState<string>("Dashboard");
 
   // Hàm xử lý click vào menu item
   const handleMenuClick = (path: string, name: string) => {

@@ -24,6 +24,8 @@ import RolePage from "./pages/role/RolePage";
 import { useEffect } from "react";
 import { permissionService } from "./services";
 import { sPermission, sUser } from "./store";
+import reportService from "./services/report.service";
+import sReport from "./store/reportStore";
 
 function App() {
   useEffect(() => {
@@ -40,7 +42,23 @@ function App() {
         console.error("Error fetching permissions:", error);
       }
     };
-    fetchPermissions();
+    const fetchReportByDate = async () => {
+      const today = new Date().toISOString().split('T')[0];
+      const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0];
+      try {
+        const res = await reportService.getReprotByDate(firstDayOfYear ,today);
+        if(res.data.EC === 0) {
+          console.log("report data successfully", res.data.DT);
+          sReport.set(prev => prev.value.reportByDate = res.data.DT);
+        }
+        else {
+          console.error("Failed to fetch report by date:", res.data.EM);
+        }
+      } catch (error) { 
+        console.error("Error fetching report by date:", error);
+      }      
+    }
+    Promise.all([fetchPermissions(), fetchReportByDate()]);
   }, []);
 
   return (
