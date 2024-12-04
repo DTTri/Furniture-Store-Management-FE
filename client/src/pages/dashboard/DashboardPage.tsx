@@ -119,35 +119,35 @@ export default function DashboardPage() {
     {
       field: "id",
       headerName: "Id",
-      flex: 0.5,
+      flex: 0.3,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "name",
       headerName: "Promotion Name",
-      flex: 1.5,
+      flex: 1.2,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "status",
       headerName: "Status",
-      flex: 0.8,
+      flex: 0.5 ,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "startDate",
       headerName: "Start Date",
-      flex: 0.8,
+      flex: 0.7,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "finishDate",
       headerName: "Finish Date",
-      flex: 0.8,
+      flex: 0.7,
       headerAlign: "center",
       align: "center",
     },
@@ -309,14 +309,13 @@ export default function DashboardPage() {
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center">
         <Tabs
           value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
         >
           <Tab label="General" />
-          <Tab label="Revenue" />
-          <Tab label="Ongoing Promotion" />
+          <Tab label="Income" />
           <Tab label="Staff" />
         </Tabs>
         
@@ -372,8 +371,8 @@ export default function DashboardPage() {
               unit="People"
             />
           </div>
-          <div className="charts w-full">
-            <div className="h-[350px] bg-[#fff] shadow-lg w-[500px] p-2">
+          <div className="charts w-full flex flex-row gap-3">
+            <div className="h-[350px] bg-[#fff] shadow-lg w-[40%] p-2">
               <p className="text-lg font-semibold text-black mb-3">
                 Order Payment Method
               </p>
@@ -394,12 +393,37 @@ export default function DashboardPage() {
                 width={400}
               />
             </div>
+            <div className=" bg-[#fff] shadow-lg w-[58%] p-2">
+              <p className="text-lg font-semibold text-black">
+                Ongoing Promotion
+              </p>
+              <DataGrid
+                style={{
+                  border: "none",
+                  backgroundColor: "white",
+                  minHeight: "300px",
+                  height: "fit-content",
+                }}
+                columns={promotionColumns}
+                rows={promotionRows}
+                rowHeight={40}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 3,
+                    },
+                  },
+                }}
+                slots={{ toolbar: GridToolbar }}
+                rowSelection={false}
+              />
+          </div>
           </div>
         </div>
       )}
 
       {activeTab === 1 && (
-        <div className="p-5">
+        <div className="p-2">
           {/* <BarChart
             dataset={data}
             yAxis={[
@@ -420,10 +444,13 @@ export default function DashboardPage() {
             ]}
             xAxis={[{ scaleType: "band", dataKey: "name" }]}
           ></BarChart> */}
+          <p className="text-3xl font-bold text-black mb-2">
+            Income Report
+          </p>
           <div className="p-2">
           <DataGrid
             style={{
-              borderRadius: "10px",
+              border: "none",
               backgroundColor: "white",
               minHeight: "300px",
               height: "fit-content",
@@ -453,33 +480,11 @@ export default function DashboardPage() {
         </div>
       )}
       {activeTab === 2 && (
-        <div className="p-5">
+        <div className="p-2">
+          <p className="text-3xl font-bold text-black mb-2">Staff Report</p>
           <DataGrid
             style={{
-              borderRadius: "10px",
-              backgroundColor: "white",
-              minHeight: "300px",
-              height: "fit-content",
-            }}
-            columns={promotionColumns}
-            rows={promotionRows}
-            rowHeight={40}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 8,
-                },
-              },
-            }}
-            slots={{ toolbar: GridToolbar }}
-            rowSelection={false}
-          />
-        </div>
-      )}
-      {activeTab === 3 && (
-        <div className="p-5">
-          <DataGrid
-            style={{
+              border: "none",
               borderRadius: "10px",
               backgroundColor: "white",
               minHeight: "300px",

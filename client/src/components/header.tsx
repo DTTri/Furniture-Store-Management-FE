@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaCog } from "react-icons/fa"; // Biểu tượng cài đặt
 import avatarImg from "../assets/Logo.png"; // Import ảnh từ thư mục assets
 import logoImg from "../assets/Logo.png"; // Import logo từ thư mục assets
@@ -18,6 +18,11 @@ const Header: React.FC = () => {
     role: "Manager", // Vai trò người dùng
   };
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   return (
     <div className="TopNavDefault w-full h-[45px] px-8 py-6 bg-white border-b border-[#e4e4e6] flex justify-between items-center z-50">
       {/* Logo và Tên cửa hàng */}
@@ -37,27 +42,16 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Phần bên phải - biểu tượng cài đặt và thông tin người dùng */}
-      <div className="RightMenu flex items-center space-x-4">
-        {/* Biểu tượng cài đặt */}
-        <div className="Icon p-2 flex justify-center items-center w-10 h-10">
-          <FaCog size={24} className="text-gray-600" />
-        </div>
-
-        {/* Thông tin người dùng */}
+      <div className="RightMenu relative flex items-center space-x-4">
         <div className="User flex items-center space-x-3">
-          {/* Avatar người dùng */}
           <div className="Avatar rounded-full overflow-hidden w-10 h-10">
-            {/* Thêm ảnh vào avatar */}
             <img
               className="Image w-full h-full object-cover"
               src={user.avatar}
               alt="Avatar"
             />
           </div>
-
-          {/* Tên người dùng và vai trò */}
-          <div className="Text flex-col justify-start items-start">
+          <div onClick={toggleDropdown} className="Text select-none cursor-pointer flex-col justify-start items-start">
             <div className="ChrisMiguel text-[#15191e] text-sm font-normal font-['TT Hoves'] leading-[21px]">
               {user.name}
             </div>
@@ -65,6 +59,13 @@ const Header: React.FC = () => {
               {user.role}
             </div>
           </div>
+          {isDropdownOpen && (
+            <div className="absolute w-[150px] right-[-24px] top-[45px] rounded-sm bg-[#f1eeee] shadow-lg flex flex-col transition-all ease-in-out transform scale-100">
+              <div className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400  hover:bg-gray-300 cursor-pointer">Personal Information</div>
+              <div className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400 hover:bg-gray-300 cursor-pointer">Dark Mode</div>
+              <div className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400 hover:bg-gray-300 cursor-pointer">Setting</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
