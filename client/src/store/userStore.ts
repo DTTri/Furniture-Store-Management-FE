@@ -1,8 +1,8 @@
 import { signify } from "react-signify";
+import { Staff } from "../entities";
 
 const sUser = signify({
-  email: "duongthuantri159@gmail.com",
-  role: 2,
+  info: {} as Staff
 });
 
 export default sUser;

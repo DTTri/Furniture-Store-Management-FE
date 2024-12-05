@@ -15,8 +15,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import authenService from "../../services/authen.service";
 import LoadingProgress from "../LoadingProgress";
 import LoginDTO from "../../entities/DTO/LoginDTO";
-import { setUserInfo } from "../../store/userSlice";
-import { useDispatch } from "react-redux";
+import { sUser } from "../../store";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -44,9 +43,12 @@ export default function LoginForm() {
       if (response.EC === 0) {
         if (rememberMe) {
           localStorage.setItem("token", response.DT.token);
+          localStorage.setItem("id", response.DT.staff.id);
         } else {
           sessionStorage.setItem("token", response.DT.token);
+          localStorage.setItem("id", response.DT.staff.id);
         }
+        sUser.set((prev) => (prev.value.info = response.DT.staff));
         setLoading(false);
         nav("/");
       } else {

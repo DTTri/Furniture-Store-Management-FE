@@ -7,6 +7,9 @@ class StaffService {
   async getAllStaffs() {
     return await http.get(this.getUri("/get-all-staffs"));
   }
+  async getStaffById(staffId: number) {
+    return await http.get(this.getUri("/get-staff/" + staffId));
+  }
   async createStaff(staff: object) {
     return await http.post(this.getUri("/create-staff"), staff);
   }

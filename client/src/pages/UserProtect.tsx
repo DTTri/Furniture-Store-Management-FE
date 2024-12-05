@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 //Implementing UserProtect component -> perform user authentication and authorization
 export default function UserProtect({
@@ -8,10 +8,13 @@ export default function UserProtect({
   children: React.ReactNode;
 
 }) {
-  // const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-  // if(!token) {
-  //   return <Navigate to={`/login`}></Navigate>
-  // }
+  const nav = useNavigate();
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  const id = localStorage.getItem("id") || sessionStorage.getItem("id");
+  if (id == null || token == null) {
+    nav('/login');
+    return;
+  }
   return (<div>{children}</div>
   )
 }

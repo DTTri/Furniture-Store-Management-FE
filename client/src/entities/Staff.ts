@@ -13,6 +13,10 @@ type Staff = {
   Account: {
     username: string;
     status: string;
+    Role: {
+      id: number;
+      name: string;
+    }
   };
 };
 export default Staff;
