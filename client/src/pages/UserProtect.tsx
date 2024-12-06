@@ -1,5 +1,5 @@
-import React from 'react'
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 //Implementing UserProtect component -> perform user authentication and authorization
 export default function UserProtect({
@@ -11,10 +11,11 @@ export default function UserProtect({
   const nav = useNavigate();
   const token = localStorage.getItem('token') || sessionStorage.getItem('token');
   const id = localStorage.getItem("id") || sessionStorage.getItem("id");
-  if (id == null || token == null) {
-    nav('/login');
-    return;
-  }
+  useEffect(() => {
+    if (id == null || token == null) {
+      nav('/login');
+    }
+  }, [id, token, nav]);
   return (<div>{children}</div>
   )
 }
