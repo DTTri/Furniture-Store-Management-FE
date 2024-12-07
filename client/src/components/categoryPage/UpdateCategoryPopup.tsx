@@ -26,9 +26,10 @@ export default function UpdateCategoryPopup({
         onClose();
         return;
       }
+      console.log("updatedCategory.id", updatedCategory.id);
       const response = await categoryService.updateCategory(
         updatedCategory.id,
-        { "name": categoryName }
+        { name: categoryName.toString() }
       );
       if (response.EC === 0) {
         onCategoryUpdated(response.DT);

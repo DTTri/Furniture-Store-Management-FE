@@ -16,7 +16,7 @@ class categoryService {
     async createCategory(createCategory: CategoryDTO) {
         return http.post(this.getURI("create-catalogue"), createCategory);
     }
-    async updateCategory(id: number, updateCategory: CategoryDTO) {
+    async updateCategory(id: number, updateCategory: object) {
         console.log(id, updateCategory);
         return http.put(this.getURI(`update-catalogue/${id}`), updateCategory);
     }
