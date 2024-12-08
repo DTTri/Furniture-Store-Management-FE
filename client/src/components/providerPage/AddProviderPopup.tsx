@@ -36,7 +36,6 @@ export default function AddProviderPopup({
 
   const handleAddProvider = async () => {
     if (!validateInputs()) {
-      alert("Invalid input");
       return;
     }
     try {
@@ -52,7 +51,6 @@ export default function AddProviderPopup({
         onProviderCreated(response.data.DT);
         onClose();
       } else {
-        alert(response.data.EM);
       }
     } catch (error) {
       console.error("Error adding provider:", error);
@@ -60,7 +58,6 @@ export default function AddProviderPopup({
   };
   const handleUpdateProvider = async () => {
     if (!validateInputs() || !provider) {
-      alert("Invalid input or provider not found");
       return;
     }
     try {
@@ -79,7 +76,6 @@ export default function AddProviderPopup({
         onProviderUpdated(response.data.DT);
         onClose();
       } else {
-        alert(response.data.EM);
       }
     } catch (error) {
       console.error("Error updating provider:", error);

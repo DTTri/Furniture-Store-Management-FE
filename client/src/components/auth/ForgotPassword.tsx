@@ -24,11 +24,9 @@ const ForgotPassword: React.FC = () => {
     e.preventDefault();
     // Gửi email xác nhận
     if(email === ""){
-      alert("Email is required");
       return;
     }
     if(!email.match(emailRegex)){
-      alert("Email is invalid");
       return;
     }
     try {

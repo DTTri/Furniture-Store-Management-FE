@@ -40,7 +40,6 @@ export default function AddStaffPopup({
 
   const handleAddStaff = async () => {
     if (!validateInputs()) {
-      alert("Invalid input");
       return;
     }
     try {
@@ -60,7 +59,6 @@ export default function AddStaffPopup({
         onStaffCreated(response.data.DT);
         onClose();
       } else {
-        alert(response.data.EM);
       }
     } catch (error) {
       console.error("Error adding staff:", error);
@@ -69,7 +67,6 @@ export default function AddStaffPopup({
 
   const handleUpdateStaff = async () => {
     if (!validateInputs() || !staff) {
-      alert("Invalid input or staff not found");
       return;
     }
     try {
@@ -88,7 +85,6 @@ export default function AddStaffPopup({
         onStaffUpdated(response.data.DT);
         onClose();
       } else {
-        alert(response.data.EM);
       }
     } catch (error) {
       console.error("Error updating staff:", error);

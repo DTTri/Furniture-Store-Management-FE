@@ -31,7 +31,6 @@ export default function AddCustomerPopup({
   };
   const handleAddCustomer = async () => {
     if (!validateInputs()) {
-      alert("Invalid input");
       return;
     }
     try {
@@ -53,7 +52,6 @@ export default function AddCustomerPopup({
   };
   const handleUpdateCustomer = async () => {
     if (!validateInputs() || !customer) {
-      alert("Invalid input or customer not found");
       return;
     }
     try {

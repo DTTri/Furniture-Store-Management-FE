@@ -25,7 +25,6 @@ export default function CreateCategoryPopup({
   const handleCreateCategory = async () => {
     try {
       if(categoryName.current === "") {
-        alert("Category name is required!");
         onClose();
         return;
       }

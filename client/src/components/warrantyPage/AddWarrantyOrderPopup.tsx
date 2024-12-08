@@ -43,7 +43,6 @@ export default function AddWarrantyOrderPopup({
 
   const handleAddWarrantyOrder = async () => {
     if (!validateInputs()) {
-      alert("Invalid input");
       return;
     }
     try {
@@ -62,7 +61,6 @@ export default function AddWarrantyOrderPopup({
         onWarrantyOrderCreated(response.data.DT);
         onClose();
       } else {
-        alert(response.data.EM);
       }
     } catch (error) {
       console.error("Error adding warranty order:", error);
@@ -71,7 +69,6 @@ export default function AddWarrantyOrderPopup({
 
   const handleUpdateWarrantyOrder = async () => {
     if (!validateInputs() || !warrantyOrder) {
-      alert("Invalid input or warranty order not found");
       return;
     }
     try {
@@ -89,7 +86,6 @@ export default function AddWarrantyOrderPopup({
         onWarrantyOrderUpdated(response.data.DT);
         onClose();
       } else {
-        alert(response.data.EM);
       }
     } catch (error) {
       console.error("Error updating warranty order:", error);

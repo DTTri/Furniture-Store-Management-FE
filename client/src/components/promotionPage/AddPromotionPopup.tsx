@@ -100,7 +100,6 @@ export default function AddPromotionPopup({
         (row) => row.variantId === selectedVariant.id
       );
       if (existingRow) {
-        alert("Variant already added to the promotion.");
         return;
       }
 
@@ -132,7 +131,6 @@ export default function AddPromotionPopup({
       !finishDate ||
       rows.length === 0
     ) {
-      alert("Invalid input");
       return;
     }
     try {
@@ -166,7 +164,6 @@ export default function AddPromotionPopup({
       rows.length === 0 ||
       !promotion
     ) {
-      alert("Invalid input or promotion not found");
       return;
     }
     try {

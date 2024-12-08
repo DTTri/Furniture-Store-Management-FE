@@ -90,7 +90,6 @@ export default function AddProductPopup({
 
   const handleAddProduct = async () => {
     if (!name || name === "") {
-      alert("Name is required");
       return;
     }
 
@@ -126,11 +125,9 @@ export default function AddProductPopup({
       warranty === product?.warranty &&
       image === product?.image
     ) {
-      alert("No change to update");
       return;
     }
     if (!name || name === "") {
-      alert("Name is required");
       return;
     }
     const newProductDTO: AddProductDTO = {

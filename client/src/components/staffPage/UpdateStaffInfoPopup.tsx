@@ -34,7 +34,6 @@ export default function UpdateStaffInfoPopup({
       phone === staff.phone &&
       email === staff.email
     ) {
-      alert("No info changed");
       return false;
     }
     if (
@@ -48,7 +47,6 @@ export default function UpdateStaffInfoPopup({
 
   const handleUpdateStaff = async () => {
     if (!validateInputs()) {
-      alert("Invalid input");
       return;
     }
     try {
@@ -68,7 +66,6 @@ export default function UpdateStaffInfoPopup({
         sUser.set((prev) => (prev.value.info = response.data.DT));
         onClose();
       } else {
-        alert(response.data.EM);
       }
     } catch (error) {
       console.error("Error adding staff:", error);

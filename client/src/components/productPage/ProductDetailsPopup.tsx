@@ -87,7 +87,6 @@ export default function ProductDetailsPopup({
         setSelectedVariant(updatedVariants.length > 0 ? variants[0] : null);
         console.log(selectedVariant);
       } else {
-        alert("Failed to delete variant: " + response.data.EM);
       }
     } catch (error) {
       console.error("Error deleting variant:", error);
@@ -180,7 +179,7 @@ export default function ProductDetailsPopup({
                 </tr>
                 <tr>
                   <td className="title">Category:</td>
-                  <td id="productDetailsCategory">{product.category}</td>
+                  <td id="productDetailsCategory">{product.catalogueId}</td>
                 </tr>
                 <tr>
                   <td className="title">Price:</td>

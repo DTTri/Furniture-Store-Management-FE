@@ -131,19 +131,15 @@ export default function CreateInvoicePopup({
   const [returnedCustomer, setReturnedCustomer] = useState<boolean>(false);
   const handleAddProduct = () => {
     if (!selectedVariant) {
-      alert("Please select variant");
       return;
     }
     if (quatanty == 0) {
-      alert("Please set quatanty");
       return;
     }
     if (selectedVariant.Inventories && quatanty > (selectedVariant.Inventories[0]?.available || 0)) {
-      alert("Not enough product in stock");
       return;
     }
     if (rows.find((row) => row.id === selectedVariant.id)) {
-      alert("This variant already exists");
       return;
     }
     console.log(selectedVariant);
@@ -188,11 +184,9 @@ export default function CreateInvoicePopup({
 
   const handleCreateInvoice = async () => {
     if (!customerInfo) {
-      alert("Please select customer");
       return;
     }
     if (rows.length === 0) {
-      alert("Please add at least one product");
       return;
     }
     const rowInvoice: CreateInvoiceDetailDTO[] = rows.map((row) => {

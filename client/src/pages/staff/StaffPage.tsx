@@ -38,7 +38,6 @@ export default function StaffPage() {
         );
         console.log("Successfully deleted staff");
       } else {
-        alert(res.data.EM);
       }
     } catch (error) {
       console.error("Error deleting staff:", error);

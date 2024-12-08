@@ -42,7 +42,6 @@ export default function AddRepairOrderPopup({
 
   const handleAddRepairOrder = async () => {
     if (!validateInputs()) {
-      alert("Invalid input");
       return;
     }
     try {
@@ -60,7 +59,6 @@ export default function AddRepairOrderPopup({
         onRepairOrderCreated(response.data.DT);
         onClose();
       } else {
-        alert(response.data.EM);
       }
     } catch (error) {
       console.error("Error adding repair order:", error);
@@ -69,7 +67,6 @@ export default function AddRepairOrderPopup({
 
   const handleUpdateRepairOrder = async () => {
     if (!validateInputs() || !repairOrder) {
-      alert("Invalid input or repair order not found");
       return;
     }
     try {
@@ -87,7 +84,6 @@ export default function AddRepairOrderPopup({
         onRepairOrderUpdated(response.data.DT);
         onClose();
       } else {
-        alert(response.data.EM);
       }
     } catch (error) {
       console.error("Error updating repair order:", error);

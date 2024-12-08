@@ -78,12 +78,10 @@ export default function PayInvoicePopup({
 
   const handleOnPayInvoice = async () => {
     if (method === "") {
-      alert("Please select method payment");
       return;
     }
     if(method === "cash") {
       if(cash < totalCost) {
-        alert("Cash is not enough");
         return;
       }
     }
@@ -93,7 +91,6 @@ export default function PayInvoicePopup({
       if (consideredVariant) {
         if (consideredVariant.Inventories && row.quantity > (consideredVariant.Inventories[0]?.available || 0)) {
 
-          alert(`The quantity of ${consideredVariant.SKU} is not enough`);
           return;
         }
       }
@@ -104,7 +101,6 @@ export default function PayInvoicePopup({
       if (response.EC === 0) {
         onPaymentSuccess(response.DT);
       } else {
-        alert("Payment failed");
       }
     } catch (error) {
       console.error("Error paying invoice:", error);

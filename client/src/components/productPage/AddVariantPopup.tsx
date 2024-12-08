@@ -30,23 +30,18 @@ export default function AddVariantPopup({
 
   const handleAddVariant = async () => {
     if (!sku || sku === "") {
-      alert("SKU is required");
       return;
     }
     if (!buyingPrice || buyingPrice === 0) {
-      alert("Buying Price is required");
       return;
     }
     if (!price || price === 0) {
-      alert("Price is required");
       return;
     }
     if (!color || color === "") {
-      alert("Color is required");
       return;
     }
     if (!size || size === "") {
-      alert("Size is required");
       return;
     }
     const newVariant: AddVariantDTO = {
@@ -79,23 +74,18 @@ export default function AddVariantPopup({
       return;
     }
     if (!sku || sku === "") {
-      alert("SKU is required");
       return;
     }
     if (!buyingPrice || buyingPrice === 0) {
-      alert("Buying Price is required");
       return;
     }
     if (!price || price === 0) {
-      alert("Price is required");
       return;
     }
     if (!color || color === "") {
-      alert("Color is required");
       return;
     }
     if (!size || size === "") {
-      alert("Size is required");
       return;
     }
     const updatedVariant: AddVariantDTO = {

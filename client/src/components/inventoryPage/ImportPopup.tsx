@@ -105,7 +105,6 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       // Kiểm tra xem biến thể đã tồn tại trong bảng chưa
       const existingRow = rows.find((row) => row.id === selectedVariant.id);
       if (existingRow) {
-        alert("Variant already added to the receipt table.");
         return;
       }
 
@@ -231,10 +230,8 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
         newGoodsReceipt
       );
       if (response.data.EC === 0) {
-        alert("Import successfully");
         onClose();
       } else {
-        alert("Import failed");
         console.error("Failed to import goods receipt:", response);
       }
     } catch (error) {

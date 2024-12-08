@@ -22,7 +22,6 @@ export default function UpdateCategoryPopup({
   const handleUpdateategory = async () => {
     try {
       if (categoryName === "" || categoryName === updatedCategory.name) {
-        alert("Category name is required or must be changed!");
         onClose();
         return;
       }

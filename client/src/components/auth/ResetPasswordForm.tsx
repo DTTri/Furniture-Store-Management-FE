@@ -34,12 +34,10 @@ export default function ResetPasswordForm() {
   const handleResetPassword = async () => {
     setLoading(true);
     if (password !== rePassword) {
-      alert("Password does not match");
       setLoading(false);
       return;
     }
     if (password === "" || rePassword === "") {
-      alert("Password is required");
       setLoading(false);
       return;
     }
