@@ -6,6 +6,7 @@ import { categoryService, productService } from "../../services";
 import http from "../../api/http";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone, { IFileWithMeta, StatusValue } from "react-dropzone-uploader";
+import { toast } from "react-toastify";
 
 export default function AddProductPopup({
   onClose,
@@ -80,6 +81,7 @@ export default function AddProductPopup({
       if (!result.ok) {
         throw new Error("Failed to upload image to S3");
       }
+      toast("Image uploaded successfully", { type: "success" });
       console.log(result);
       return true;
     } catch (error) {
@@ -116,6 +118,7 @@ export default function AddProductPopup({
 
   const handleUpdateProduct = async () => {
     if (!product) {
+      toast("Product not found", { type: "error" });
       return;
     }
     if (
@@ -125,9 +128,11 @@ export default function AddProductPopup({
       warranty === product?.warranty &&
       image === product?.image
     ) {
+      toast("No changes to update", { type: "error" });
       return;
     }
     if (!name || name === "") {
+      toast("Name is required", { type: "error" });
       return;
     }
     const newProductDTO: AddProductDTO = {
@@ -144,12 +149,15 @@ export default function AddProductPopup({
       );
       if (response.data.EC === 0) {
         console.log(response.data.DT);
+        toast("Product updated successfully", { type: "success" });
         onProductUpdated(response.data.DT);
         onClose();
       } else {
+        toast(response.data.EM, { type: "error" });
         console.error("Failed to update product:", response.data.EM);
       }
     } catch (error) {
+      toast("Error updating product", { type: "error" });
       console.error("Error updating product:", error);
     }
   };

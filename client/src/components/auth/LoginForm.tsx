@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   IconButton,
   InputAdornment,
   InputLabel,
   OutlinedInput,
-  TextField,
+  TextField
 } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import authenService from "../../services/authen.service";
-import LoadingProgress from "../LoadingProgress";
+import { Flip, toast } from "react-toastify";
 import LoginDTO from "../../entities/DTO/LoginDTO";
+import authenService from "../../services/authen.service";
 import { sUser } from "../../store";
+import LoadingProgress from "../LoadingProgress";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -52,10 +51,32 @@ export default function LoginForm() {
         setLoading(false);
         nav("/");
       } else {
-        console.log("Fail to fetch login" + response.EM);
+        toast(response.EM, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          type: "error",
+          theme: "light",
+          transition: Flip,
+        });
       }
     } catch (error) {
-      console.log("Fail to login" + error);
+      toast("Fail to login", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        type: "error",
+        theme: "light",
+        transition: Flip,
+      });
     }
     setLoading(false);
   };

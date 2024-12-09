@@ -12,6 +12,7 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { productService, variantService } from "../../services";
+import { toast } from "react-toastify";
 export default function ProductDetailsPopup({
   product,
   onClose,
@@ -53,14 +54,16 @@ export default function ProductDetailsPopup({
   const handleStopSelling = async () => {
     try {
       const response = await productService.stopSellingProduct(product.id);
-
       if (response.data.EC === 0) {
+        toast.success("Product stopped selling successfully");
         onStopSellingProduct();
         onClose();
       } else {
+        toast.error("Failed to stop selling");
         console.error("Failed to stop selling:", response.data.EM);
       }
     } catch (error) {
+      toast.error("Failed to stop selling");
       console.error("Error stopping selling:", error);
     }
   };
@@ -82,6 +85,7 @@ export default function ProductDetailsPopup({
         const updatedVariants = variants.filter(
           (variant) => variant.id !== selectedVariant?.id
         );
+        toast.success("Variant deleted successfully");
         setVariants(updatedVariants);
         console.log(variants);
         setSelectedVariant(updatedVariants.length > 0 ? variants[0] : null);
@@ -89,6 +93,7 @@ export default function ProductDetailsPopup({
       } else {
       }
     } catch (error) {
+      toast.error("Failed to delete variant");
       console.error("Error deleting variant:", error);
     }
   };

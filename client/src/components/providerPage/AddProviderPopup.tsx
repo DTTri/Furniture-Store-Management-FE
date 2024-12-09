@@ -3,6 +3,7 @@ import { Provider } from "../../entities";
 import { useState } from "react";
 import AddProviderDTO from "./AddProviderDTO";
 import { providerService } from "../../services";
+import { toast } from "react-toastify";
 export default function AddProviderPopup({
   onClose,
   onProviderCreated,
@@ -22,6 +23,7 @@ export default function AddProviderPopup({
 
   const validateInputs = () => {
     if (!name || !address || !phone || !email || !president) {
+      toast.error("Please fill in all fields");
       return false;
     }
     // validate phone and email
@@ -29,6 +31,7 @@ export default function AddProviderPopup({
       !/^\d{10}$/.test(phone) ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
     ) {
+      toast.error("Invalid phone or email");
       return false;
     }
     return true;
@@ -48,11 +51,13 @@ export default function AddProviderPopup({
       };
       const response = await providerService.createProvider(newProvider);
       if (response.data.EC === 0) {
+        toast.success("Provider created successfully");
         onProviderCreated(response.data.DT);
         onClose();
       } else {
       }
     } catch (error) {
+      toast.error("Failed to add provider");
       console.error("Error adding provider:", error);
     }
   };
@@ -73,11 +78,14 @@ export default function AddProviderPopup({
         updatedProvider
       );
       if (response.data.EC === 0) {
+        toast.success("Provider updated successfully");
         onProviderUpdated(response.data.DT);
         onClose();
       } else {
+        toast.error("Failed to update provider");
       }
     } catch (error) {
+      toast.error("Failed to update provider");
       console.error("Error updating provider:", error);
     }
   };

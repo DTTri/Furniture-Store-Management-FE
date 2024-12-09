@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"; // Để điều hướng
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Icon mũi tên quay lại
 import { TextField } from "@mui/material";
 import authenService from "../../services/authen.service";
+import { ToastContainer, toast, Flip } from 'react-toastify';
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -24,22 +25,27 @@ const ForgotPassword: React.FC = () => {
     e.preventDefault();
     // Gửi email xác nhận
     if(email === ""){
+      toast('Email is required', {type: "error",});
       return;
     }
     if(!email.match(emailRegex)){
+      toast('Email is invalid', {type: "error"});
       return;
     }
     try {
       const response = await authenService.forgotPassword(email);
       if(response.EC === 0){
-        setIsSuccess(true);
+        toast('We sent you a verification code in your email', {
+          type: "success",
+        });
       }
       else{
-        setIsSuccess(false);
-        setError(response.EM);
+        toast(response.EM, {
+          type: "error",
+        });
       }
     } catch (error) {
-      console.log("Fail to send email" + error);
+      toast("Fail to send email", { type: "error" });
     }
   }
 
@@ -130,6 +136,7 @@ const ForgotPassword: React.FC = () => {
           error && <p className="text-red-600 text-center mt-2">{error}</p>
         )}
         </form>
+ 
     </div>
   );
 };

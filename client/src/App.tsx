@@ -27,6 +27,8 @@ import { sPermission, sUser } from "./store";
 import reportService from "./services/report.service";
 import sReport from "./store/reportStore";
 import staffService from "./services/staff.service";
+import { Flip, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   useEffect(() => {
@@ -124,7 +126,9 @@ function App() {
   }, []);
 
   return (
-    <Routes>
+    <>
+      <ToastContainer style={{ zIndex: "1000" }} position="top-right" autoClose={3000} hideProgressBar closeOnClick pauseOnHover draggable theme="light" transition={Flip}/>
+      <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -153,6 +157,8 @@ function App() {
         <Route path="/role" element={<RolePage />} />
       </Route>
     </Routes>
+    </>
+
   );
 }
 

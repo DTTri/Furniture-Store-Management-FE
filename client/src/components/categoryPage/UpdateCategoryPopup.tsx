@@ -4,6 +4,7 @@ import http from "../../api/http";
 import { Category, Product } from "../../entities";
 import { Button, Select } from "@mui/material";
 import categoryService from "../../services/categoryService";
+import { toast } from "react-toastify";
 
 export default function UpdateCategoryPopup({
   onClose,
@@ -22,6 +23,9 @@ export default function UpdateCategoryPopup({
   const handleUpdateategory = async () => {
     try {
       if (categoryName === "" || categoryName === updatedCategory.name) {
+        toast("Category name is required", {
+          type: "error",
+        });
         onClose();
         return;
       }
@@ -32,12 +36,19 @@ export default function UpdateCategoryPopup({
       );
       if (response.EC === 0) {
         onCategoryUpdated(response.DT);
+        toast("Category updated succesfully", {
+          type: "error",
+        });
         onClose();
       } else {
-        console.log("Failed to create category in Category:", response.EM);
+        toast("Fail to update category", {
+          type: "error",
+        });
       }
     } catch (error) {
-      console.error("Error create category:", error);
+      toast("Fail to update category", {
+        type: "error",
+      });
     }
     setShowDataGrid(false);
     setTimeout(() => {

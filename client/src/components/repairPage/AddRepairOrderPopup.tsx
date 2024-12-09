@@ -4,6 +4,7 @@ import AddRepairOrderDTO from "./AddRepairOrderDTO";
 import UpdateRepairOrderDTO from "./UpdateRepairOrderDTO";
 import RepairOrder from "../../entities/RepairOrder";
 import repairService from "../../services/repair.service";
+import { toast } from "react-toastify";
 
 export default function AddRepairOrderPopup({
   onClose,
@@ -32,9 +33,11 @@ export default function AddRepairOrderPopup({
   const [status, setStatus] = useState(repairOrder?.status || "");
   const validateInputs = () => {
     if (!productName || !description || !details || !staffId || !customerId) {
+      toast.error("Please fill in all fields");
       return false;
     }
     if (cost && isNaN(Number(cost))) {
+      toast.error("Cost must be a number");
       return false;
     }
     return true;
@@ -56,11 +59,14 @@ export default function AddRepairOrderPopup({
       };
       const response = await repairService.createRepairOrder(newRepairOrder);
       if (response.data.EC === 0) {
+        toast.success("Repair order created successfully");
         onRepairOrderCreated(response.data.DT);
         onClose();
       } else {
+        toast.error("Failed to add repair order");
       }
     } catch (error) {
+      toast.error("Failed to add repair order");
       console.error("Error adding repair order:", error);
     }
   };
@@ -81,11 +87,14 @@ export default function AddRepairOrderPopup({
       );
       console.log(response);
       if (response.data.EC === 0) {
+        toast.success("Repair order updated successfully");
         onRepairOrderUpdated(response.data.DT);
         onClose();
       } else {
+        toast.error("Failed to update repair order");
       }
     } catch (error) {
+      toast.error("Failed to update repair order");
       console.error("Error updating repair order:", error);
     }
   };

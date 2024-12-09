@@ -17,6 +17,7 @@ import {
   variantService,
 } from "../../services";
 import CreateGoodsReceiptDTO from "./CreateGoodsReceiptDTO";
+import { toast } from "react-toastify";
 
 interface ReceiptTableRow {
   index: number;
@@ -230,11 +231,14 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
         newGoodsReceipt
       );
       if (response.data.EC === 0) {
+        toast("Import goods receipt successfully", { type: "success" });
         onClose();
       } else {
+        toast("Failed to import goods receipt", { type: "error" });
         console.error("Failed to import goods receipt:", response);
       }
     } catch (error) {
+      toast("Failed to import goods receipt", { type: "error" });
       console.error("Error importing goods receipt:", error);
     }
   };
