@@ -14,37 +14,15 @@ import CreateCategoryPopup from "../../components/categoryPage/CreateCategoryPop
 import UpdateCategoryPopup from "../../components/categoryPage/UpdateCategoryPopup";
 import categoryService from "../../services/categoryService";
 import { Category } from "../../entities";
+import { sCategory } from "../../store";
 
 export default function CategoryPage() {
   const [isCreateCategoryPopupOpen, setIsCreateCategoryPopupOpen] =
     useState(false);
   const [isUpdateCategoryPopupOpen, setIsUpdateCategoryPopupOpen] =
     useState(false);
-  const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const categoryList = sCategory.use((v) => v.categories);
   const [updatedCategory, setUpdatedCategory] = useState<Category>();
-
-  useEffect(() => {
-    const fetchCategory = async () => {
-      try {
-        const response = await categoryService.getAllCategory();
-        if (response.EC === 0) {
-          setCategoryList(
-            response.DT.map((category: any, index: number) => {
-              return {
-                ...category,
-                index: index + 1,
-              };
-            })
-          );
-        } else {
-          console.log("Failed to fetch categories:", response.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    fetchCategory();
-  }, []);
 
   const columns: GridColDef[] = [
     {
@@ -155,7 +133,9 @@ export default function CategoryPage() {
             setIsCreateCategoryPopupOpen(false);
           }}
           onCategoryCreated={(category: Category) => {
-            setCategoryList([...categoryList, category]);
+            sCategory.set((v) => {
+              v.value.categories = [...v.value.categories, category];
+            });
           }}
         />
       )}
@@ -165,20 +145,11 @@ export default function CategoryPage() {
             setIsUpdateCategoryPopupOpen(false);
           }}
           onCategoryUpdated={(category: Category) => {
-            setCategoryList(
-              categoryList.map((itemCategory, index) => {
-                if (itemCategory.id === category.id) {
-                  return {
-                    ...category,
-                    index: index + 1,
-                  };
-                }
-                return {
-                  ...itemCategory,
-                  index: index + 1,
-                };
-              })
-            );
+            sCategory.set((v) => {
+              v.value.categories = v.value.categories.map((itemCategory) =>
+                itemCategory.id === category.id ? category : itemCategory
+              );
+            });
           }}
           updatedCategory={updatedCategory || categoryList[0]}
         />

@@ -22,14 +22,32 @@ import VerifyTokenPage from "./pages/auth/VerifyTokenPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import RolePage from "./pages/role/RolePage";
 import { useEffect } from "react";
-import { permissionService } from "./services";
-import { sPermission, sUser } from "./store";
+import {
+  customerService,
+  permissionService,
+  productService,
+  promotionService,
+  providerService,
+} from "./services";
+import {
+  sPermission,
+  sProduct,
+  sPromotion,
+  sProvider,
+  sRepair,
+  sStaff,
+  sUser,
+  sWarranty,
+} from "./store";
 import reportService from "./services/report.service";
 import sReport from "./store/reportStore";
 import staffService from "./services/staff.service";
 import { Flip, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import http from "./api/http";
+import sCustomer from "./store/customerStore";
+import warrantyService from "./services/warranty.service";
+import repairService from "./services/repair.service";
 
 function App() {
   const token =
@@ -120,12 +138,103 @@ function App() {
         console.error("Error fetching user:", error);
       }
     };
+    const fetchProducts = async () => {
+      try {
+        const res = await productService.getAllProducts();
+        if (res.data.EC === 0) {
+          sProduct.set((v) => (v.value.products = res.data.DT));
+        } else {
+          console.error("Failed to fetch products:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    const fetchProvider = async () => {
+      try {
+        const res = await providerService.getAllProviders();
+        if (res.data.EC === 0) {
+          sProvider.set((v) => (v.value.providers = res.data.DT));
+        } else {
+          console.error("Failed to fetch providers:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching providers:", error);
+      }
+    };
+    const fetchCustomer = async () => {
+      try {
+        const res = await customerService.getAllCustomers();
+        if (res.data.EC === 0) {
+          sCustomer.set((v) => (v.value.customers = res.data.DT));
+        } else {
+          console.error("Failed to fetch customers:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching customers:", error);
+      }
+    };
+    const fetchStaff = async () => {
+      try {
+        const res = await staffService.getAllStaffs();
+        if (res.data.EC === 0) {
+          sStaff.set((v) => (v.value.staffs = res.data.DT));
+        } else {
+          console.error("Failed to fetch staffs:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching staffs:", error);
+      }
+    };
+    const fetchPromotion = async () => {
+      try {
+        const res = await promotionService.getAllPromotions();
+        if (res.data.EC === 0) {
+          sPromotion.set((v) => (v.value.promotions = res.data.DT));
+        } else {
+          console.error("Failed to fetch promotions:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching promotions:", error);
+      }
+    };
+    const fetchWarranty = async () => {
+      try {
+        const res = await warrantyService.getAllWarrantyOrders();
+        if (res.data.EC === 0) {
+          sWarranty.set((v) => (v.value.warrantyOrders = res.data.DT));
+        } else {
+          console.error("Failed to fetch warranty orders:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching warranty orders:", error);
+      }
+    };
+    const fetchRepair = async () => {
+      try {
+        const res = await repairService.getAllRepairOrders();
+        if (res.data.EC === 0) {
+          sRepair.set((v) => (v.value.repairs = res.data.DT));
+        } else {
+          console.error("Failed to fetch repair orders:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching repair orders:", error);
+      }
+    };
     Promise.all([
       fetchPermissions(),
       fetchGeneralReportByDate(),
       fetchStaffReportByDate(),
       fetchIncomeReportByDate(),
       fetchUserById(),
+      fetchProducts(),
+      fetchProvider(),
+      fetchCustomer(),
+      fetchStaff(),
+      fetchPromotion(),
+      fetchWarranty(),
+      fetchRepair(),
     ]);
   }, [token]);
 

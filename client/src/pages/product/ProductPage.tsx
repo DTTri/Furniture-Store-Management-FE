@@ -3,30 +3,13 @@ import ProductCard from "../../components/productPage/ProductCard";
 import { Product } from "../../entities";
 import ProductDetailsPopup from "../../components/productPage/ProductDetailsPopup";
 import { Button } from "@mui/material";
-import http from "../../api/http";
 import { AddProductPopup } from "../../components";
+import { sProduct } from "../../store";
 
 export default function ProductPage() {
   const [isProductDetailsPopupOpen, setIsProductDetailsPopupOpen] =
     useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await http.get("/products/get-all-products");
-        if (response.data.EC === 0) {
-          setProducts(response.data.DT);
-        } else {
-          console.error("Failed to fetch products:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  const products = sProduct.use((v) => v.products);
   const [selectedProduct, setSelectedProduct] = useState<Product>(products[0]);
 
   const [isAddProductPopupOpen, setIsAddProductPopupOpen] = useState(false);
@@ -95,13 +78,20 @@ export default function ProductPage() {
             setIsAddProductPopupOpen(true);
           }}
           onStopSellingProduct={() => {
-            setProducts(
-              products.map((product) =>
+            // setProducts(
+            //   products.map((product) =>
+            //     product.id === selectedProduct.id
+            //       ? { ...product, status: "stop selling" }
+            //       : product
+            //   )
+            // );
+            sProduct.set((v) => {
+              v.value.products = v.value.products.map((product) =>
                 product.id === selectedProduct.id
                   ? { ...product, status: "stop selling" }
                   : product
-              )
-            );
+              );
+            });
           }}
         />
       )}
@@ -112,15 +102,17 @@ export default function ProductPage() {
             setIsForUpdate(false);
           }}
           onProductCreated={(product) => {
-            setProducts([...products, product]);
+            sProduct.set((v) => {
+              v.value.products.push(product);
+            });
           }}
           product={isForUpdate ? selectedProduct : undefined}
           onProductUpdated={(updatedProduct) => {
-            setProducts(
-              products.map((product) =>
+            sProduct.set((v) => {
+              v.value.products = v.value.products.map((product) =>
                 product.id === updatedProduct.id ? updatedProduct : product
-              )
-            );
+              );
+            });
           }}
         />
       )}

@@ -4,25 +4,10 @@ import { RepairOrder } from "../../entities";
 import repairService from "../../services/repair.service";
 import RepairOrdersTable from "../../components/repairPage/RepairOrdersTable";
 import AddRepairOrderPopup from "../../components/repairPage/AddRepairOrderPopup";
+import { sRepair } from "../../store";
 
 export default function RepairPage() {
-  const [repairOrders, setRepairOrders] = useState<RepairOrder[]>([]);
-  useEffect(() => {
-    const fetchRepairOrders = async () => {
-      try {
-        const res = await repairService.getAllRepairOrders();
-        console.log(res);
-        if (res.data.EC === 0) {
-          setRepairOrders(res.data.DT);
-        } else {
-          console.error("Failed to fetch repair orders:", res.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching repair orders:", error);
-      }
-    };
-    fetchRepairOrders();
-  }, []);
+  const repairOrders = sRepair.use((v) => v.repairs);
 
   const [isAddRepairOrderPopupOpen, setIsAddRepairOrderPopupOpen] =
     useState(false);
@@ -36,9 +21,11 @@ export default function RepairPage() {
     try {
       const res = await repairService.deleteRepairOrder(selectedRepairOrder.id);
       if (res.data.EC === 0) {
-        setRepairOrders(
-          repairOrders.filter((p) => p.id !== selectedRepairOrder.id)
-        );
+        sRepair.set((v) => {
+          v.value.repairs = v.value.repairs.filter(
+            (p) => p.id !== selectedRepairOrder.id
+          );
+        });
         console.log("Successfully deleted repair order");
       } else {
         console.error("Failed to delete repair order:", res.data.EM);
@@ -86,15 +73,17 @@ export default function RepairPage() {
             setIsForUpdate(false);
           }}
           onRepairOrderCreated={(repairOrder) =>
-            setRepairOrders([...repairOrders, repairOrder])
+            sRepair.set((v) => {
+              v.value.repairs = [...v.value.repairs, repairOrder];
+            })
           }
           repairOrder={isForUpdate ? selectedRepairOrder : undefined}
           onRepairOrderUpdated={(repairOrder) =>
-            setRepairOrders(
-              repairOrders.map((p) =>
+            sRepair.set((v) => {
+              v.value.repairs = v.value.repairs.map((p) =>
                 p.id === repairOrder.id ? repairOrder : p
-              )
-            )
+              );
+            })
           }
         />
       )}

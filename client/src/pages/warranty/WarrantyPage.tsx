@@ -4,25 +4,10 @@ import { WarrantyOrder } from "../../entities";
 import warrantyService from "../../services/warranty.service";
 import WarrantyOrdersTable from "../../components/warrantyPage/WarrantyOrdersTable";
 import AddWarrantyOrderPopup from "../../components/warrantyPage/AddWarrantyOrderPopup";
+import { sWarranty } from "../../store";
 
 export default function WarrantyPage() {
-  const [warrantyOrders, setWarrantyOrders] = useState<WarrantyOrder[]>([]);
-  useEffect(() => {
-    const fetchWarrantyOrders = async () => {
-      try {
-        const res = await warrantyService.getAllWarrantyOrders();
-        console.log(res);
-        if (res.data.EC === 0) {
-          setWarrantyOrders(res.data.DT);
-        } else {
-          console.error("Failed to fetch warranty orders:", res.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching warranty orders:", error);
-      }
-    };
-    fetchWarrantyOrders();
-  }, []);
+  const warrantyOrders = sWarranty.use((v) => v.warrantyOrders);
 
   const [isAddWarrantyOrderPopupOpen, setIsAddWarrantyOrderPopupOpen] =
     useState(false);
@@ -37,9 +22,11 @@ export default function WarrantyPage() {
         selectedWarrantyOrder.id
       );
       if (res.data.EC === 0) {
-        setWarrantyOrders(
-          warrantyOrders.filter((p) => p.id !== selectedWarrantyOrder.id)
-        );
+        sWarranty.set((v) => {
+          v.value.warrantyOrders = v.value.warrantyOrders.filter(
+            (p) => p.id !== selectedWarrantyOrder.id
+          );
+        });
         console.log("Successfully deleted warranty order");
       } else {
         console.error("Failed to delete warranty order:", res.data.EM);
@@ -87,15 +74,20 @@ export default function WarrantyPage() {
             setIsForUpdate(false);
           }}
           onWarrantyOrderCreated={(warrantyOrder) =>
-            setWarrantyOrders([...warrantyOrders, warrantyOrder])
+            sWarranty.set((v) => {
+              v.value.warrantyOrders = [
+                ...v.value.warrantyOrders,
+                warrantyOrder,
+              ];
+            })
           }
           warrantyOrder={isForUpdate ? selectedWarrantyOrder : undefined}
           onWarrantyOrderUpdated={(warrantyOrder) =>
-            setWarrantyOrders(
-              warrantyOrders.map((p) =>
+            sWarranty.set((v) => {
+              v.value.warrantyOrders = v.value.warrantyOrders.map((p) =>
                 p.id === warrantyOrder.id ? warrantyOrder : p
-              )
-            )
+              );
+            })
           }
         />
       )}

@@ -4,24 +4,9 @@ import { useEffect, useState } from "react";
 import { Provider } from "../../entities";
 import AddProviderPopup from "../../components/providerPage/AddProviderPopup";
 import { providerService } from "../../services";
+import { sProvider } from "../../store";
 export default function ProviderPage() {
-  const [providers, setProviders] = useState<Provider[]>([]);
-
-  useEffect(() => {
-    const fetchProviders = async () => {
-      try {
-        const res = await providerService.getAllProviders();
-        if (res.data.EC === 0) {
-          setProviders(res.data.DT);
-        } else {
-          console.error("Failed to fetch providers:", res.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching providers:", error);
-      }
-    };
-    fetchProviders();
-  }, []);
+  const providers = sProvider.use((v) => v.providers);
 
   const [isAddProviderPopupOpen, setIsAddProviderPopupOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<Provider>(
@@ -63,13 +48,18 @@ export default function ProviderPage() {
             setIsForUpdate(false);
           }}
           onProviderCreated={(provider) =>
-            setProviders([...providers, provider])
+            //setProviders([...providers, provider])
+            sProvider.set((v) => {
+              v.value.providers = [...v.value.providers, provider];
+            })
           }
           provider={isForUpdate ? selectedProvider : undefined}
           onProviderUpdated={(provider) =>
-            setProviders(
-              providers.map((p) => (p.id === provider.id ? provider : p))
-            )
+            sProvider.set((v) => {
+              v.value.providers = v.value.providers.map((p) =>
+                p.id === provider.id ? provider : p
+              );
+            })
           }
         />
       )}

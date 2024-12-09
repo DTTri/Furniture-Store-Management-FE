@@ -5,27 +5,12 @@ import StockTable from "../../components/inventoryPage/StockTable";
 import { Product } from "../../entities";
 import { Button } from "@mui/material";
 import { productService } from "../../services";
+import { sProduct } from "../../store";
 export default function InventoryPage() {
   const [isImportPopupOpen, setIsImportPopupOpen] = useState(false);
   const [isPopupImportHistoryOrder, setIsPopupImportHistoryOrder] =
     useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await productService.getAllProducts();
-        //console.log(response);
-        if (response.data.EC === 0) {
-          setProducts(response.data.DT);
-        } else {
-          console.error("Failed to fetch products:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
+  const products = sProduct.use((v) => v.products);
   return (
     <div className="container bg-white h-full">
       <div className="header w-full flex gap-4 p-4 pl-8">

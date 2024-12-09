@@ -3,23 +3,9 @@ import { Customer } from "../../entities";
 import { Button } from "@mui/material";
 import { AddCustomerPopup, CustomersTable } from "../../components";
 import { customerService } from "../../services";
+import sCustomer from "../../store/customerStore";
 export default function CustomerPage() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const res = await customerService.getAllCustomers();
-        if (res.data.EC === 0) {
-          setCustomers(res.data.DT);
-        } else {
-          console.error("Failed to fetch customers:", res.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching customers:", error);
-      }
-    };
-    fetchCustomers();
-  }, []);
+  const customers = sCustomer.use((v) => v.customers);
 
   const [isAddCustomerPopupOpen, setIsAddCustomerPopupOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer>(
@@ -36,7 +22,11 @@ export default function CustomerPage() {
     try {
       const res = await customerService.deleteCustomer(selectedCustomer.id);
       if (res.data.EC === 0) {
-        setCustomers(customers.filter((c) => c.id !== selectedCustomer.id));
+        sCustomer.set((v) => {
+          v.value.customers = v.value.customers.filter(
+            (c) => c.id !== selectedCustomer.id
+          );
+        });
         setIsConfirmDeleteCustomerPopupOpen(false);
       } else {
         console.error("Failed to delete customer:", res.data.EM);
@@ -83,13 +73,17 @@ export default function CustomerPage() {
             setIsForUpdate(false);
           }}
           onCustomerCreated={(customer) =>
-            setCustomers([...customers, customer])
+            sCustomer.set((v) => {
+              v.value.customers = [...v.value.customers, customer];
+            })
           }
           customer={isForUpdate ? selectedCustomer : undefined}
           onCustomerUpdated={(customer) =>
-            setCustomers(
-              customers.map((p) => (p.id === customer.id ? customer : p))
-            )
+            sCustomer.set((v) => {
+              v.value.customers = v.value.customers.map((c) =>
+                c.id === customer.id ? customer : c
+              );
+            })
           }
         />
       )}

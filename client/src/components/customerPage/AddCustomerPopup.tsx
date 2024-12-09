@@ -29,7 +29,7 @@ export default function AddCustomerPopup({
       !/^\d{10}$/.test(phone) ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
     ) {
-      toast("Email is invalid", {
+      toast("Phone or email is invalid", {
         type: "error",
       });
       return false;

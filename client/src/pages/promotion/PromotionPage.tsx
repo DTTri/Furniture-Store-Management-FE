@@ -4,26 +4,10 @@ import AddPromotionPopup from "../../components/promotionPage/AddPromotionPopup"
 import { promotionService } from "../../services";
 import PromotionsTable from "../../components/promotionPage/PromotionsTable";
 import Promotion from "../../entities/Promotion";
+import { sPromotion } from "../../store";
 
 export default function PromotionPage() {
-  const [promotions, setPromotions] = useState<Promotion[]>([]);
-
-  useEffect(() => {
-    const fetchPromotions = async () => {
-      try {
-        const res = await promotionService.getAllPromotions();
-        console.log(res);
-        if (res.data.EC === 0) {
-          setPromotions(res.data.DT);
-        } else {
-          console.error("Failed to fetch promotions:", res.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching promotions:", error);
-      }
-    };
-    fetchPromotions();
-  }, []);
+  const promotions = sPromotion.use((v) => v.promotions);
 
   const [isAddPromotionPopupOpen, setIsAddPromotionPopupOpen] = useState(false);
   const [selectedPromotion, setSelectedPromotion] = useState<Promotion>(
@@ -60,7 +44,11 @@ export default function PromotionPage() {
             try {
               const res = await promotionService.deletePromotion(promotion.id);
               if (res.status === 200) {
-                setPromotions(promotions.filter((p) => p.id !== promotion.id));
+                sPromotion.set((v) => {
+                  v.value.promotions = v.value.promotions.filter(
+                    (p) => p.id !== promotion.id
+                  );
+                });
               } else {
                 console.error("Failed to delete promotion:", res.data.EM);
               }
@@ -77,13 +65,17 @@ export default function PromotionPage() {
             setIsForUpdate(false);
           }}
           onPromotionCreated={(promotion) =>
-            setPromotions([...promotions, promotion])
+            sPromotion.set((v) => {
+              v.value.promotions = [...v.value.promotions, promotion];
+            })
           }
           promotion={isForUpdate ? selectedPromotion : undefined}
           onPromotionUpdated={(promotion) =>
-            setPromotions(
-              promotions.map((p) => (p.id === promotion.id ? promotion : p))
-            )
+            sPromotion.set((v) => {
+              v.value.promotions = v.value.promotions.map((p) =>
+                p.id === promotion.id ? promotion : p
+              );
+            })
           }
         />
       )}

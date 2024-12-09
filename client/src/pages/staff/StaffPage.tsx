@@ -4,32 +4,17 @@ import { Staff } from "../../entities";
 import staffService from "../../services/staff.service";
 import StaffsTable from "../../components/staffPage/StaffsTable";
 import AddStaffPopup from "../../components/staffPage/AddStaffPopup";
+import { sStaff } from "../../store";
 
 export default function StaffPage() {
-  const [staffs, setStaffs] = useState<Staff[]>([]);
-  useEffect(() => {
-    const fetchStaffs = async () => {
-      try {
-        const res = await staffService.getAllStaffs();
-        console.log(res);
-        if (res.data.EC === 0) {
-          setStaffs(res.data.DT);
-        } else {
-          console.error("Failed to fetch staffs:", res.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching staffs:", error);
-      }
-    };
-    fetchStaffs();
-  }, []);
+  const staffs = sStaff.use((v) => v.staffs);
 
   const handleDeleteStaff = async () => {
     try {
       const res = await staffService.deleteStaff(selectedStaff.id);
       if (res.data.EC === 0) {
-        setStaffs(
-          staffs.filter((p) => {
+        sStaff.set((v) =>
+          v.value.staffs.filter((p) => {
             if (p.id === selectedStaff.id) {
               p.Account.status = "inactive";
             }
@@ -85,10 +70,18 @@ export default function StaffPage() {
             setIsAddStaffPopupOpen(false);
             setIsForUpdate(false);
           }}
-          onStaffCreated={(staff) => setStaffs([...staffs, staff])}
+          onStaffCreated={(staff) =>
+            sStaff.set((v) => {
+              v.value.staffs = [...v.value.staffs, staff];
+            })
+          }
           staff={isForUpdate ? selectedStaff : undefined}
           onStaffUpdated={(staff) =>
-            setStaffs(staffs.map((p) => (p.id === staff.id ? staff : p)))
+            sStaff.set((v) => {
+              v.value.staffs = v.value.staffs.map((s) =>
+                s.id === staff.id ? staff : s
+              );
+            })
           }
         />
       )}
