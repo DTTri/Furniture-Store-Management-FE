@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate từ react-router-dom
 import {
   FaChartBar,
@@ -37,7 +37,17 @@ const NavBar: React.FC = () => {
 
   // State để lưu trữ menu item được chọn
   const [selectedMenu, setSelectedMenu] = useState<string>("Dashboard");
-
+  const currentPath = window.location.pathname;
+  useEffect(() => {
+    // Lấy path hiện tại
+    const path = currentPath;
+    // Tìm menu item tương ứng với path hiện tại
+    const menuItem = menuItems.find((item) => item.path === path);
+    // Nếu tìm thấy thì cập nhật menu item được chọn
+    if (menuItem) {
+      setSelectedMenu(menuItem.name);
+    }
+  }, [currentPath]);
   // Hàm xử lý click vào menu item
   const handleMenuClick = (path: string, name: string) => {
     setSelectedMenu(name); // Cập nhật menu item được chọn

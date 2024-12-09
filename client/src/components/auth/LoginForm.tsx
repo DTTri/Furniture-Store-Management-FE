@@ -6,7 +6,7 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ import LoginDTO from "../../entities/DTO/LoginDTO";
 import authenService from "../../services/authen.service";
 import { sUser } from "../../store";
 import LoadingProgress from "../LoadingProgress";
+import http from "../../api/http";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -47,6 +48,8 @@ export default function LoginForm() {
           sessionStorage.setItem("token", response.DT.token);
           localStorage.setItem("id", response.DT.staff.id);
         }
+        http.setAuthHeader(response.DT.token);
+
         sUser.set((prev) => (prev.value.info = response.DT.staff));
         setLoading(false);
         nav("/");

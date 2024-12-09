@@ -28,10 +28,14 @@ import reportService from "./services/report.service";
 import sReport from "./store/reportStore";
 import staffService from "./services/staff.service";
 import { Flip, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import http from "./api/http";
 
 function App() {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token") || "";
   useEffect(() => {
+    http.setAuthHeader(token);
     const fetchPermissions = async () => {
       try {
         const res = await permissionService.getAllPermissions();
@@ -123,42 +127,51 @@ function App() {
       fetchIncomeReportByDate(),
       fetchUserById(),
     ]);
-  }, []);
+  }, [token]);
 
   return (
     <>
-      <ToastContainer style={{ zIndex: "1000" }} position="top-right" autoClose={3000} hideProgressBar closeOnClick pauseOnHover draggable theme="light" transition={Flip}/>
+      <ToastContainer
+        style={{ zIndex: "1000" }}
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+        transition={Flip}
+      />
       <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/verify-token" element={<VerifyTokenPage />} />
-      <Route path="/loginpage" element={<LoginPage />} />
-      <Route
-        path="/"
-        element={
-          <UserProtect>
-            <Layout />
-          </UserProtect>
-        }
-      >
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/product" element={<ProductPage />} />
-        <Route path="/inventory" element={<InventoryPage />} />
-        <Route path="/invoice" element={<InvoicePage />} />
-        <Route path="/provider" element={<ProviderPage />} />
-        <Route path="/customer" element={<CustomerPage />} />
-        <Route path="/category" element={<CategoryPage />} />
-        <Route path="/promotion" element={<PromotionPage />} />
-        <Route path="/staff" element={<StaffPage />} />
-        <Route path="/repair" element={<RepairPage />} />
-        <Route path="/warranty" element={<WarrantyPage />} />
-        <Route path="/report" element={<ReportPage />} />
-        <Route path="/role" element={<RolePage />} />
-      </Route>
-    </Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/verify-token" element={<VerifyTokenPage />} />
+        <Route path="/loginpage" element={<LoginPage />} />
+        <Route
+          path="/"
+          element={
+            <UserProtect>
+              <Layout />
+            </UserProtect>
+          }
+        >
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/product" element={<ProductPage />} />
+          <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/invoice" element={<InvoicePage />} />
+          <Route path="/provider" element={<ProviderPage />} />
+          <Route path="/customer" element={<CustomerPage />} />
+          <Route path="/category" element={<CategoryPage />} />
+          <Route path="/promotion" element={<PromotionPage />} />
+          <Route path="/staff" element={<StaffPage />} />
+          <Route path="/repair" element={<RepairPage />} />
+          <Route path="/warranty" element={<WarrantyPage />} />
+          <Route path="/report" element={<ReportPage />} />
+          <Route path="/role" element={<RolePage />} />
+        </Route>
+      </Routes>
     </>
-
   );
 }
 
