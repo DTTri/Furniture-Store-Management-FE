@@ -18,6 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { Edit } from "@mui/icons-material";
+import { toast } from "react-toastify";
 export default function AddPromotionPopup({
   onClose,
   onPromotionCreated,
@@ -131,6 +132,7 @@ export default function AddPromotionPopup({
       !finishDate ||
       rows.length === 0
     ) {
+      toast("Please fill in all fields", { type: "error" });
       return;
     }
     try {
@@ -145,16 +147,19 @@ export default function AddPromotionPopup({
       console.log(newPromotion);
       const res = await promotionService.createPromotion(newPromotion);
       if (res.data.EC === 0) {
+        toast("Promotion created successfully", { type: "success" });
         onPromotionCreated(res.data.DT);
         onClose();
       } else {
+        toast(res.data.EM, { type: "error" });
         console.error("Failed to create promotion:", res.data.EM);
       }
     } catch (error) {
+      toast("Error creating promotion", { type: "error" });
       console.error("Error creating promotion:", error);
     }
   };
-
+  
   const handleUpdatePromotion = async () => {
     if (
       !name ||
@@ -164,6 +169,7 @@ export default function AddPromotionPopup({
       rows.length === 0 ||
       !promotion
     ) {
+      toast("Please fill in all fields", { type: "error" });
       return;
     }
     try {
@@ -181,12 +187,15 @@ export default function AddPromotionPopup({
         id: promotion.id,
       });
       if (res.data.EC === 0) {
+        toast("Promotion updated successfully", { type: "success" });
         onPromotionUpdated(res.data.DT);
         onClose();
       } else {
+        toast("Failed to update promotion", { type: "error" });
         console.error("Failed to update promotion:", res.data.EM);
       }
     } catch (error) {
+      toast("Failed to update promotion", { type: "error" });
       console.error("Error updating promotion:", error);
     }
   };

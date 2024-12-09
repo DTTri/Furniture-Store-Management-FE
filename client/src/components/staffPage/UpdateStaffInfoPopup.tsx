@@ -7,6 +7,7 @@ import staffService from "../../services/staff.service";
 import UpdateStaffInfoDTO from "../../entities/DTO/UpdateStaffInfoDTO";
 import { sUser } from "../../store";
 import LoadingProgress from "../LoadingProgress";
+import { toast } from "react-toastify";
 
 export default function UpdateStaffInfoPopup({
   onClose,
@@ -24,6 +25,7 @@ export default function UpdateStaffInfoPopup({
 
   const validateInputs = () => {
     if (!fullname || !birth || !idNumber || !phone || !email) {
+      toast.error("Please fill in all fields");
       return false;
     }
     if (
@@ -34,12 +36,14 @@ export default function UpdateStaffInfoPopup({
       phone === staff.phone &&
       email === staff.email
     ) {
+      toast.error("No information has been changed");
       return false;
     }
     if (
       !/^\d{10}$/.test(phone) ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
     ) {
+      toast.error("Invalid phone or email");
       return false;
     }
     return true;
@@ -62,12 +66,15 @@ export default function UpdateStaffInfoPopup({
       console.log(updateStaff);
       const response = await staffService.updateStaff(staff.id, updateStaff);
       if (response.data.EC === 0) {
+        toast.success("Update staff successfully");
         console.log("Update staff successfully");
         sUser.set((prev) => (prev.value.info = response.data.DT));
         onClose();
       } else {
+        toast.error("Failed to update staff");
       }
     } catch (error) {
+      toast.error("Failed to update staff");
       console.error("Error adding staff:", error);
     }
   };

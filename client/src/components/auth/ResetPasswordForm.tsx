@@ -12,6 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import LoadingProgress from "../LoadingProgress";
 import authenService from "../../services/authen.service";
 import { set } from "date-fns";
+import { Flip, toast } from "react-toastify";
 
 export default function ResetPasswordForm() {
   const [password, setPassword] = useState("");
@@ -38,6 +39,9 @@ export default function ResetPasswordForm() {
       return;
     }
     if (password === "" || rePassword === "") {
+      toast("Password does not match", {
+        type: "error",
+      });
       setLoading(false);
       return;
     }
@@ -48,15 +52,19 @@ export default function ResetPasswordForm() {
         retypeNewPassword: rePassword,
       });
       if (response.EC === 0) {
-        setIsSuccess(true);
+          toast('Password reset successfully, please log in again', {
+            type: "success",
+          });
         nav("/login");
       } else {
-        console.log("Fail to reset password" + response.EM);
-        setIsSuccess(false);
-        setError(response.EM);
+        toast("Fail to reset password", {
+          type: "error",
+        });
       }
     } catch (error) {
-      console.log("Fail to reset password" + error);
+      toast("Fail to reset password", {
+        type: "error",
+      });
     }
     setLoading(false);
   };

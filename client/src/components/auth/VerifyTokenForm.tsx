@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
 import { Button, TextField } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import authenService from '../../services/authen.service';
 
 export default function VerifyTokenForm() {
@@ -39,10 +40,10 @@ export default function VerifyTokenForm() {
       if (response.EC === 0) {
         navigate('/reset-password/' + token);
       } else {
-        setError(response.EM);
+        toast(response.EM, { type: 'error' });
       }
     } catch (error) {
-      setError('Verification failed');
+      toast('Verification failed', { type: 'error' });
     } finally {
       setLoading(false);
     }

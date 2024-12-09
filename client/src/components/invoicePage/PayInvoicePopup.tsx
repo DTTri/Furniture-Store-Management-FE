@@ -21,6 +21,7 @@ import {
 import { format } from "date-fns";
 import { Customer, ProductVariant } from "../../entities";
 import ConfirmPopup from "../ConfirmPopup";
+import { toast } from "react-toastify";
 
 export default function PayInvoicePopup({
   onClose,
@@ -78,10 +79,12 @@ export default function PayInvoicePopup({
 
   const handleOnPayInvoice = async () => {
     if (method === "") {
+      toast("Please select payment method", { type: "error" });
       return;
     }
     if(method === "cash") {
       if(cash < totalCost) {
+        toast("Cash is not enough", { type: "error" });
         return;
       }
     }
@@ -90,7 +93,7 @@ export default function PayInvoicePopup({
       const consideredVariant = variantList.find((variant) => variant.id === row.id);
       if (consideredVariant) {
         if (consideredVariant.Inventories && row.quantity > (consideredVariant.Inventories[0]?.available || 0)) {
-
+          toast("Not enough quantity in stock", { type: "error" });
           return;
         }
       }
@@ -99,10 +102,12 @@ export default function PayInvoicePopup({
     try {
       const response = await invoiceService.acceptInvoice(invoice.id);
       if (response.EC === 0) {
+        toast("Payment success", { type: "success" });
         onPaymentSuccess(response.DT);
       } else {
       }
     } catch (error) {
+      toast("Payment failed", { type: "error" });
       console.error("Error paying invoice:", error);
     }
   }

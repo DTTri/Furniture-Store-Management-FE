@@ -31,6 +31,7 @@ import InvoiceDetailDTO from "./InvoiceDetailDTO";
 import AddCustomerPopup from "../customerPage/AddCustomerPopup";
 import Invoice from "../../entities/Invoice";
 import Promotion from "../../entities/Promotion";
+import { toast } from "react-toastify";
 
 export default function CreateInvoicePopup({
   onClose,
@@ -131,15 +132,19 @@ export default function CreateInvoicePopup({
   const [returnedCustomer, setReturnedCustomer] = useState<boolean>(false);
   const handleAddProduct = () => {
     if (!selectedVariant) {
+      toast("Please select a variant", { type: "error" });
       return;
     }
     if (quatanty == 0) {
+      toast("Please set quatanty", { type: "error" });
       return;
     }
     if (selectedVariant.Inventories && quatanty > (selectedVariant.Inventories[0]?.available || 0)) {
+      toast("Not enough product in stock", { type: "error" });
       return;
     }
     if (rows.find((row) => row.id === selectedVariant.id)) {
+      toast("Product already added", { type: "error" });
       return;
     }
     console.log(selectedVariant);
@@ -184,9 +189,11 @@ export default function CreateInvoicePopup({
 
   const handleCreateInvoice = async () => {
     if (!customerInfo) {
+      toast("Please select a customer", { type: "error" });
       return;
     }
     if (rows.length === 0) {
+      toast("Please add product", { type: "error" });
       return;
     }
     const rowInvoice: CreateInvoiceDetailDTO[] = rows.map((row) => {
@@ -210,8 +217,10 @@ export default function CreateInvoicePopup({
     console.log("createdInvoice", createdInvoice);
     const response = await invoiceService.createInvoice(createdInvoice);
     if (response.EC === 0) {
+      toast("Invoice created successfully", { type: "success" });
       onInvoiceCreated(response.DT);
     } else {
+      toast("Failed to create invoice", { type: "error" });
       console.log("Failed to create invoice:", response.EM);
     }
   };
@@ -317,6 +326,7 @@ export default function CreateInvoicePopup({
       setCustomerInfo(searchedCustomer);
     }
     else {
+      toast("Can't find customer information", { type: "error" });
       setCustomerInfo(null);
     }
     setReturnedCustomer(true);

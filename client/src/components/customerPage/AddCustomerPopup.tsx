@@ -3,6 +3,7 @@ import { Customer } from "../../entities";
 import { useState } from "react";
 import AddCustomerDTO from "./AddCustomerDTO";
 import { customerService } from "../../services";
+import { toast } from "react-toastify";
 export default function AddCustomerPopup({
   onClose,
   onCustomerCreated,
@@ -19,12 +20,18 @@ export default function AddCustomerPopup({
   const [email, setEmail] = useState(customer?.email || "");
   const validateInputs = () => {
     if (!name || !phone || !email) {
+      toast("Please fill in all fields", {
+        type: "error",
+      });
       return false;
     }
     if (
       !/^\d{10}$/.test(phone) ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
     ) {
+      toast("Email is invalid", {
+        type: "error",
+      });
       return false;
     }
     return true;
@@ -42,11 +49,14 @@ export default function AddCustomerPopup({
       const res = await customerService.createCustomer(newCustomer);
       if (res.data.EC === 0) {
         onCustomerCreated(res.data.DT);
+        toast("Customer created successfully", { type: "success" });
         onClose();
       } else {
+        toast("Failed to create customer", { type: "error" });
         console.error("Failed to create customer:", res.data.EM);
       }
     } catch (error) {
+      toast("Failed to create customer", { type: "error" });
       console.error("Error creating customer:", error);
     }
   };
@@ -66,11 +76,14 @@ export default function AddCustomerPopup({
       );
       if (res.data.EC === 0) {
         onCustomerUpdated(res.data.DT);
+        toast("Customer updated successfully", { type: "success" });
         onClose();
       } else {
+        toast("Customer created successfully", { type: "error" });
         console.error("Failed to update customer:", res.data.EM);
       }
     } catch (error) {
+      toast("Customer created successfully", { type: "error" });
       console.error("Error updating customer:", error);
     }
   };

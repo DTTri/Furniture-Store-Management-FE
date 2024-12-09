@@ -3,6 +3,7 @@ import { ProductVariant } from "../../entities";
 import { Button } from "@mui/material";
 import AddVariantDTO from "./AddVariantDTO";
 import { variantService } from "../../services";
+import { toast } from "react-toastify";
 
 export default function AddVariantPopup({
   productId,
@@ -30,18 +31,23 @@ export default function AddVariantPopup({
 
   const handleAddVariant = async () => {
     if (!sku || sku === "") {
+      toast.error("SKU is required");
       return;
     }
     if (!buyingPrice || buyingPrice === 0) {
+      toast.error("Buying price is required");
       return;
     }
     if (!price || price === 0) {
+      toast.error("Price is required");
       return;
     }
     if (!color || color === "") {
+      toast.error("Color is required");
       return;
     }
     if (!size || size === "") {
+      toast.error("Size is required");
       return;
     }
     const newVariant: AddVariantDTO = {
@@ -58,34 +64,43 @@ export default function AddVariantPopup({
       );
       console.log(response);
       if (response.data.EC === 0) {
+        toast.success("Variant created");
         console.log("Variant created:", response.data.DT);
         onVariantCreated(response.data.DT);
         onClose();
       } else {
+        toast.error("Failed to add variant");
         console.error("Failed to add variant:", response.data.EM);
       }
     } catch (error) {
+      toast.error("Failed to add variant");
       console.error("Error adding variant:", error);
     }
   };
 
   const handleUpdateVariant = async () => {
     if (!variant) {
+      toast.error("Variant not found");
       return;
     }
     if (!sku || sku === "") {
+      toast.error("SKU is required");
       return;
     }
     if (!buyingPrice || buyingPrice === 0) {
+      toast.error("Buying price is required");
       return;
     }
     if (!price || price === 0) {
+      toast.error("Price is required");
       return;
     }
     if (!color || color === "") {
+      toast.error("Color is required");
       return;
     }
     if (!size || size === "") {
+      toast.error("Size is required");
       return;
     }
     const updatedVariant: AddVariantDTO = {
@@ -102,13 +117,16 @@ export default function AddVariantPopup({
       );
       console.log(response);
       if (response.data.EC === 0) {
+        toast.success("Variant updated");
         console.log("Variant updated:", response.data.DT);
         onVariantUpdated(response.data.DT);
         onClose();
       } else {
+        toast.error("Failed to update variant");
         console.error("Failed to update variant:", response.data.EM);
       }
     } catch (error) {
+      toast.error("Failed to update variant");
       console.error("Error updating variant:", error);
     }
   };

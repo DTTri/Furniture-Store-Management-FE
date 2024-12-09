@@ -4,6 +4,7 @@ import AddWarrantyOrderDTO from "./AddWarrantyOrderDTO";
 import UpdateWarrantyOrderDTO from "./UpdateWarrantyOrderDTO";
 import WarrantyOrder from "../../entities/WarrantyOrder";
 import warrantyService from "../../services/warranty.service";
+import { toast } from "react-toastify";
 
 export default function AddWarrantyOrderPopup({
   onClose,
@@ -33,9 +34,11 @@ export default function AddWarrantyOrderPopup({
       !details ||
       (!warrantyOrder && (!staffId || !warrantyId))
     ) {
+      toast.error("Please fill in all fields");
       return false;
     }
     if (cost && isNaN(Number(cost))) {
+      toast.error("Cost must be a number");
       return false;
     }
     return true;
@@ -58,11 +61,14 @@ export default function AddWarrantyOrderPopup({
         newWarrantyOrder
       );
       if (response.data.EC === 0) {
+        toast.success("Warranty order created successfully");
         onWarrantyOrderCreated(response.data.DT);
         onClose();
       } else {
+        toast.error("Failed to add warranty order");
       }
     } catch (error) {
+      toast.error("Failed to add warranty order");
       console.error("Error adding warranty order:", error);
     }
   };
@@ -83,11 +89,14 @@ export default function AddWarrantyOrderPopup({
       );
       console.log(response);
       if (response.data.EC === 0) {
+        toast.success("Warranty order updated successfully");
         onWarrantyOrderUpdated(response.data.DT);
         onClose();
       } else {
+        toast.error("Failed to update warranty order");
       }
     } catch (error) {
+      toast.error("Failed to update warranty order");
       console.error("Error updating warranty order:", error);
     }
   };
