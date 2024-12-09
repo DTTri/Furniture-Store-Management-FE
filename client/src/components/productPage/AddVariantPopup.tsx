@@ -140,7 +140,7 @@ export default function AddVariantPopup({
               id="addVariantSKUInput"
               name="sku"
               placeholder="SKU"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               defaultValue={sku}
               onChange={(e) => setSku(e.target.value)}
               required
@@ -153,7 +153,7 @@ export default function AddVariantPopup({
               id="addVariantBuyingPriceInput"
               name="buyingPrice"
               placeholder="Buying Price"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               defaultValue={buyingPrice}
               min={0}
               onChange={(e) => setBuyingPrice(Number(e.target.value))}
@@ -170,7 +170,7 @@ export default function AddVariantPopup({
               id="addVariantPriceInput"
               name="price"
               placeholder="Price"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               defaultValue={price}
               min={0}
               onChange={(e) => setPrice(Number(e.target.value))}
@@ -183,7 +183,7 @@ export default function AddVariantPopup({
               id="addVariantColorInput"
               name="color"
               placeholder="Color"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               defaultValue={color}
               onChange={(e) => setColor(e.target.value)}
               required
@@ -195,7 +195,7 @@ export default function AddVariantPopup({
               id="addVariantSizeInput"
               name="size"
               placeholder="Size"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               defaultValue={size}
               onChange={(e) => setSize(e.target.value)}
               required

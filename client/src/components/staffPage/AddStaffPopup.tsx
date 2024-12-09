@@ -110,7 +110,7 @@ export default function AddStaffPopup({
               id="newStaffFullnameInput"
               name="fullname"
               placeholder="Full Name"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setFullname(e.target.value);
@@ -124,7 +124,7 @@ export default function AddStaffPopup({
               id="newStaffBirthInput"
               name="birth"
               type="date"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setBirth(e.target.value);
@@ -137,7 +137,7 @@ export default function AddStaffPopup({
             <select
               id="newStaffGenderInput"
               name="gender"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setGender(e.target.value);
@@ -154,7 +154,7 @@ export default function AddStaffPopup({
               id="newStaffIdNumberInput"
               name="idNumber"
               placeholder="ID Number"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setIdNumber(e.target.value);
@@ -168,7 +168,7 @@ export default function AddStaffPopup({
               id="newStaffStartDateInput"
               name="startDate"
               type="date"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setStartDate(e.target.value);
@@ -182,7 +182,7 @@ export default function AddStaffPopup({
               id="newStaffPhoneInput"
               name="phone"
               placeholder="Phone"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setPhone(e.target.value);
@@ -196,7 +196,7 @@ export default function AddStaffPopup({
               id="newStaffEmailInput"
               name="email"
               placeholder="Email"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -210,7 +210,7 @@ export default function AddStaffPopup({
               <select
                 id="newStaffRoleInput"
                 name="role"
-                className="border border-gray-300 px-2 py-1 rounded-md"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 required
                 onChange={(e) => {
                   setRole(Number(e.target.value));

@@ -7,6 +7,7 @@ import http from "../../api/http";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone, { IFileWithMeta, StatusValue } from "react-dropzone-uploader";
 import { toast } from "react-toastify";
+import { sCategory } from "../../store";
 
 export default function AddProductPopup({
   onClose,
@@ -21,7 +22,7 @@ export default function AddProductPopup({
 }) {
   const [name, setName] = useState(product?.name || "");
   const [description, setDescription] = useState(product?.description || "");
-  const [catalogues, setCatalogues] = useState<Category[]>([]);
+  const catalogues = sCategory.use((v) => v.categories);
   const [catalogueId, setCatalogueId] = useState(product?.catalogueId || 0);
   const [image, setImage] = useState(product?.image || "");
   const [warranty, setWarranty] = useState(product?.warranty || 0);
@@ -30,25 +31,6 @@ export default function AddProductPopup({
   const [key, setKey] = useState("");
   const dropzoneRef = useRef<any>(null);
 
-  useEffect(() => {
-    const fetchCatalogues = async () => {
-      try {
-        const response = await categoryService.getAllCategory();
-        console.log(response);
-        if (response.EC === 0) {
-          setCatalogues(response.DT);
-          if (response.DT.length > 0) {
-            setCatalogueId(response.DT[0].id);
-          }
-        } else {
-          console.error("Failed to fetch catalogues:", response.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching catalogues:", error);
-      }
-    };
-    fetchCatalogues();
-  }, []);
   const handleChangeStatus = (
     { meta }: { meta: { name: string } },
     status: StatusValue
@@ -214,7 +196,7 @@ export default function AddProductPopup({
                 id="newProductNameInput"
                 name="name"
                 placeholder="Tên"
-                className="border border-gray-300 px-2 py-1 rounded-md"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 required
                 onChange={(e) => setName(e.target.value)}
                 defaultValue={product?.name}
@@ -226,7 +208,7 @@ export default function AddProductPopup({
                 id="newProductDescriptionInput"
                 name="description"
                 placeholder="Mô tả"
-                className="border border-gray-300 px-2 py-1 rounded-md h-24"
+                className="border border-gray-500 px-2 py-1 rounded-md h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 style={{
                   resize: "none",
                 }}
@@ -240,7 +222,7 @@ export default function AddProductPopup({
                 name="catalogue"
                 id="newProductCatalogueInput"
                 onChange={(e) => setCatalogueId(Number(e.target.value))}
-                className="border border-gray-300 px-2 py-1 rounded-md"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 //defaultValue={catalogueId}
               >
                 {catalogues.map((catalogue, index) => (
@@ -257,7 +239,9 @@ export default function AddProductPopup({
                 id="newProductWarrantyInput"
                 name="warranty"
                 placeholder="Bảo hành"
-                className="border border-gray-300 px-2 py-1 rounded-md"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                hover:border-blue-500
+                "
                 min={0}
                 onChange={(e) => setWarranty(Number(e.target.value))}
                 defaultValue={warranty}

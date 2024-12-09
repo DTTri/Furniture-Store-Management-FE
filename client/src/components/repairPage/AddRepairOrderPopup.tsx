@@ -111,7 +111,7 @@ export default function AddRepairOrderPopup({
                   id="newRepairOrderProductNameInput"
                   name="productName"
                   placeholder="Product Name"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => {
                     setProductName(e.target.value);
@@ -125,7 +125,7 @@ export default function AddRepairOrderPopup({
                   id="newRepairOrderDescriptionInput"
                   name="description"
                   placeholder="Description"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => {
                     setDescription(e.target.value);
@@ -142,7 +142,7 @@ export default function AddRepairOrderPopup({
               id="newRepairOrderDetailsInput"
               name="details"
               placeholder="Details"
-              className="border border-gray-300 px-2 py-1 rounded-md h-24"
+              className="border border-gray-500 px-2 py-1 rounded-md h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               style={{
                 resize: "none",
               }}
@@ -161,7 +161,7 @@ export default function AddRepairOrderPopup({
                   id="newRepairOrderCostInput"
                   name="cost"
                   placeholder="Cost"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   onChange={(e) => {
                     setCost(e.target.value);
                   }}
@@ -174,7 +174,7 @@ export default function AddRepairOrderPopup({
                   id="newRepairOrderStaffIdInput"
                   name="staffId"
                   placeholder="Staff ID"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => {
                     setStaffId(Number(e.target.value));
@@ -188,7 +188,7 @@ export default function AddRepairOrderPopup({
                   id="newRepairOrderCustomerIdInput"
                   name="customerId"
                   placeholder="Customer ID"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => {
                     setCustomerId(Number(e.target.value));
@@ -204,7 +204,7 @@ export default function AddRepairOrderPopup({
               id="newRepairOrderEstimateFinishDateInput"
               name="estimateFinishDate"
               type="date"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               onChange={(e) => {
                 setEstimateFinishDate(e.target.value);
               }}
@@ -218,7 +218,7 @@ export default function AddRepairOrderPopup({
                 id="updateRepairOrderStatusInput"
                 name="status"
                 placeholder="Status"
-                className="border border-gray-300 px-2 py-1 rounded-md"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 onChange={(e) => {
                   setStatus(e.target.value);
                 }}

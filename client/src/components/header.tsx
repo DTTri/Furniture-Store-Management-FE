@@ -21,10 +21,6 @@ const Header: React.FC = () => {
     }
   }, [sStaff]);
 
-  if (!user) {
-    return <LoadingProgress />;
-  }
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isUpdateStaffInfoPopupOpen, setIsUpdateStaffInfoPopupOpen] =
     useState(false);
@@ -43,10 +39,18 @@ const Header: React.FC = () => {
     sessionStorage.removeItem("id");
     nav("/login");
   };
+  if (!user) {
+    return <LoadingProgress />;
+  }
   return (
     <div className="TopNavDefault w-full h-[45px] px-8 py-6 bg-white border-b border-[#e4e4e6] flex justify-between items-center z-50">
       {/* Logo và Tên cửa hàng */}
-      <div className="LeftMenu flex items-center space-x-3">
+      <div
+        className="LeftMenu flex items-center space-x-3 cursor-pointer"
+        onClick={() => {
+          nav("/");
+        }}
+      >
         {/* Logo */}
         <div className="Logo w-8 h-8">
           <img

@@ -55,6 +55,7 @@ export default function AddProviderPopup({
         onProviderCreated(response.data.DT);
         onClose();
       } else {
+        toast.error("Failed to add provider");
       }
     } catch (error) {
       toast.error("Failed to add provider");
@@ -99,7 +100,7 @@ export default function AddProviderPopup({
               id="newProviderNameInput"
               name="name"
               placeholder="Name"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setName(e.target.value);
@@ -113,7 +114,7 @@ export default function AddProviderPopup({
               id="newProviderAddressInput"
               name="address"
               placeholder="Address"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setAddress(e.target.value);
@@ -127,7 +128,7 @@ export default function AddProviderPopup({
               id="newProviderPhoneInput"
               name="phone"
               placeholder="Phone"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setPhone(e.target.value);
@@ -141,7 +142,7 @@ export default function AddProviderPopup({
               id="newProviderEmailInput"
               name="email"
               placeholder="Email"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -155,7 +156,7 @@ export default function AddProviderPopup({
               id="newProviderPresidentInput"
               name="president"
               placeholder="President"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setPresident(e.target.value);

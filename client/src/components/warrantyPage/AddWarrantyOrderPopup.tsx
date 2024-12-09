@@ -111,7 +111,7 @@ export default function AddWarrantyOrderPopup({
               id="newWarrantyOrderDescriptionInput"
               name="description"
               placeholder="Description"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               required
               onChange={(e) => {
                 setDescription(e.target.value);
@@ -125,7 +125,7 @@ export default function AddWarrantyOrderPopup({
               id="newWarrantyOrderDetailsInput"
               name="details"
               placeholder="Details"
-              className="border border-gray-300 px-2 py-1 rounded-md h-24"
+              className="border border-gray-500 px-2 py-1 rounded-md h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               style={{
                 resize: "none",
               }}
@@ -144,7 +144,7 @@ export default function AddWarrantyOrderPopup({
                   id="newWarrantyOrderCostInput"
                   name="cost"
                   placeholder="Cost"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   onChange={(e) => {
                     setCost(e.target.value);
                   }}
@@ -157,7 +157,7 @@ export default function AddWarrantyOrderPopup({
                   id="newWarrantyOrderStaffIdInput"
                   name="staffId"
                   placeholder="Staff ID"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => {
                     setStaffId(Number(e.target.value));
@@ -171,7 +171,7 @@ export default function AddWarrantyOrderPopup({
                   id="newWarrantyOrderWarrantyIdInput"
                   name="warrantyId"
                   placeholder="Warranty ID"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => {
                     setWarrantyId(Number(e.target.value));
@@ -187,7 +187,7 @@ export default function AddWarrantyOrderPopup({
               id="newWarrantyOrderEstimateFinishDateInput"
               name="estimateFinishDate"
               type="date"
-              className="border border-gray-300 px-2 py-1 rounded-md"
+              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               onChange={(e) => {
                 setEstimateFinishDate(e.target.value);
               }}

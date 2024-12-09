@@ -32,7 +32,9 @@ export default function ProductPage() {
           <input
             type="text"
             placeholder="Search product"
-            className="w-full p-2 rounded-md border border-gray-500"
+            className="w-full p-2 rounded-md border border-gray-500
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+            "
             onChange={(e) => {
               setSearchValue(e.target.value);
             }}

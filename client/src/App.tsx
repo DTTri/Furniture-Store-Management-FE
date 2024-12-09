@@ -23,6 +23,7 @@ import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import RolePage from "./pages/role/RolePage";
 import { useEffect } from "react";
 import {
+  categoryService,
   customerService,
   permissionService,
   productService,
@@ -30,6 +31,7 @@ import {
   providerService,
 } from "./services";
 import {
+  sCategory,
   sPermission,
   sProduct,
   sPromotion,
@@ -222,6 +224,18 @@ function App() {
         console.error("Error fetching repair orders:", error);
       }
     };
+    const fetchCategory = async () => {
+      try {
+        const res = await categoryService.getAllCategory();
+        if (res.data.EC === 0) {
+          sCategory.set((v) => (v.value.categories = res.data.DT));
+        } else {
+          console.error("Failed to fetch categories:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
     Promise.all([
       fetchPermissions(),
       fetchGeneralReportByDate(),
@@ -235,6 +249,7 @@ function App() {
       fetchPromotion(),
       fetchWarranty(),
       fetchRepair(),
+      fetchCategory(),
     ]);
   }, [token]);
 

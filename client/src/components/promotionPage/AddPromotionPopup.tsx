@@ -159,7 +159,7 @@ export default function AddPromotionPopup({
       console.error("Error creating promotion:", error);
     }
   };
-  
+
   const handleUpdatePromotion = async () => {
     if (
       !name ||
@@ -219,7 +219,7 @@ export default function AddPromotionPopup({
                   id="name"
                   name="name"
                   placeholder="Name"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => setName(e.target.value)}
                   defaultValue={promotion?.name}
@@ -232,7 +232,7 @@ export default function AddPromotionPopup({
                   id="description"
                   name="description"
                   placeholder="Description"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => setDescription(e.target.value)}
                   defaultValue={promotion?.description}
@@ -245,7 +245,7 @@ export default function AddPromotionPopup({
                   id="startDate"
                   name="startDate"
                   type="date"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => setStartDate(e.target.value)}
                   defaultValue={promotion?.startDate}
@@ -258,7 +258,7 @@ export default function AddPromotionPopup({
                   id="finishDate"
                   name="finishDate"
                   type="date"
-                  className="border border-gray-300 px-2 py-1 rounded-md"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   required
                   onChange={(e) => setFinishDate(e.target.value)}
                   defaultValue={promotion?.finishDate}
@@ -274,7 +274,7 @@ export default function AddPromotionPopup({
               >
                 <select
                   id="selectedProduct"
-                  className="border border-gray-300 rounded-md p-1"
+                  className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   onChange={(e) => {
                     setSelectedVariant(null);
                     const selectedProductId = parseInt(e.target.value);
@@ -295,7 +295,7 @@ export default function AddPromotionPopup({
                 </select>
                 <select
                   id="selectedVariant"
-                  className="border border-gray-300 rounded-md p-1"
+                  className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   disabled={promotion && !isEditing && !selectedProduct}
                   onChange={(e) => {
                     const selectedVariantId = parseInt(e.target.value);

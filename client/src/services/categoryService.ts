@@ -1,28 +1,31 @@
 import CategoryDTO from "../entities/DTO/CategoryDTO";
-import http from "./http"
+import http from "../api/http";
 
 class categoryService {
-    baseUri: string;
-    constructor() {
-        this.baseUri = "catalogues";
-    }
-    private getURI(uri: string) {
-        return `${this.baseUri}/${uri}`;
-    }
+  baseUri: string;
+  constructor() {
+    this.baseUri = "catalogues";
+  }
+  private getURI(uri: string) {
+    return `${this.baseUri}/${uri}`;
+  }
 
-    async getAllCategory() {
-        return http.get(this.getURI("get-all-catalogues"));
-    }
-    async createCategory(createCategory: CategoryDTO) {
-        return http.post(this.getURI("create-catalogue"), createCategory);
-    }
-    async updateCategory(id: number, updateCategory: object) {
-        console.log(id, updateCategory);
-        return http.put(this.getURI(`update-catalogue/${id}`), updateCategory);
-    }
-    async deleteCategory(id: number) {
-        return http.delete(this.getURI(`delete-catalogue/${id}`));
-    }
+  async getAllCategory() {
+    return await http.get(this.getURI("get-all-catalogues"));
+  }
+  async createCategory(createCategory: CategoryDTO) {
+    return await http.post(this.getURI("create-catalogue"), createCategory);
+  }
+  async updateCategory(id: number, updateCategory: object) {
+    console.log(id, updateCategory);
+    return await http.put(
+      this.getURI(`update-catalogue/${id}`),
+      updateCategory
+    );
+  }
+  async deleteCategory(id: number) {
+    return await http.delete(this.getURI(`delete-catalogue/${id}`));
+  }
 }
 
 export default new categoryService();

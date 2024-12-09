@@ -257,7 +257,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
             <select
               id="provider"
               onChange={(e) => setProviderId(parseInt(e.target.value))}
-              className="border border-gray-300 rounded-md p-1"
+              className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
             >
               {providers.map((provider) => (
                 <option key={provider.id} value={provider.id}>
@@ -275,7 +275,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
             >
               <select
                 id="selectedProduct"
-                className="border border-gray-300 rounded-md p-1"
+                className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 onChange={(e) => {
                   setSelectedVariant(null);
                   const selectedProductId = parseInt(e.target.value);
@@ -295,7 +295,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               </select>
               <select
                 id="selectedVariant"
-                className="border border-gray-300 rounded-md p-1"
+                className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 disabled={!selectedProduct}
                 onChange={(e) => {
                   const selectedVariantId = parseInt(e.target.value);
@@ -360,7 +360,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
             <input
               type="number"
               placeholder="Shipping Cost"
-              className="border border-gray-300 rounded-md p-1"
+              className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
               min={0}
               onChange={(e) => setShippingCost(parseInt(e.target.value))}
               id="shippingCostInput"
