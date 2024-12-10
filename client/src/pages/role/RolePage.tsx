@@ -58,10 +58,10 @@ export default function RolePage() {
             }}
             className="border border-gray-300 rounded-md p-1 ml-2"
           >
-            <option value={1}>Quản lý cửa hàng</option>
-            <option value={2}>Nhân viên kho</option>
-            <option value={3}>Nhân viên bảo hành</option>
-            <option value={4}>Nhân viên bán hàng</option>
+            <option value={2}>Manager</option>
+            <option value={3}>Sale Staff</option>
+            <option value={4}>Inventory Staff</option>
+            <option value={5}>Repair Staff</option>
           </select>
         </div>
         <div className="buttons-container flex justify-center gap-2">

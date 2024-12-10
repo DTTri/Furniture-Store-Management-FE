@@ -68,7 +68,7 @@ export default function LoginForm() {
         });
       }
     } catch (error) {
-      toast("Fail to login", {
+      toast("Fail to login " + error, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: true,

@@ -1,8 +1,8 @@
-import { Category, Product } from "../../entities";
+import { Product } from "../../entities";
 import { Button } from "@mui/material";
 import AddProductDTO from "./AddProductDTO";
-import { useState, useRef, useEffect } from "react";
-import { categoryService, productService } from "../../services";
+import { useState, useRef } from "react";
+import { productService } from "../../services";
 import http from "../../api/http";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone, { IFileWithMeta, StatusValue } from "react-dropzone-uploader";
@@ -29,7 +29,7 @@ export default function AddProductPopup({
 
   const [presignedUrl, setPresignedUrl] = useState("");
   const [key, setKey] = useState("");
-  const dropzoneRef = useRef<any>(null);
+  const dropzoneRef = useRef<Dropzone | null>(null);
 
   const handleChangeStatus = (
     { meta }: { meta: { name: string } },
