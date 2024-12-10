@@ -42,6 +42,7 @@ const Header: React.FC = () => {
   if (!user) {
     return <LoadingProgress />;
   }
+  console.log("user", user);
   return (
     <div className="TopNavDefault w-full h-[45px] px-8 py-6 bg-white border-b border-[#e4e4e6] flex justify-between items-center z-50">
       {/* Logo và Tên cửa hàng */}

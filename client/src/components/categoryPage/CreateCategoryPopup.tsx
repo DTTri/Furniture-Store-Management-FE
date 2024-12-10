@@ -34,8 +34,8 @@ export default function CreateCategoryPopup({
       }
       const createdCategoryDTO = { name: categoryName.current}
       const response = await categoryService.createCategory(createdCategoryDTO);
-      if (response.EC === 0) {
-        onCategoryCreated(response.DT);
+      if (response.data.EC === 0) {
+        onCategoryCreated(response.data.DT);
         toast("Category create successfully", {
           type: "success",
         });

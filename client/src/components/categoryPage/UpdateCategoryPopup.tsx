@@ -34,8 +34,8 @@ export default function UpdateCategoryPopup({
         updatedCategory.id,
         { name: categoryName.toString() }
       );
-      if (response.EC === 0) {
-        onCategoryUpdated(response.DT);
+      if (response.data.EC === 0) {
+        onCategoryUpdated(response.data.DT);
         toast("Category updated succesfully", {
           type: "error",
         });
