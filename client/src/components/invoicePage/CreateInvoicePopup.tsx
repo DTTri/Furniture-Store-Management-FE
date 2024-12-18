@@ -2,10 +2,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
+  InputLabel
 } from "@mui/material";
 import {
   DataGrid,
@@ -14,24 +11,23 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import { useEffect, useRef, useState } from "react";
-import { Product, ProductVariant } from "../../entities";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { ProductVariant } from "../../entities";
 import Customer from "../../entities/Customer";
 import CreateInvoiceDTO, {
   CreateInvoiceDetailDTO,
 } from "../../entities/DTO/CreateInvoiceDTO";
-import {
-  customerService,
-  productService,
-  promotionService,
-  variantService,
-} from "../../services";
-import invoiceService from "../../services/invoiceService";
-import InvoiceDetailDTO from "./InvoiceDetailDTO";
-import AddCustomerPopup from "../customerPage/AddCustomerPopup";
 import Invoice from "../../entities/Invoice";
 import Promotion from "../../entities/Promotion";
-import { toast } from "react-toastify";
+import {
+  customerService,
+  promotionService,
+  variantService
+} from "../../services";
+import invoiceService from "../../services/invoiceService";
+import AddCustomerPopup from "../customerPage/AddCustomerPopup";
+import InvoiceDetailDTO from "./InvoiceDetailDTO";
 
 export default function CreateInvoicePopup({
   onClose,
@@ -516,20 +512,21 @@ export default function CreateInvoicePopup({
             </FormControl> */}
             <input type="text" placeholder="Search SKU" className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3" id="searchProductVariantInput"
             />
-            <Button onClick={handleOnSearchVariant} className="col-span-2" variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px", padding: "6px", maxWidth: "140px" }}>Search Variant</Button>
-            {selectedVariant && (
-              <div className="col-span-4 pr-5 w-full flex flex-col items-center">
-                <div className="w-full flex flex-row gap-12 items-center">
-                  <p className="font-semibold">SKU: {selectedVariant.SKU}</p>
-                  <p className="font-semibold">Color: {selectedVariant.color}</p>
-                  <p className="font-semibold">Size: {selectedVariant.size}</p>
+            <div className="col-span-2 gap-2 grid grid-cols-[27%_1fr]">
+              <Button onClick={handleOnSearchVariant} className="col-span-1 row-span-1"  variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px", padding: "6px", maxWidth: "140px" }}>Search Variant</Button>
+              {selectedVariant && (
+                <div className="col-span-1 pr-5 w-full flex flex-col items-center">
+                  <div className="w-full grid grid-cols-[60%_1fr] items-center">
+                    <p className="font-semibold">Size: {selectedVariant.size}</p>
+                    <p className="font-semibold">Color: {selectedVariant.color}</p>
+                  </div>
+                  <div className="w-full grid grid-cols-[60%_1fr] items-center">
+                    <p className="font-semibold text-red-500">Available: {selectedVariant.Inventories?.[0]?.available || 0}</p>
+                    <p className="font-semibold">Price: {selectedVariant.price}</p>
+                  </div>
                 </div>
-                <div className="w-full flex flex-row gap-12 items-center">
-                  <p className="font-semibold">Price: {selectedVariant.price}</p>
-                  <p className="font-semibold">Available: {selectedVariant.Inventories?.[0]?.available || 0}</p>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
             <span className="text-base text-[#667085] block">Quantanty</span>
             <input
               type="number"

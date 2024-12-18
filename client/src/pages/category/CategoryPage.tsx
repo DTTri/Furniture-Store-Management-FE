@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from "@mui/icons-material/Info";
+import { Button } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -6,15 +8,14 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import SearchIcon from "@mui/icons-material/Search";
-import InfoIcon from "@mui/icons-material/Info";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Button } from "@mui/material";
+import { useState } from "react";
 import CreateCategoryPopup from "../../components/categoryPage/CreateCategoryPopup";
 import UpdateCategoryPopup from "../../components/categoryPage/UpdateCategoryPopup";
-import categoryService from "../../services/categoryService";
 import { Category } from "../../entities";
 import { sCategory } from "../../store";
+import ConfirmPopup from "../../components/ConfirmPopup";
+import { toast } from "react-toastify";
+import { categoryService } from "../../services";
 
 export default function CategoryPage() {
   const [isCreateCategoryPopupOpen, setIsCreateCategoryPopupOpen] =
@@ -23,6 +24,7 @@ export default function CategoryPage() {
     useState(false);
   const categoryList = sCategory.use((v) => v.categories);
   const [updatedCategory, setUpdatedCategory] = useState<Category>();
+  const [isShowConfirmPopup, setIsShowConfirmPopup] = useState(false);
 
   const columns: GridColDef[] = [
     {
@@ -79,11 +81,14 @@ export default function CategoryPage() {
           className="hover:bg-transparent"
           icon={<DeleteIcon />}
           label="Delete"
-          onClick={() => {}}
+          onClick={() => {
+            setIsShowConfirmPopup(true);
+          }}
         />,
       ],
     },
   ];
+
 
   return (
     <div className="bg-white w-full py-6 px-7">
@@ -153,6 +158,9 @@ export default function CategoryPage() {
           }}
           updatedCategory={updatedCategory || categoryList[0]}
         />
+      )}
+      {isShowConfirmPopup && (
+        <ConfirmPopup message="Do you want to delete this category?" title="Warning" onConfirm={() => {}} onCancel={() => {}}/>
       )}
     </div>
   );

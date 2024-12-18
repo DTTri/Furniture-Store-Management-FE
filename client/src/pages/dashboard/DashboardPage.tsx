@@ -270,12 +270,12 @@ export default function DashboardPage() {
     {
       id: 1,
       label: "Cash",
-      value: 10, //reportData.paymentMethodStatistic.cash 
+      value: 7550, //reportData.paymentMethodStatistic.Cash 
     },
     {
       label: "QR",
       id: 2,
-      value:  10, //reportData.paymentMethodStatistic.qr
+      value:  330, //reportData.paymentMethodStatistic.qr
     },
   ]
   const data = [
