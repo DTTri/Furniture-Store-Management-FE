@@ -25,3 +25,16 @@
 .popup {
   animation: popup-animation 0.2s ease-out;
 }
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeIn 0.2s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

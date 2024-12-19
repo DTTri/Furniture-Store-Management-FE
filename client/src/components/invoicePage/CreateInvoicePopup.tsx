@@ -95,13 +95,13 @@ export default function CreateInvoicePopup({
       SKU: detail.ProductVariant?.SKU || "",
       quantity: detail.quantity,
       name: detail.ProductVariant?.size + " " + detail.ProductVariant?.color,
-      price: detail.ProductVariant?.price || 0,
-      discountedPrice: detail.unitPrice,
+      price: Math.floor(detail.ProductVariant?.price || 0),
+      discountedPrice: Math.floor(detail.unitPrice || 0),
       discount: detail.discountedAmount || 0,
-      cost: detail.cost,
+      cost: Math.floor(detail.cost),
     };
   }));
-  const [totalCost, setTotalCost] = useState<number>(updatedInvoice?.totalCost || 0);
+  const [totalCost, setTotalCost] = useState<number>(Math.floor(updatedInvoice?.totalCost  || 0));
 
   const [isShowAddCustomerPopup, setIsShowAddCustomerPopup] =
     useState<boolean>(false);
@@ -154,15 +154,15 @@ export default function CreateInvoicePopup({
           id: selectedVariant.id,
           SKU: selectedVariant.SKU,
           name: selectedVariant.size + " " + selectedVariant.color,
-          price: selectedVariant.price,
-          discountedPrice: discountedCost,
+          price: Math.floor(selectedVariant.price),
+          discountedPrice: Math.floor(discountedCost),
           discount: promotionProduct.discount,
           quantity: quatanty,
-          cost: discountedCost * quatanty,
+          cost: Math.floor(discountedCost * quatanty),
         };
         console.log(newRow);
         setRows([...rows, newRow]);
-        setTotalCost((prev) => prev + newRow.cost);
+        setTotalCost((prev) => Math.floor(prev + newRow.cost));
         return;
       }
     }
@@ -171,15 +171,15 @@ export default function CreateInvoicePopup({
         id: selectedVariant?.id,
         SKU: selectedVariant.SKU,
         name: selectedVariant.size + " " + selectedVariant.color,
-        price: selectedVariant.price,
-        discountedPrice: selectedVariant.price,
+        price: Math.floor(selectedVariant.price),
+        discountedPrice: Math.floor(selectedVariant.price),
         discount: 0,
         quantity: quatanty,
-        cost: selectedVariant.price * quatanty,
+        cost: Math.floor(selectedVariant.price * quatanty),
       };
       console.log(newRow);
       setRows([...rows, newRow]);
-      setTotalCost((prev) => prev + newRow.cost);
+      setTotalCost((prev) => Math.floor(prev + newRow.cost));
     }
   };
 
@@ -213,7 +213,7 @@ export default function CreateInvoicePopup({
     console.log("createdInvoice", createdInvoice);
     const response = await invoiceService.createInvoice(createdInvoice);
     if (response.EC === 0) {
-      toast("Invoice created successfully", { type: "success" });
+      toast(updatedInvoice === null ? "Invoice created successfully" : "Invoice updated successfully", { type: "success" });
       onInvoiceCreated(response.DT);
     } else {
       toast("Failed to create invoice", { type: "error" });
@@ -257,7 +257,7 @@ export default function CreateInvoicePopup({
       flex: 0.8,
       headerAlign: "center",
       align: "center",
-      valueGetter: (params, row) => {
+      valueGetter: (_params, row) => {
         return row.discount + "%";
       },
     },
