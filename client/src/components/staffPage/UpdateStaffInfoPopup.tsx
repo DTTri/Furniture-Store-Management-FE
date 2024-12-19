@@ -1,12 +1,10 @@
+import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
-import AddStaffDTO from "./AddStaffDTO";
-import UpdateStaffDTO from "./UpdateStaffDTO";
+import { useState } from "react";
+import UpdateStaffInfoDTO from "../../entities/DTO/UpdateStaffInfoDTO";
 import Staff from "../../entities/Staff";
 import staffService from "../../services/staff.service";
-import UpdateStaffInfoDTO from "../../entities/DTO/UpdateStaffInfoDTO";
 import { sUser } from "../../store";
-import LoadingProgress from "../LoadingProgress";
 import { toast } from "react-toastify";
 
 export default function UpdateStaffInfoPopup({
@@ -81,7 +79,8 @@ export default function UpdateStaffInfoPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 w-1/4 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
+      <div className="relative popup bg-white rounded-xl p-4 w-1/4 min-w-[390px] overflow-y-auto flex flex-col gap-2">
+        <CloseIcon className="absolute top-2 right-2 cursor-pointer hover:bg-slate-300 rounded-full" onClick={onClose} />
         <div className="w-full flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="fullname">Full Name</label>

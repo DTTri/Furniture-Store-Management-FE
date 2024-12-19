@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { FaCog } from "react-icons/fa"; // Biểu tượng cài đặt
-import avatarImg from "../assets/Logo.png"; // Import ảnh từ thư mục assets
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logoImg from "../assets/Logo.png"; // Import logo từ thư mục assets
-import { sUser } from "../store";
 import { Staff } from "../entities";
+import { sUser } from "../store";
 import LoadingProgress from "./LoadingProgress";
+import SettingPopup from "./SettingPopup";
 import UpdateStaffInfoPopup from "./staffPage/UpdateStaffInfoPopup";
-import { Navigate, useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
   // Dữ liệu người dùng
@@ -22,12 +21,27 @@ const Header: React.FC = () => {
   }, [sStaff]);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropDownRef = useRef<any>(null);
+  const userButtonRef = useRef<any>(null);
   const [isUpdateStaffInfoPopupOpen, setIsUpdateStaffInfoPopupOpen] =
     useState(false);
+  const [isSettingPopupOpen, setIsSettingPopupOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
+  const handleClickOutside = (e: any) => {
+    if(!dropDownRef.current.contains(e.target) && !userButtonRef.current.contains(e.target)) {
+      setIsDropdownOpen(false);
+    }
+  }
+  useEffect(()=> {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [])
   const onCloseUpdateStaffInfo = () => {
     setIsUpdateStaffInfoPopupOpen(false);
   };
@@ -77,6 +91,7 @@ const Header: React.FC = () => {
             />
           </div>
           <div
+            ref={userButtonRef}
             onClick={toggleDropdown}
             className="Text select-none cursor-pointer flex-col justify-start items-start"
           >
@@ -88,7 +103,8 @@ const Header: React.FC = () => {
             </div>
           </div>
           {isDropdownOpen && (
-            <div className="absolute w-[150px] right-[-24px] top-[45px] rounded-sm bg-[#f1eeee] shadow-lg flex flex-col transition-all ease-in-out transform scale-100">
+            <div ref={dropDownRef}
+            className={`absolute w-[150px] right-[-24px] top-[45px] rounded-sm bg-[#f1eeee] shadow-lg flex flex-col transition-all ease-in-out transform scale-100 ${isDropdownOpen ? "fade-in" : "fade-out"}`}>
               <div
                 className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400  hover:bg-gray-300 cursor-pointer"
                 onClick={() => {
@@ -98,7 +114,12 @@ const Header: React.FC = () => {
               >
                 Personal Information
               </div>
-              <div className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400 hover:bg-gray-300 cursor-pointer">
+              <div 
+                onClick={() => {
+                  toggleDropdown();
+                  setIsSettingPopupOpen(true);
+                }}
+              className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400 hover:bg-gray-300 cursor-pointer">
                 Setting
               </div>
               <div
@@ -114,6 +135,8 @@ const Header: React.FC = () => {
       {isUpdateStaffInfoPopupOpen && (
         <UpdateStaffInfoPopup staff={user} onClose={onCloseUpdateStaffInfo} />
       )}
+      {isSettingPopupOpen && <SettingPopup onClose={() => setIsSettingPopupOpen(false)}/>}
+      
     </div>
   );
 };

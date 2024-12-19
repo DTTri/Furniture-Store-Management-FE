@@ -50,7 +50,7 @@ export default function InvoiceDetailTable({
         }
       };
       fetchCustomer();
-    }, []);
+    }, [selectedInvoice?.Customer?.id]);
 
   const columns: GridColDef[] = [
     {
@@ -61,8 +61,8 @@ export default function InvoiceDetailTable({
       align: "center",
     },
     {
-      field: "variantId",
-      headerName: "VariantID",
+      field: "SKU",
+      headerName: "SKU",
       flex: 1,
       headerAlign: "center",
       align: "center",
@@ -75,13 +75,23 @@ export default function InvoiceDetailTable({
       align: "center",
     },
     {
-      field: "buyingPrice",
-      headerName: "Buying Price",
+      field: "discountAmount",
+      headerName: "Discounted ",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (value, row) => {
+        return row.discountAmount + "%";
+      }
+    },
+    {
+      field: "Price",
+      headerName: "Price",
       flex: 1,
       headerAlign: "center",
       align: "center",
       valueGetter: (value, row) => {
-        return row.ProductVariant.buyingPrice;
+        return row.unitPrice;
       },
     },
     {
@@ -95,6 +105,9 @@ export default function InvoiceDetailTable({
   const rows = selectedInvoice?.InvoiceDetails.map((item, index) => {
     return {
       ...item,
+      SKU: item.ProductVariant?.SKU || "",
+      cost: Math.floor(item.cost),
+      unitPrice: Math.floor(item.unitPrice),
       index: index + 1,
     };
   });
@@ -114,17 +127,17 @@ export default function InvoiceDetailTable({
             <Button variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px" }}>In hóa đơn</Button>
           </div>
         </div>
-        <div className="w-full px-3 flex flex-row">
+        <div className="w-full px-3 flex flex-row font-semibold">
           <div className="col-1 mr-[250px]">
             <p>
-              Created Date: {format(invoice.createdAt, "dd/MM/yyyy HH:mm:ss")}
+              Created Date: {format(selectedInvoice?.createdAt || '1/1/2024', "dd/MM/yyyy HH:mm:ss")}
             </p>
-            <p>Invoice ID: {invoice.id}</p>
-            <p>Staff ID: {invoice.staffId}</p>
-            <p>Invoice status: {invoice.status}</p>
+            <p>Invoice ID: {selectedInvoice?.id || ''}</p>
+            <p>Staff ID: {selectedInvoice?.staffId || ''}</p>
+            <p>Invoice status: {selectedInvoice?.status || ''}</p>
           </div>
           <div className="col-2 w-fit">
-            <p>Customer ID: {invoice.customerId}</p>
+            <p>Customer ID: {selectedInvoice?.customerId || ''}</p>
             <p>Customer name: {customer?.name}</p>
             <p>Customer phone: {customer?.phone}</p>
             <p>Customer email: {customer?.email}</p>
@@ -155,12 +168,10 @@ export default function InvoiceDetailTable({
             rowSelection={false}
           />
         </div>
-        <div className="w-full px-4 flex flex-row mb-1">
-          <div className="col-1 mr-[250px]">
-            <p className="font-semibold text-[18px] text-nowrap">
-              Total Cost: {invoice.totalCost}
+        <div className="w-full px-4 flex flex-row mb-1 justify-end">
+            <p className="font-bold text-[20px] text-red-600 text-nowrap text-end">
+              Total Cost: {Math.floor(invoice.totalCost)}
             </p>
-          </div>
         </div>
       </div>
     </div>

@@ -9,10 +9,9 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import LoadingProgress from "../LoadingProgress";
+import { toast } from "react-toastify";
 import authenService from "../../services/authen.service";
-import { set } from "date-fns";
-import { Flip, toast } from "react-toastify";
+import LoadingProgress from "../LoadingProgress";
 
 export default function ResetPasswordForm() {
   const [password, setPassword] = useState("");
@@ -20,8 +19,8 @@ export default function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, _setError] = useState("");
+  const [isSuccess, _setIsSuccess] = useState(false);
   const { token } = useParams();
 
   const [show, setShow] = useState(false);

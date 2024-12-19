@@ -1,9 +1,4 @@
-import React, { useEffect, useState } from "react";
-import Invoice from "../../entities/Invoice";
-import { customerService, invoiceService, variantService } from "../../services";
-import InvoiceDetailDTO from "./InvoiceDetailDTO";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   Button,
   FormControl,
@@ -13,15 +8,16 @@ import {
 } from "@mui/material";
 import {
   DataGrid,
-  GridActionsCellItem,
   GridColDef,
-  GridRowParams,
-  GridToolbar,
+  GridToolbar
 } from "@mui/x-data-grid";
 import { format } from "date-fns";
-import { Customer, ProductVariant } from "../../entities";
-import ConfirmPopup from "../ConfirmPopup";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { ProductVariant } from "../../entities";
+import Invoice from "../../entities/Invoice";
+import { invoiceService, variantService } from "../../services";
+import InvoiceDetailDTO from "./InvoiceDetailDTO";
 
 export default function PayInvoicePopup({
   onClose,
@@ -37,7 +33,7 @@ export default function PayInvoicePopup({
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice>();
   const [variantList, setVariantList] = useState<ProductVariant[]>([]);
   const [method, setMethod] = useState<string>("");
-  const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
+  const [showDataGrid, _setShowDataGrid] = useState<boolean>(true);
   const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
   const [totalCost, setTotalCost] = useState<number>(0);
   const[cash, setCash] = useState<number>(0);
@@ -122,7 +118,7 @@ export default function PayInvoicePopup({
       headerAlign: "center",
       align: "center",
       editable: true,
-      valueGetter: (params, row) => {
+      valueGetter: (_params, row) => {
          return row.ProductVariant?.SKU;  
       }
     },
@@ -132,7 +128,7 @@ export default function PayInvoicePopup({
       flex: 0.5,
       headerAlign: "center",
       align: "center",
-      valueGetter: (params, row) => {
+      valueGetter: (_params, row) => {
         return row.ProductVariant?.id;  
      }
     },
@@ -142,7 +138,7 @@ export default function PayInvoicePopup({
       flex: 1.2,
       headerAlign: "center",
       align: "center",
-      valueGetter: (params, row) => {
+      valueGetter: (_params, row) => {
         return row.ProductVariant?.size + " " + row.ProductVariant?.color;  
      }
     },
@@ -152,8 +148,8 @@ export default function PayInvoicePopup({
       flex: 1,
       headerAlign: "center",
       align: "center",
-      valueGetter: (params, row) => {
-        return row.ProductVariant?.price
+      valueGetter: (_params, row) => {
+        return Number.parseFloat(row.ProductVariant?.price).toFixed(0);
       }
     },
     {
@@ -170,33 +166,10 @@ export default function PayInvoicePopup({
       flex: 0.8,
       headerAlign: "center",
       align: "center",
-    },
-    {
-      field: "actions",
-      type: "actions",
-      flex: 0.5,
-      getActions: (params: GridRowParams) => [
-        <GridActionsCellItem
-          icon={<DeleteOutlineIcon />}
-          label="Delete"
-          onClick={() => {
-            const updatedRows = rows.filter((row) => row.id !== params.row.id);
-            if (updatedRows.length === 0) {
-              // Tri: because there's a bug in DataGrid which Material-UI team hasn't fixed yet:
-              //when delete the last row, the DataGrid doesn't re-render
-              // solution: unmount and mount the DataGrid
-              setShowDataGrid(false);
-              setTimeout(() => {
-                setRows([]);
-                setShowDataGrid(true);
-              }, 0);
-            }
-            setRows(updatedRows);
-            setTotalCost((prev) => prev - params.row.cost);
-          }}
-        />,
-      ],
-    },
+      valueGetter: (_params, row) => {
+        return Number.parseFloat(row.cost).toFixed(0);
+      }
+    }
   ];
 
   return (
@@ -286,7 +259,7 @@ export default function PayInvoicePopup({
             {method === "cash" ? (
                 <div className="w-full flex flex-col mx-auto gap-2">
                     <p className="text-[18px] text-[#D91316] font-bold">
-                    Total Cost: {totalCost}
+                    Total Cost: {Number(totalCost).toFixed(0)}
                     </p>
                     <div className="flex flex-row items-center gap-2">
                         <span className="text-[18px] font-boldtext-base text-[#000000] block">Cash: </span>
@@ -304,7 +277,7 @@ export default function PayInvoicePopup({
             ): (
                 <div className="w-full flex flex-row items-center gap-4">
                     <p className="text-[18px] text-[#D91316] font-bold">
-                    Total Cost: {totalCost}
+                    Total Cost: {Math.round(totalCost)}
                     </p>
                     <div>
                         <Button variant="contained">QR Code</Button>
