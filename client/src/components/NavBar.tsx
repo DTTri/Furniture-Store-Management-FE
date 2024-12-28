@@ -1,91 +1,94 @@
-import { Link } from "react-router-dom";
-import Logo from "../assets/Logo.png";
-import audit from "../assets/audit.svg";
-import inventory from "../assets/inventory.svg";
-import product from "../assets/product.svg";
-import provider from "../assets/provider.svg";
-import catalogue from "../assets/catalogue.svg";
-import setting from "../assets/setting.svg";
-import help from "../assets/help.svg";
-import logout from "../assets/logout.svg";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate từ react-router-dom
+import {
+  FaChartBar,
+  FaFileInvoice,
+  FaBoxes,
+  FaShoppingCart,
+  FaTag,
+  FaTruck,
+  FaUsers,
+  FaUserTie,
+  FaGift,
+  FaShieldAlt,
+  FaHammer,
+  FaUserEdit,
+} from "react-icons/fa";
 
-export default function NavBar() {
+const NavBar: React.FC = () => {
+  // Khởi tạo navigate từ react-router-dom
+  const navigate = useNavigate();
+
+  // Danh sách menu items với tên và biểu tượng
+  const menuItems = [
+    { name: "Dashboard", icon: <FaChartBar />, path: "/" },
+    { name: "Invoice", icon: <FaFileInvoice />, path: "/invoice" },
+    { name: "Inventory", icon: <FaBoxes />, path: "/inventory" },
+    { name: "Product", icon: <FaShoppingCart />, path: "/product" },
+    { name: "Category", icon: <FaTag />, path: "/category" },
+    { name: "Supplier", icon: <FaTruck />, path: "/provider" },
+    { name: "Customer", icon: <FaUsers />, path: "/customer" },
+    { name: "Staff", icon: <FaUserTie />, path: "/staff" },
+    { name: "Promotion", icon: <FaGift />, path: "/promotion" },
+    { name: "Warranty", icon: <FaShieldAlt />, path: "/warranty" },
+    { name: "Repair", icon: <FaHammer />, path: "/repair" },
+    { name: "Role", icon: <FaUserEdit />, path: "/role" },
+  ];
+
+  // State để lưu trữ menu item được chọn
+  const [selectedMenu, setSelectedMenu] = useState<string>("Dashboard");
+  const currentPath = window.location.pathname;
+  useEffect(() => {
+    // Lấy path hiện tại
+    const path = currentPath;
+    // Tìm menu item tương ứng với path hiện tại
+    const menuItem = menuItems.find((item) => item.path === path);
+    // Nếu tìm thấy thì cập nhật menu item được chọn
+    if (menuItem) {
+      setSelectedMenu(menuItem.name);
+    }
+  }, [currentPath]);
+  // Hàm xử lý click vào menu item
+  const handleMenuClick = (path: string, name: string) => {
+    setSelectedMenu(name); // Cập nhật menu item được chọn
+    navigate(path); // Dẫn đến trang tương ứng
+  };
+
   return (
-    <nav className="navbar bg-white shadow-md w-[280px] max-h-svh">
-      <a href="#" className="w-full flex flex-row items-center p-[16px]">
-        <img src={Logo} className="w-[48px] h-[48px] mr-3" alt="" />
-        <span className="font-bold text-xl">Nội thất đẹp</span>
-      </a>
-      <ul className="navbar-menu flex flex-col justify-center gap-4 py-2 px-[24px] mb-[24px]">
-        <li className="navbar-menu-item py-1">
-          <Link className="flex flex-row items-center " to="/">
-            <img className="w-[20px] h-[20px] mr-3" src={product} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Sản phẩm</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/inventory">
-            <img className="w-[24px] h-[24px] mr-3" src={inventory} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Kho</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[20px] h-[20px] mr-3" src={catalogue} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Danh mục</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Bảo hành</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Nhà cung cấp</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Khách hàng</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[22px] h-[22px] mr-3" src={provider} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Nhân viên</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[22px] h-[22px] mr-3" src={audit} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Báo cáo</span>
-          </Link>
-        </li>
-      </ul>
-      <ul className="navbar-menu flex flex-col justify-center gap-4 py-2 px-[24px]">
-        <li className="navbar-menu-item py-1">
-          <Link className="flex flex-row items-center " to="/">
-            <img className="w-[24px] h-[24px] mr-3" src={setting} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Cài đặt</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1" to="/">
-            <img className="w-[24px] h-[24px] mr-3" src={help} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Help</span>
-          </Link>
-        </li>
-        <li className="navbar-menu-item">
-          <Link className="flex flex-row items-center py-1 px-[3px]" to="/">
-            <img className="w-[21px] h-[21px] mr-3" src={logout} alt="" />
-            <span className="text-base font-medium text-[#5D6679]">Đăng xuất</span>
-          </Link>
-        </li>
-      </ul>
-    </nav>
+    <div className="NavBar w-52 bg-white h-full flex flex-col shadow-md transition-all duration-300">
+      {" "}
+      {/* Thêm margin-top ở đây */}
+      {/* Logo đã xóa */}
+      {/* Danh sách các menu item */}
+      <div className="NavItems flex flex-col">
+        {menuItems.map((item) => (
+          <div
+            key={item.name}
+            className={`ListMenu py-3 px-4 flex items-center w-full cursor-pointer hover:bg-[#f2f2f2] transition-all duration-100 ${
+              selectedMenu === item.name
+                ? "bg-[#c1c1c1] text-[#156fee] font-bold border-l-4 border-[#156fee]"
+                : "bg-white text-[#70747b] font-medium"
+            }`}
+            onClick={() => handleMenuClick(item.path, item.name)} // Xử lý click và điều hướng
+          >
+            <div className="Icon w-6 h-6 flex items-center justify-center">
+              {item.icon}
+            </div>
+            <div className="Text ml-4">{item.name}</div>
+          </div>
+        ))}
+      </div>
+      {/* Button Log Out (Centered) */}
+      <div
+        className="SignOutBtn w-[164px] h-10 bg-[#d91316] rounded-[10px] shadow flex justify-center items-center cursor-pointer mx-auto mt-4"
+        onClick={() => navigate("/loginpage")}
+      >
+        <div className="Text text-white text-base font-medium font-['Product sans'] leading-normal">
+          Log Out
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+export default NavBar;

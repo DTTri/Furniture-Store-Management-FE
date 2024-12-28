@@ -1,12 +1,16 @@
 type Product = {
-  id: string;
+  id: number;
   name: string;
-  category: string;
-  originalPrice: number;
-  productPrice: number;
-  isSelling: boolean;
-  stock: number;
-  forSale: number;
+  price: string;
+  status: string;
+  image: string;
+  description: string;
+  warranty: number;
+  available: number;
+  quantity: number;
+  defective: number;
+  sold: number;
+  catalogueId: number;
 };
 
 export default Product;
