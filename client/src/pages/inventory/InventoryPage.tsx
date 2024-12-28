@@ -1,10 +1,8 @@
 import ImportPopup from "../../components/inventoryPage/ImportPopup";
 import ImportHistoryOrderPopup from "../../components/inventoryPage/ImportHistoryOrderPopup";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import StockTable from "../../components/inventoryPage/StockTable";
-import { Product } from "../../entities";
 import { Button } from "@mui/material";
-import { productService } from "../../services";
 import { sProduct } from "../../store";
 export default function InventoryPage() {
   const [isImportPopupOpen, setIsImportPopupOpen] = useState(false);

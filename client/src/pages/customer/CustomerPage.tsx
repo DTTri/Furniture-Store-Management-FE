@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Customer } from "../../entities";
 import { Button } from "@mui/material";
 import { AddCustomerPopup, CustomersTable } from "../../components";

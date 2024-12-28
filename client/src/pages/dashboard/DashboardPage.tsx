@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TotalCard from "../../components/dashboardPage/TotalCard";
 import { Tabs, Tab } from "@mui/material";
-import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { axisClasses } from "@mui/x-charts";
 import sReport from "../../store/reportStore";
 import Report from "../../entities/Report";
 import LoadingProgress from "../../components/LoadingProgress";
@@ -19,14 +17,18 @@ export default function DashboardPage() {
 
   const report = sReport.use();
   const [reportData, setReportData] = useState<Report>(report.reportByDate);
-  const [reportStaffData, setStaffReportData] = useState<StaffReport[]>(report.staffReport);
-  const [reportIncomeData, setReportIncomeData] = useState<IncomeReport[]>(report.incomeReport);
+  const [reportStaffData, setStaffReportData] = useState<StaffReport[]>(
+    report.staffReport
+  );
+  const [reportIncomeData, setReportIncomeData] = useState<IncomeReport[]>(
+    report.incomeReport
+  );
 
   console.log("report by DAte", report);
   console.log("report general data", reportData);
   console.log("report staff data", reportStaffData);
   console.log("report income data", reportIncomeData);
-  
+
   useEffect(() => {
     if (report.reportByDate && report.staffReport && report.incomeReport) {
       setReportData(report.reportByDate);
@@ -69,46 +71,53 @@ export default function DashboardPage() {
     const fetchGeneralReportByDate = async () => {
       try {
         const res = await reportService.getReprotByDate(startDate, endDate);
-        if(res.data.EC === 0) {
+        if (res.data.EC === 0) {
           console.log("report data successfully", res.data.DT);
-          sReport.set(prev => prev.value.reportByDate = res.data.DT);
-        }
-        else {
+          sReport.set((prev) => (prev.value.reportByDate = res.data.DT));
+        } else {
           console.error("Failed to fetch report by date:", res.data.EM);
         }
-      } catch (error) { 
+      } catch (error) {
         console.error("Error fetching report by date:", error);
-      }      
-    }
+      }
+    };
     const fetchStaffReportByDate = async () => {
       try {
-        const res = await reportService.getStaffReprotByDate(startDate, endDate);
-        if(res.data.EC === 0) {
+        const res = await reportService.getStaffReprotByDate(
+          startDate,
+          endDate
+        );
+        if (res.data.EC === 0) {
           console.log("report data successfully", res.data.DT);
-          sReport.set(prev => prev.value.staffReport = res.data.DT);
-        }
-        else {
+          sReport.set((prev) => (prev.value.staffReport = res.data.DT));
+        } else {
           console.error("Failed to fetch staff report by date:", res.data.EM);
         }
-      } catch (error) { 
+      } catch (error) {
         console.error("Error fetching staff report by date:", error);
-      }      
-    }
+      }
+    };
     const fetchIncomeReportByDate = async () => {
       try {
-        const res = await reportService.getIncomeReprotByDate(startDate, endDate);
-        if(res.data.EC === 0) {
+        const res = await reportService.getIncomeReprotByDate(
+          startDate,
+          endDate
+        );
+        if (res.data.EC === 0) {
           console.log("report data successfully", res.data.DT);
-          sReport.set(prev => prev.value.incomeReport = res.data.DT);
-        }
-        else {
+          sReport.set((prev) => (prev.value.incomeReport = res.data.DT));
+        } else {
           console.error("Failed to fetch income report by date:", res.data.EM);
         }
-      } catch (error) { 
+      } catch (error) {
         console.error("Error fetching income report by date:", error);
-      }      
-    }
-    Promise.all([fetchGeneralReportByDate(), fetchStaffReportByDate(), fetchIncomeReportByDate()]);
+      }
+    };
+    Promise.all([
+      fetchGeneralReportByDate(),
+      fetchStaffReportByDate(),
+      fetchIncomeReportByDate(),
+    ]);
   };
 
   if (!reportData || !reportStaffData || !reportIncomeData) {
@@ -133,7 +142,7 @@ export default function DashboardPage() {
     {
       field: "status",
       headerName: "Status",
-      flex: 0.5 ,
+      flex: 0.5,
       headerAlign: "center",
       align: "center",
     },
@@ -166,10 +175,12 @@ export default function DashboardPage() {
       align: "center",
     },
   ];
-  const promotionRows = [{
-    ...reportData.currentPromotion,
-    id: 1,
-  }]
+  const promotionRows = [
+    {
+      ...reportData.currentPromotion,
+      id: 1,
+    },
+  ];
   const staffColumns: GridColDef[] = [
     {
       field: "id",
@@ -270,22 +281,13 @@ export default function DashboardPage() {
     {
       id: 1,
       label: "Cash",
-      value: 7550, //reportData.paymentMethodStatistic.Cash 
+      value: 7550, //reportData.paymentMethodStatistic.Cash
     },
     {
       label: "QR",
       id: 2,
-      value:  330, //reportData.paymentMethodStatistic.qr
+      value: 330, //reportData.paymentMethodStatistic.qr
     },
-  ]
-  const data = [
-    { name: "January", uv: 4000, pv: 2400, amt: 2400 },
-    { name: "February", uv: 3000, pv: 1398, amt: 2210 },
-    { name: "March", uv: 2000, pv: 9800, amt: 2290 },
-    { name: "April", uv: 2780, pv: 3908, amt: 2000 },
-    { name: "May", uv: 1890, pv: 4800, amt: 2181 },
-    { name: "June", uv: 2390, pv: 3800, amt: 2500 },
-    { name: "July", uv: 3490, pv: 4300, amt: 2100 },
   ];
 
   const years = Array.from(
@@ -312,42 +314,41 @@ export default function DashboardPage() {
       <div className="flex justify-between items-center">
         <Tabs
           value={activeTab}
-          onChange={(e, newValue) => setActiveTab(newValue)}
+          onChange={(_, newValue) => setActiveTab(newValue)}
         >
           <Tab label="General" />
           <Tab label="Income" />
           <Tab label="Staff" />
         </Tabs>
-        
       </div>
       <div className="w-full flex justify-end space-x-2">
-            <select
-              value={selectedMonth}
-              onChange={(e) => {
-                setSelectedMonth(Number(e.target.value));
-                handleOnDateChange();
-              }}
-            >
-              {Array.from(months.entries()).map(([monthName, monthValue]) => (
-                <option key={monthValue} value={monthValue}>
-                  {monthName}
-                </option>
-              ))}
-            </select>
-            <select
-              value={selectedYear}
-              onChange={(e) => {
-                setSelectedYear(Number(e.target.value));
-                handleOnDateChange();
-              }}
-            >
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </div>
+        <select
+          value={selectedMonth}
+          onChange={(e) => {
+            setSelectedMonth(Number(e.target.value));
+            handleOnDateChange();
+          }}
+        >
+          {Array.from(months.entries()).map(([monthName, monthValue]) => (
+            <option key={monthValue} value={monthValue}>
+              {monthName}
+            </option>
+          ))}
+        </select>
+        <select
+          value={selectedYear}
+          onChange={(e) => {
+            setSelectedYear(Number(e.target.value));
+            handleOnDateChange();
+          }}
+        >
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {activeTab === 0 && (
         <div className="flex flex-col gap-2">
@@ -386,7 +387,8 @@ export default function DashboardPage() {
                       additionalRadius: -30,
                       color: "gray",
                     },
-                    valueFormatter: (v: any) => `${v.label} - ${v.value} USD`,
+                    valueFormatter: (value) =>
+                      `${value.label} - ${value.value} USD`,
                   },
                 ]}
                 height={230}
@@ -417,7 +419,7 @@ export default function DashboardPage() {
                 slots={{ toolbar: GridToolbar }}
                 rowSelection={false}
               />
-          </div>
+            </div>
           </div>
         </div>
       )}
@@ -444,38 +446,41 @@ export default function DashboardPage() {
             ]}
             xAxis={[{ scaleType: "band", dataKey: "name" }]}
           ></BarChart> */}
-          <p className="text-3xl font-bold text-black mb-2">
-            Income Report
-          </p>
+          <p className="text-3xl font-bold text-black mb-2">Income Report</p>
           <div className="p-2">
-          <DataGrid
-            style={{
-              border: "none",
-              backgroundColor: "white",
-              minHeight: "300px",
-              height: "fit-content",
-            }}
-            columns={incomeColumns}
-            rows={incomeRows}
-            rowHeight={40}
-            pageSizeOptions={
-              incomeRows.length < 8
-                ? [8, incomeRows.length]
-                : [8, incomeRows.length + 1]
-            }
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 8,
+            <DataGrid
+              style={{
+                border: "none",
+                backgroundColor: "white",
+                minHeight: "300px",
+                height: "fit-content",
+              }}
+              columns={incomeColumns}
+              rows={incomeRows}
+              rowHeight={40}
+              pageSizeOptions={
+                incomeRows.length < 8
+                  ? [8, incomeRows.length]
+                  : [8, incomeRows.length + 1]
+              }
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 8,
+                  },
                 },
-              },
-            }}
-            slots={{ toolbar: GridToolbar }}
-            rowSelection={false}
-          />
+              }}
+              slots={{ toolbar: GridToolbar }}
+              rowSelection={false}
+            />
             <p className="font-bold text-[20px] text-end mt-2 text-[#C71026]">
-            Total Cost: {incomeRows.reduce((acc, row) => acc + parseFloat(row.sumcost.toString()), 0)} USD            
-            </p>        
+              Total Cost:{" "}
+              {incomeRows.reduce(
+                (acc, row) => acc + parseFloat(row.sumcost.toString()),
+                0
+              )}{" "}
+              USD
+            </p>
           </div>
         </div>
       )}

@@ -1,4 +1,3 @@
-import React from "react";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 
@@ -17,7 +16,9 @@ export default function TotalCard({
     <div className="w-[280px]  h-[120px] rounded-[10px] shadow-lg overflow-hidden">
       <div className="flex flex-col bg-[#ffffff] p-2 gap-1 mx-auto">
         <div className="flex flex-row items-center">
-          <p className="text-[20px] text-[#343434] font-semibold mr-2">{title}</p>
+          <p className="text-[20px] text-[#343434] font-semibold mr-2">
+            {title}
+          </p>
           {isIncrease ? (
             <div className=" rounded-3xl flex flex-row items-center px-1 py-[2px]">
               <TrendingUpIcon

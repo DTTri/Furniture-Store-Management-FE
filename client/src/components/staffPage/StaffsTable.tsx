@@ -1,4 +1,3 @@
-import React from "react";
 import { Staff } from "../../entities";
 import {
   DataGrid,
@@ -91,6 +90,7 @@ export default function StaffsTable({
       headerAlign: "center",
       align: "center",
       valueGetter: (value, row) => {
+        console.log(value);
         return row.Account.status;
       },
     },

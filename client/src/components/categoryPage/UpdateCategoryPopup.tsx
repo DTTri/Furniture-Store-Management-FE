@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import http from "../../api/http";
 import { Category, Product } from "../../entities";
-import { Button, Select } from "@mui/material";
+import { Button } from "@mui/material";
 import categoryService from "../../services/categoryService";
 import { toast } from "react-toastify";
 
@@ -15,7 +14,6 @@ export default function UpdateCategoryPopup({
   onCategoryUpdated: (category: Product) => void;
   updatedCategory: Category;
 }) {
-  const [showDataGrid, setShowDataGrid] = useState(true);
   const [categoryName, setCategoryName] = useState<string>(
     updatedCategory.name
   );
@@ -46,14 +44,14 @@ export default function UpdateCategoryPopup({
         });
       }
     } catch (error) {
-      toast("Fail to update category", {
+      toast("Fail to update category: " + error, {
         type: "error",
       });
     }
-    setShowDataGrid(false);
-    setTimeout(() => {
-      setShowDataGrid(true);
-    }, 0);
+    // setShowDataGrid(false);
+    // setTimeout(() => {
+    //   setShowDataGrid(true);
+    // }, 0);
   };
 
   return (

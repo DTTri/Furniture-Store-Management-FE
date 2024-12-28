@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { RepairOrder } from "../../entities";
 import repairService from "../../services/repair.service";
 import RepairOrdersTable from "../../components/repairPage/RepairOrdersTable";

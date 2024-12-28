@@ -1,15 +1,22 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from "@mui/material";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import Staff from "../../entities/Staff";
+// import Staff from "../../entities/Staff";
 
 export default function ChangePasswordPopup({
   onClose,
-  staff
-}: {
+}: // staff
+{
   onClose: () => void;
-  staff: Staff;
+  // staff: Staff;
 }) {
   const [oldPassword, setoldPassword] = useState("");
   const [showOldPassword, setshowOldPassword] = useState(false);
@@ -23,15 +30,11 @@ export default function ChangePasswordPopup({
       toast.error("Please fill in all fields");
       return false;
     }
-    if (
-      password === oldPassword
-    ) {
+    if (password === oldPassword) {
       toast.error("No information has been changed");
       return false;
     }
-    if (
-      password !== retypePassword
-    ) {
+    if (password !== retypePassword) {
       toast.error("Retype password is not match");
       return false;
     }
@@ -47,7 +50,7 @@ export default function ChangePasswordPopup({
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup bg-white rounded-xl p-4 w-1/4 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
-      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">
               Old Password

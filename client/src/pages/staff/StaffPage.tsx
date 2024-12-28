@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Staff } from "../../entities";
 import staffService from "../../services/staff.service";
 import StaffsTable from "../../components/staffPage/StaffsTable";
