@@ -14,8 +14,6 @@ import UpdateCategoryPopup from "../../components/categoryPage/UpdateCategoryPop
 import { Category } from "../../entities";
 import { sCategory } from "../../store";
 import ConfirmPopup from "../../components/ConfirmPopup";
-import { toast } from "react-toastify";
-import { categoryService } from "../../services";
 
 export default function CategoryPage() {
   const [isCreateCategoryPopupOpen, setIsCreateCategoryPopupOpen] =
@@ -76,7 +74,7 @@ export default function CategoryPage() {
       field: "actionDelete",
       type: "actions",
       flex: 0.15,
-      getActions: (params: GridRowParams) => [
+      getActions: () => [
         <GridActionsCellItem
           className="hover:bg-transparent"
           icon={<DeleteIcon />}
@@ -88,7 +86,6 @@ export default function CategoryPage() {
       ],
     },
   ];
-
 
   return (
     <div className="bg-white w-full py-6 px-7">
@@ -160,7 +157,12 @@ export default function CategoryPage() {
         />
       )}
       {isShowConfirmPopup && (
-        <ConfirmPopup message="Do you want to delete this category?" title="Warning" onConfirm={() => {}} onCancel={() => {}}/>
+        <ConfirmPopup
+          message="Do you want to delete this category?"
+          title="Warning"
+          onConfirm={() => {}}
+          onCancel={() => {}}
+        />
       )}
     </div>
   );

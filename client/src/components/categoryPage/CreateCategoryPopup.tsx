@@ -1,17 +1,9 @@
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridColDef,
-  GridRowParams,
-  GridToolbar,
-} from "@mui/x-data-grid";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import http from "../../api/http";
 import { Product } from "../../entities";
-import { Button, Select } from "@mui/material";
+import { Button } from "@mui/material";
 import categoryService from "../../services/categoryService";
-import { Flip, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function CreateCategoryPopup({
   onClose,
@@ -20,19 +12,18 @@ export default function CreateCategoryPopup({
   onClose: () => void;
   onCategoryCreated: (category: Product) => void;
 }) {
-  const [showDataGrid, setShowDataGrid] = useState(true);
   const categoryName = useRef<string>("");
 
   const handleCreateCategory = async () => {
     try {
-      if(categoryName.current === "") {
+      if (categoryName.current === "") {
         toast("Category name is required", {
           type: "error",
         });
         onClose();
         return;
       }
-      const createdCategoryDTO = { name: categoryName.current}
+      const createdCategoryDTO = { name: categoryName.current };
       const response = await categoryService.createCategory(createdCategoryDTO);
       if (response.data.EC === 0) {
         onCategoryCreated(response.data.DT);
@@ -46,14 +37,14 @@ export default function CreateCategoryPopup({
         });
       }
     } catch (error) {
-      toast("Failed to create category", {
+      toast("Failed to create category: " + error, {
         type: "error",
       });
     }
-    setShowDataGrid(false);
-    setTimeout(() => {
-      setShowDataGrid(true);
-    }, 0);
+    // setShowDataGrid(false);
+    // setTimeout(() => {
+    //   setShowDataGrid(true);
+    // }, 0);
   };
 
   return (

@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddPromotionPopup from "../../components/promotionPage/AddPromotionPopup";
 import { promotionService } from "../../services";
 import PromotionsTable from "../../components/promotionPage/PromotionsTable";

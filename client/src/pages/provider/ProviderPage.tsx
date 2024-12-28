@@ -1,9 +1,8 @@
 import { Button } from "@mui/material";
 import { ProvidersTable } from "../../components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Provider } from "../../entities";
 import AddProviderPopup from "../../components/providerPage/AddProviderPopup";
-import { providerService } from "../../services";
 import { sProvider } from "../../store";
 export default function ProviderPage() {
   const providers = sProvider.use((v) => v.providers);

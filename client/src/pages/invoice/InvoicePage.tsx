@@ -1,5 +1,4 @@
 import InfoIcon from "@mui/icons-material/Info";
-import SearchIcon from "@mui/icons-material/Search";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { Button } from "@mui/material";
 import {
@@ -31,16 +30,16 @@ export default function InvoicePage() {
     setIsInvoiceDetailPopupOpen(false);
     setSelectedInvoice(null);
   };
-  const handleOnClosePayInvoice = () => {
-    setIsPayInvoicePopupOpen(false);
-  };
+  // const handleOnClosePayInvoice = () => {
+  //   setIsPayInvoicePopupOpen(false);
+  // };
 
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
         const response = await invoiceService.getAllInvoice();
         if (response.EC === 0) {
-          const invoices = response.DT.map((invoice: any, index: number) => {
+          const invoices = response.DT.map((invoice: object, index: number) => {
             return {
               ...invoice,
               index: index + 1,
