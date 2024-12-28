@@ -30,7 +30,7 @@ export default function ProductCard({
             id="productCardCategory"
             className="product-category text-xs text-blue-400"
           >
-            {product.category}
+            {/* {product.catalogueId} */}
           </p>
         </div>
         <h3 id="productCardName" className="product-name text-lg font-semibold">

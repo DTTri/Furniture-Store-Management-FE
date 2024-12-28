@@ -9,13 +9,8 @@ export default function UserProtect({
 }) {
   const nav = useNavigate();
   const token =
-    localStorage.getItem("token") ||
-    sessionStorage.getItem("token") ||
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoxLCJyb2xlIjozLCJzdGFmZklkIjoxfSwiaWF0IjoxNzMzODAwMDgxLCJleHAiOjE3MzYzOTIwODF9.EpIEoz3R3mYCs4yLdVptXivx7GxIReLXKO1NHe3NgfE";
-  const id =
-    localStorage.getItem("id") ||
-    sessionStorage.getItem("id") ||
-    "6748663e69355757411d4029";
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  const id = localStorage.getItem("id") || sessionStorage.getItem("id");
   useEffect(() => {
     if (id == null || token == null) {
       nav("/login");

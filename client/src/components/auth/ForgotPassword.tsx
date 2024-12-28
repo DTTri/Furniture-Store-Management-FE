@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"; // Để điều hướng
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Icon mũi tên quay lại
 import { TextField } from "@mui/material";
 import authenService from "../../services/authen.service";
-import { ToastContainer, toast, Flip } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -24,34 +24,35 @@ const ForgotPassword: React.FC = () => {
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     // Gửi email xác nhận
-    if(email === ""){
-      toast('Email is required', {type: "error",});
+    if (email === "") {
+      toast("Email is required", { type: "error" });
       return;
     }
-    if(!email.match(emailRegex)){
-      toast('Email is invalid', {type: "error"});
+    if (!email.match(emailRegex)) {
+      toast("Email is invalid", { type: "error" });
       return;
     }
     try {
       const response = await authenService.forgotPassword(email);
-      if(response.EC === 0){
-        toast('We sent you a verification code in your email', {
+      if (response.EC === 0) {
+        toast("We sent you a verification code in your email", {
           type: "success",
         });
-      }
-      else{
+        setIsSuccess(true);
+      } else {
         toast(response.EM, {
           type: "error",
         });
+        setError(response.EM);
       }
     } catch (error) {
-      toast("Fail to send email", { type: "error" });
+      toast("Fail to send email: " + error, { type: "error" });
     }
-  }
+  };
 
   const handleVerifyToken = () => {
     navigate(`/verify-token`);
-  }
+  };
 
   return (
     <div
@@ -113,20 +114,20 @@ const ForgotPassword: React.FC = () => {
         )}
         {!isSuccess ? (
           <button
-          type="submit"
-          className="w-full font-semibold bg-blue-500 text-white py-2 px-4 rounded-md mt-3"
-          onClick={handleForgotPassword}
-        >
-          Send verification 
-        </button>
+            type="submit"
+            className="w-full font-semibold bg-blue-500 text-white py-2 px-4 rounded-md mt-3"
+            onClick={handleForgotPassword}
+          >
+            Send verification
+          </button>
         ) : (
           <button
-          type="submit"
-          className="w-full font-semibold bg-green-600 text-white py-2 px-4 rounded-md mt-3"
-          onClick={handleVerifyToken}
-        >
-          Verify Code
-        </button>
+            type="submit"
+            className="w-full font-semibold bg-green-600 text-white py-2 px-4 rounded-md mt-3"
+            onClick={handleVerifyToken}
+          >
+            Verify Code
+          </button>
         )}
         {isSuccess ? (
           <p className="text-green-600 text-center mt-2">
@@ -135,8 +136,7 @@ const ForgotPassword: React.FC = () => {
         ) : (
           error && <p className="text-red-600 text-center mt-2">{error}</p>
         )}
-        </form>
- 
+      </form>
     </div>
   );
 };

@@ -1,11 +1,10 @@
 import { Product } from "../../entities";
 import { Button } from "@mui/material";
 import AddProductDTO from "./AddProductDTO";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { productService } from "../../services";
 import http from "../../api/http";
 import "react-dropzone-uploader/dist/styles.css";
-import Dropzone, { IFileWithMeta, StatusValue } from "react-dropzone-uploader";
 import { toast } from "react-toastify";
 import { sCategory } from "../../store";
 
@@ -27,43 +26,28 @@ export default function AddProductPopup({
   const [image, setImage] = useState(product?.image || "");
   const [warranty, setWarranty] = useState(product?.warranty || 0);
 
-  const [presignedUrl, setPresignedUrl] = useState("");
   const [key, setKey] = useState("");
-  const dropzoneRef = useRef<Dropzone | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const handleChangeStatus = (
-    { meta }: { meta: { name: string } },
-    status: StatusValue
-  ) => {
-    console.log(status, meta);
-  };
-
-  const handleSubmit = async (files: IFileWithMeta[]) => {
-    const f = files[0];
-
+  const handleSubmit = async (f: File) => {
     try {
       const response = await http.get(
-        "/file/presigned-url?fileName=" +
-          f["file"].name +
-          "&contentType=" +
-          f["file"].type
+        "/file/presigned-url?fileName=" + f.name + "&contentType=" + f.type
       );
       console.log(response);
-      setPresignedUrl(response.data.presignedUrl);
       setKey(response.data.key);
 
       // PUT request: upload file to S3
       const result = await fetch(response.data.presignedUrl, {
         method: "PUT",
         headers: {
-          "Content-Type": f["file"].type,
+          "Content-Type": f.type,
         },
-        body: f["file"],
+        body: f,
       });
       if (!result.ok) {
         throw new Error("Failed to upload image to S3");
       }
-      toast("Image uploaded successfully", { type: "success" });
       console.log(result);
       return true;
     } catch (error) {
@@ -145,33 +129,31 @@ export default function AddProductPopup({
   };
 
   const handleCreateButtonClick = async () => {
-    if (dropzoneRef.current && dropzoneRef.current.files.length > 0) {
-      const uploadSuccess = await handleSubmit(dropzoneRef.current.files);
-      if (uploadSuccess) {
-        handleAddProduct();
+    if (selectedFile) {
+      const uploadSuccess = await handleSubmit(selectedFile);
+      if (!uploadSuccess) {
+        return;
       }
-    } else {
-      handleAddProduct();
     }
+    handleAddProduct();
   };
 
   const handleUpdateButtonClick = async () => {
-    if (dropzoneRef.current && dropzoneRef.current.files.length > 0) {
-      const uploadSuccess = await handleSubmit(dropzoneRef.current.files);
-      if (uploadSuccess) {
-        handleUpdateProduct();
+    if (selectedFile) {
+      const uploadSuccess = await handleSubmit(selectedFile);
+      if (!uploadSuccess) {
+        return;
       }
-    } else {
-      handleUpdateProduct();
     }
+    handleUpdateProduct();
   };
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup bg-white rounded-xl p-4 w-1/2 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
         <div className="container w-full flex justify-around ">
-          <div className="image-container basis-[45%] flex justify-center items-center gap-4 overflow-hidden ">
-            <Dropzone
+          <div className="image-container basis-[45%] flex flex-col justify-center items-center gap-4 overflow-hidden ">
+            {/* <Dropzone
               ref={dropzoneRef}
               onChangeStatus={handleChangeStatus}
               maxFiles={1}
@@ -186,6 +168,18 @@ export default function AddProductPopup({
                   "w-full rounded-md flex items-center justify-center",
                 submitButtonContainer: "hidden",
                 inputLabel: "text-blue-500 hover:text-blue-700 cursor-pointer",
+              }}
+            /> */}
+            <img src={image} alt="product" className="w-full" />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files) {
+                  const file = e.target.files[0];
+                  setImage(URL.createObjectURL(file));
+                  setSelectedFile(file);
+                }
               }}
             />
           </div>

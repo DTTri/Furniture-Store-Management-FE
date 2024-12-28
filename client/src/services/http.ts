@@ -1,7 +1,7 @@
 class Http {
   baseUrl: string;
   constructor() {
-    this.baseUrl = "http://localhost:8080";
+    this.baseUrl = "https://api.fsm.thyqtran.id.vn/";
   }
   private getURL(url: string) {
     return `${this.baseUrl}/${url}`;

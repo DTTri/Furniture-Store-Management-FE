@@ -91,6 +91,8 @@ export default function ProductDetailsPopup({
         setSelectedVariant(updatedVariants.length > 0 ? variants[0] : null);
         console.log(selectedVariant);
       } else {
+        toast.error("Failed to delete variant");
+        console.error("Failed to delete variant:", response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to delete variant");
