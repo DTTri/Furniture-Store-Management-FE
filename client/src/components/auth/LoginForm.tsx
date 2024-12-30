@@ -40,19 +40,19 @@ export default function LoginForm() {
         password: password,
       };
       const response = await authenService.login(loginDto);
-      if (response.EC === 0) {
+      if (response.data.EC === 0) {
         if (rememberMe) {
-          localStorage.setItem("token", response.DT.token);
+          localStorage.setItem("token", response.data.DT.token);
         } else {
-          sessionStorage.setItem("token", response.DT.token);
+          sessionStorage.setItem("token", response.data.DT.token);
         }
-        http.setAuthHeader(response.DT.token);
+        http.setAuthHeader(response.data.DT.token);
 
-        sUser.set((prev) => (prev.value.info = response.DT.staff));
+        sUser.set((prev) => (prev.value.info = response.data.DT.staff));
         setLoading(false);
         nav("/");
       } else {
-        toast(response.EM, {
+        toast(response.data.EM, {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: true,
@@ -87,7 +87,7 @@ export default function LoginForm() {
     <div
       className={`duration-700 max-w-[420px] w-full bg-white shadow-xl ${
         show ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
-      } px-9 py-11 flex flex-col mx-auto rounded-xl transform transition duration-500 hover:scale-105`}
+      } px-9 py-11 flex flex-col mx-auto rounded-xl transform transition duration-500`}
       style={{ transition: "all 0.7s ease" }}
     >
       <div className="  bg-transparent bg-white rounded-[24px]  ">

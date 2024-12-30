@@ -45,12 +45,12 @@ export default function PayInvoicePopup({
       try {
         const response = await invoiceService.getInvoiceById(invoice.id);
 
-        if (response.EC === 0) {
-          setSelectedInvoice(response.DT);
-          setTotalCost(response.DT.totalCost);
-          setRows(response.DT.InvoiceDetails);
+        if (response.data.EC === 0) {
+          setSelectedInvoice(response.data.DT);
+          setTotalCost(response.data.DT.totalCost);
+          setRows(response.data.DT.InvoiceDetails);
         } else {
-          console.log("Failed to fetch invoice:", response.EM);
+          console.log("Failed to fetch invoice:", response.data.EM);
         }
       } catch (error) {
         console.error("Error fetching invoice:", error);
@@ -97,9 +97,9 @@ export default function PayInvoicePopup({
     //handle credit card payment
     try {
       const response = await invoiceService.acceptInvoice(invoice.id);
-      if (response.EC === 0) {
+      if (response.data.EC === 0) {
         toast("Payment success", { type: "success" });
-        onPaymentSuccess(response.DT);
+        onPaymentSuccess(response.data.DT);
       } else {
       }
     } catch (error) {

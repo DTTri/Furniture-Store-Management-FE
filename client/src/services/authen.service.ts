@@ -1,5 +1,5 @@
 import LoginDTO from "../entities/DTO/LoginDTO";
-import http from "./http";
+import http from "../api/http";
 
 class authenService{
     baseUri: string;

@@ -34,16 +34,16 @@ const ForgotPassword: React.FC = () => {
     }
     try {
       const response = await authenService.forgotPassword(email);
-      if (response.EC === 0) {
+      if (response.data.EC === 0) {
         toast("We sent you a verification code in your email", {
           type: "success",
         });
         setIsSuccess(true);
       } else {
-        toast(response.EM, {
+        toast(response.data.EM, {
           type: "error",
         });
-        setError(response.EM);
+        setError(response.data.EM);
       }
     } catch (error) {
       toast("Fail to send email: " + error, { type: "error" });

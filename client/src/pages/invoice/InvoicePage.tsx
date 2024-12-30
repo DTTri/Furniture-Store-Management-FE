@@ -38,8 +38,8 @@ export default function InvoicePage() {
     const fetchInvoices = async () => {
       try {
         const response = await invoiceService.getAllInvoice();
-        if (response.EC === 0) {
-          const invoices = response.DT.map((invoice: object, index: number) => {
+        if (response.data.EC === 0) {
+          const invoices = response.data.DT.map((invoice: object, index: number) => {
             return {
               ...invoice,
               index: index + 1,
@@ -47,7 +47,7 @@ export default function InvoicePage() {
           });
           setInvoiceList(invoices);
         } else {
-          console.log("Failed to fetch invoices:", response.EM);
+          console.log("Failed to fetch invoices:", response.data.EM);
         }
       } catch (error) {
         console.error("Error fetching invoices:", error);
