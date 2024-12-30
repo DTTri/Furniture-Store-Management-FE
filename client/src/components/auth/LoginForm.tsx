@@ -43,10 +43,8 @@ export default function LoginForm() {
       if (response.EC === 0) {
         if (rememberMe) {
           localStorage.setItem("token", response.DT.token);
-          localStorage.setItem("id", response.DT.staff.id);
         } else {
           sessionStorage.setItem("token", response.DT.token);
-          localStorage.setItem("id", response.DT.staff.id);
         }
         http.setAuthHeader(response.DT.token);
 
@@ -66,6 +64,7 @@ export default function LoginForm() {
           theme: "light",
           transition: Flip,
         });
+        console.log(response);
       }
     } catch (error) {
       toast("Fail to login " + error, {
