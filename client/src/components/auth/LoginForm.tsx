@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Flip, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import LoginDTO from "../../entities/DTO/LoginDTO";
 import authenService from "../../services/authen.service";
 import { sUser } from "../../store";
@@ -47,38 +47,16 @@ export default function LoginForm() {
           sessionStorage.setItem("token", response.data.DT.token);
         }
         http.setAuthHeader(response.data.DT.token);
-
         sUser.set((prev) => (prev.value.info = response.data.DT.staff));
         setLoading(false);
+        toast.success("Login successfully!");
         nav("/");
       } else {
-        toast(response.data.EM, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          type: "error",
-          theme: "light",
-          transition: Flip,
-        });
+        toast.error("Failed to login!")
         console.log(response);
       }
     } catch (error) {
-      toast("Fail to login " + error, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        type: "error",
-        theme: "light",
-        transition: Flip,
-      });
+      toast.error("Failed to login!")
     }
     setLoading(false);
   };

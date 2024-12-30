@@ -10,11 +10,10 @@ export default function UserProtect({
   const nav = useNavigate();
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
-  const id = localStorage.getItem("id") || sessionStorage.getItem("id");
   useEffect(() => {
-    if (id == null || token == null) {
+    if ( token == null) {
       nav("/login");
     }
-  }, [id, token, nav]);
+  }, [token, nav]);
   return <div>{children}</div>;
 }
