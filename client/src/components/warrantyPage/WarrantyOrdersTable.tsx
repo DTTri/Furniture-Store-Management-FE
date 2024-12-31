@@ -98,28 +98,6 @@ export default function WarrantyOrdersTable({
       },
     },
     {
-      field: "createdAt",
-      headerName: "Created At",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-      valueGetter: (_, row) => {
-        if (row.createdAt === null) return "";
-        return formatDate(row.createdAt);
-      },
-    },
-    {
-      field: "updatedAt",
-      headerName: "Updated At",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-      valueGetter: (_, row) => {
-        if (row.updatedAt === null) return "";
-        return formatDate(row.updatedAt);
-      },
-    },
-    {
       field: "staffId",
       headerName: "Staff ID",
       flex: 1,
