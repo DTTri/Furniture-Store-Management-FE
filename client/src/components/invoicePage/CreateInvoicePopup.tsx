@@ -212,12 +212,12 @@ export default function CreateInvoicePopup({
     };
     console.log("createdInvoice", createdInvoice);
     const response = await invoiceService.createInvoice(createdInvoice);
-    if (response.EC === 0) {
+    if (response.data.EC === 0) {
       toast(updatedInvoice === null ? "Invoice created successfully" : "Invoice updated successfully", { type: "success" });
-      onInvoiceCreated(response.DT);
+      onInvoiceCreated(response.data.DT);
     } else {
       toast("Failed to create invoice", { type: "error" });
-      console.log("Failed to create invoice:", response.EM);
+      console.log("Failed to create invoice:", response.data.EM);
     }
   };
 

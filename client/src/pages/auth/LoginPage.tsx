@@ -2,6 +2,7 @@ import LoginForm from "../../components/auth/LoginForm";
 import LoginImage from "../../assets/Login_image.png";
 
 export default function LoginPage() {
+
   return (
     <div className="min-w-[600px] w-full h-screen flex flex-row bg-[#f0f0f0]">
       <div

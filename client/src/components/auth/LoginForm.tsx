@@ -10,12 +10,11 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Flip, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import LoginDTO from "../../entities/DTO/LoginDTO";
 import authenService from "../../services/authen.service";
 import { sUser } from "../../store";
 import LoadingProgress from "../LoadingProgress";
-import http from "../../api/http";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -40,46 +39,25 @@ export default function LoginForm() {
         password: password,
       };
       const response = await authenService.login(loginDto);
-      if (response.EC === 0) {
+      if (response.data.EC === 0) {
         if (rememberMe) {
-          localStorage.setItem("token", response.DT.token);
-          localStorage.setItem("id", response.DT.staff.id);
+          localStorage.setItem("token", response.data.DT.token);
+          localStorage.setItem("id", response.data.DT.staff.id);
         } else {
-          sessionStorage.setItem("token", response.DT.token);
-          localStorage.setItem("id", response.DT.staff.id);
+          sessionStorage.setItem("token", response.data.DT.token);
+          sessionStorage.setItem("id", response.data.DT.staff.id);
         }
-        http.setAuthHeader(response.DT.token);
-
-        sUser.set((prev) => (prev.value.info = response.DT.staff));
+        sUser.set((prev) => (prev.value.token = response.data.DT.token));
+        sUser.set((prev) => (prev.value.info = response.data.DT.staff));
         setLoading(false);
+        toast.success("Login successfully!");
         nav("/");
       } else {
-        toast(response.EM, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          type: "error",
-          theme: "light",
-          transition: Flip,
-        });
+        toast.error("Failed to login!");
+        console.log(response);
       }
     } catch (error) {
-      toast("Fail to login " + error, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        type: "error",
-        theme: "light",
-        transition: Flip,
-      });
+      toast.error("Failed to login!: " + error);
     }
     setLoading(false);
   };
@@ -88,7 +66,7 @@ export default function LoginForm() {
     <div
       className={`duration-700 max-w-[420px] w-full bg-white shadow-xl ${
         show ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
-      } px-9 py-11 flex flex-col mx-auto rounded-xl transform transition duration-500 hover:scale-105`}
+      } px-9 py-11 flex flex-col mx-auto rounded-xl transform transition duration-500`}
       style={{ transition: "all 0.7s ease" }}
     >
       <div className="  bg-transparent bg-white rounded-[24px]  ">

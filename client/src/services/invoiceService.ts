@@ -1,5 +1,5 @@
 import InvoiceDTO from "../entities/DTO/CreateInvoiceDTO";
-import http from "./http";
+import http from "../api/http";
 
 class invoiceService {
   baseUri: string;

@@ -7,7 +7,7 @@ import categoryService from "./categoryService";
 import invoiceService from "./invoiceService";
 import promotionService from "./promotion.service";
 import permissionService from "./permission.service";
-import http from "./http";
+import http from "../api/http";
 export {
   customerService,
   providerService,

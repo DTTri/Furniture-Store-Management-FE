@@ -43,11 +43,11 @@ export default function VerifyTokenForm() {
     const token = tokenInput.join("");
     try {
       const response = await authenService.verifyToken(token);
-      if (response.EC === 0) {
+      if (response.data.EC === 0) {
         navigate("/reset-password/" + token);
       } else {
-        toast(response.EM, { type: "error" });
-        setError(response.EM);
+        toast(response.data.EM, { type: "error" });
+        setError(response.data.EM);
       }
     } catch (error) {
       toast("Verification failed: " + error, { type: "error" });

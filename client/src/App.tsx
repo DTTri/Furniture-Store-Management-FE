@@ -52,8 +52,12 @@ import warrantyService from "./services/warranty.service";
 import repairService from "./services/repair.service";
 
 function App() {
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+  sUser.set(
+    (v) =>
+      (v.value.token =
+        localStorage.getItem("token") || sessionStorage.getItem("token") || "")
+  );
+  const token = sUser.use((v) => v.token);
   useEffect(() => {
     http.setAuthHeader(token);
     const fetchPermissions = async () => {
@@ -236,21 +240,26 @@ function App() {
         console.error("Error fetching categories:", error);
       }
     };
-    Promise.all([
-      fetchPermissions(),
-      fetchGeneralReportByDate(),
-      fetchStaffReportByDate(),
-      fetchIncomeReportByDate(),
-      fetchUserById(),
-      fetchProducts(),
-      fetchProvider(),
-      fetchCustomer(),
-      fetchStaff(),
-      fetchPromotion(),
-      fetchWarranty(),
-      fetchRepair(),
-      fetchCategory(),
-    ]);
+    const fetchData = async () => {
+      await Promise.all([
+        fetchPermissions(),
+        fetchGeneralReportByDate(),
+        fetchStaffReportByDate(),
+        fetchIncomeReportByDate(),
+        fetchUserById(),
+        fetchProducts(),
+        fetchProvider(),
+        fetchCustomer(),
+        fetchStaff(),
+        fetchPromotion(),
+        fetchWarranty(),
+        fetchRepair(),
+        fetchCategory(),
+      ]);
+    };
+    if (token !== "" && http.getAuthHeader() !== "") {
+      fetchData();
+    }
   }, [token]);
 
   return (

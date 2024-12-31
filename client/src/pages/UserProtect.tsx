@@ -15,6 +15,6 @@ export default function UserProtect({
     if (id == null || token == null) {
       nav("/login");
     }
-  }, [id, token, nav]);
+  }, [token, nav]);
   return <div>{children}</div>;
 }

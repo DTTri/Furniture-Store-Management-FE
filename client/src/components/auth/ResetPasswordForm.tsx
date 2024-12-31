@@ -50,7 +50,7 @@ export default function ResetPasswordForm() {
         newPassword: password,
         retypeNewPassword: rePassword,
       });
-      if (response.EC === 0) {
+      if (response.data.EC === 0) {
           toast('Password reset successfully, please log in again', {
             type: "success",
           });
