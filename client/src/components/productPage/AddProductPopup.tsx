@@ -27,12 +27,11 @@ export default function AddProductPopup({
   const [warranty, setWarranty] = useState(product?.warranty || 0);
 
   useEffect(() => {
-    if(catalogues.length > 0) {
+    if (catalogues.length > 0) {
       setCatalogueId(catalogues[0].id);
     }
   }, [catalogues]);
-  
-  const [key, setKey] = useState("");
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleSubmit = async (f: File) => {
@@ -41,7 +40,6 @@ export default function AddProductPopup({
         "/file/presigned-url?fileName=" + f.name + "&contentType=" + f.type
       );
       console.log(response);
-      setKey(response.data.key);
 
       // PUT request: upload file to S3
       const result = await fetch(response.data.presignedUrl, {
@@ -55,14 +53,14 @@ export default function AddProductPopup({
         throw new Error("Failed to upload image to S3");
       }
       console.log(result);
-      return true;
+      return response.data.key;
     } catch (error) {
       console.error("Error uploading image:", error);
-      return false;
+      return "";
     }
   };
 
-  const handleAddProduct = async () => {
+  const handleAddProduct = async (key: string) => {
     if (!name || name === "") {
       return;
     }
@@ -88,7 +86,7 @@ export default function AddProductPopup({
     }
   };
 
-  const handleUpdateProduct = async () => {
+  const handleUpdateProduct = async (key: string) => {
     if (!product) {
       toast("Product not found", { type: "error" });
       return;
@@ -107,11 +105,26 @@ export default function AddProductPopup({
       toast("Name is required", { type: "error" });
       return;
     }
+    if (!description || description === "") {
+      toast("Description is required", { type: "error" });
+      return;
+    }
+    if (!catalogueId) {
+      toast("Catalogue is required", { type: "error" });
+      return;
+    }
+    if (!warranty) {
+      toast("Warranty is required", { type: "error" });
+      return;
+    }
+
     const newProductDTO: AddProductDTO = {
       name,
       description,
       catalogueId,
       warranty,
+      image:
+        key !== "" ? "https://seuit-qlnt.s3.amazonaws.com/" + key : undefined,
     };
     console.log(newProductDTO);
     try {
@@ -135,23 +148,25 @@ export default function AddProductPopup({
   };
 
   const handleCreateButtonClick = async () => {
+    let key = "";
     if (selectedFile) {
-      const uploadSuccess = await handleSubmit(selectedFile);
-      if (!uploadSuccess) {
+      key = await handleSubmit(selectedFile);
+      if (key === "") {
         return;
       }
     }
-    handleAddProduct();
+    handleAddProduct(key);
   };
 
   const handleUpdateButtonClick = async () => {
+    let key = "";
     if (selectedFile) {
-      const uploadSuccess = await handleSubmit(selectedFile);
-      if (!uploadSuccess) {
+      key = await handleSubmit(selectedFile);
+      if (key === "") {
         return;
       }
     }
-    handleUpdateProduct();
+    handleUpdateProduct(key);
   };
 
   return (
@@ -176,7 +191,11 @@ export default function AddProductPopup({
                 inputLabel: "text-blue-500 hover:text-blue-700 cursor-pointer",
               }}
             /> */}
-            <img src={image} alt="product" className="w-full" />
+            <img
+              src={image !== "" ? image : "/images/chair.jpg"}
+              alt="product"
+              className="w-full"
+            />
             <input
               type="file"
               accept="image/*"
