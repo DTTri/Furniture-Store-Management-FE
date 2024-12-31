@@ -1,7 +1,7 @@
 import { Product } from "../../entities";
 import { Button } from "@mui/material";
 import AddProductDTO from "./AddProductDTO";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { productService } from "../../services";
 import http from "../../api/http";
 import "react-dropzone-uploader/dist/styles.css";
@@ -26,6 +26,12 @@ export default function AddProductPopup({
   const [image, setImage] = useState(product?.image || "");
   const [warranty, setWarranty] = useState(product?.warranty || 0);
 
+  useEffect(() => {
+    if(catalogues.length > 0) {
+      setCatalogueId(catalogues[0].id);
+    }
+  }, [catalogues]);
+  
   const [key, setKey] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -213,9 +219,13 @@ export default function AddProductPopup({
             <div className="flex flex-col gap-2">
               <label htmlFor="catalogue">Catalogue</label>
               <select
+                value={catalogueId}
                 name="catalogue"
                 id="newProductCatalogueInput"
-                onChange={(e) => setCatalogueId(Number(e.target.value))}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setCatalogueId(Number(e.target.value));
+                }}
                 className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 //defaultValue={catalogueId}
               >

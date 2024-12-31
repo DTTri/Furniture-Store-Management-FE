@@ -43,8 +43,10 @@ export default function LoginForm() {
       if (response.data.EC === 0) {
         if (rememberMe) {
           localStorage.setItem("token", response.data.DT.token);
+          localStorage.setItem("id", response.data.DT.staff.id);
         } else {
           sessionStorage.setItem("token", response.data.DT.token);
+          sessionStorage.setItem("id", response.data.DT.staff.id);
         }
         http.setAuthHeader(response.data.DT.token);
         sUser.set((prev) => (prev.value.info = response.data.DT.staff));
