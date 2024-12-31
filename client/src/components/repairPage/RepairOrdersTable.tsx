@@ -9,6 +9,7 @@ import {
 
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import formatDate from "../../utils/formatDate";
 
 export default function RepairOrdersTable({
   repairOrders,
@@ -75,6 +76,10 @@ export default function RepairOrdersTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        if (row.estimateFinishDate === null) return "";
+        return formatDate(row.estimateFinishDate);
+      },
     },
     {
       field: "finishDate",
@@ -82,6 +87,10 @@ export default function RepairOrdersTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        if (row.finishDate === null) return "";
+        return formatDate(row.finishDate);
+      },
     },
     {
       field: "createdAt",
@@ -89,6 +98,9 @@ export default function RepairOrdersTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatDate(row.createdAt);
+      },
     },
     {
       field: "updatedAt",
@@ -96,6 +108,9 @@ export default function RepairOrdersTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatDate(row.updatedAt);
+      },
     },
     {
       field: "staffId",

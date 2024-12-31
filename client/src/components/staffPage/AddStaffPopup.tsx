@@ -5,6 +5,7 @@ import UpdateStaffDTO from "./UpdateStaffDTO";
 import Staff from "../../entities/Staff";
 import staffService from "../../services/staff.service";
 import { toast } from "react-toastify";
+import formatDate from "../../utils/formatDate";
 
 export default function AddStaffPopup({
   onClose,
@@ -129,7 +130,7 @@ export default function AddStaffPopup({
               onChange={(e) => {
                 setBirth(e.target.value);
               }}
-              defaultValue={staff?.birth}
+              defaultValue={birth}
             />
           </div>
           <div className="flex flex-col gap-2">
