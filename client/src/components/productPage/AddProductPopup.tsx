@@ -194,7 +194,7 @@ export default function AddProductPopup({
             <img
               src={image !== "" ? image : "/images/chair.jpg"}
               alt="product"
-              className="w-full"
+              className="w-full max-h-[250px] object-contain"
             />
             <input
               type="file"

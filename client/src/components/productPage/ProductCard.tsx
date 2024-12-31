@@ -21,7 +21,7 @@ export default function ProductCard({
               : "/images/chair.jpg"
           }
           alt="product"
-          className="object-cover"
+          className="object-fill"
         />
       </div>
       <div className="product-info w-full p-4">
@@ -34,11 +34,13 @@ export default function ProductCard({
           </p>
         </div>
         <h3 id="productCardName" className="product-name text-lg font-semibold">
-          {product.name}
+          {product.name.length > 40
+            ? product.name.slice(0, 40) + "..."
+            : product.name}
         </h3>
         <div className="product-price flex items-center justify-between">
-          <span className="text-lg font-semibold text-black">
-            {product.price} VND
+          <span className="text-sm text-gray-500">
+            Available: {product.available}
           </span>
         </div>
         <div

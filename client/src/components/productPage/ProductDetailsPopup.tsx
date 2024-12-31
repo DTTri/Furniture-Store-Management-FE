@@ -49,7 +49,6 @@ export default function ProductDetailsPopup({
 
   const handleUpdateProduct = () => {
     onOpenUpdateProductPopup(product);
-    onClose();
   };
   const handleStopSelling = async () => {
     try {
@@ -141,7 +140,7 @@ export default function ProductDetailsPopup({
   ];
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white flex justify-around relative rounded-xl p-4 w-2/3 min-w-[420px] overflow-hidden">
+      <div className="popup bg-white flex justify-around relative rounded-xl py-4 px-3 w-2/3 min-w-[420px] overflow-hidden">
         <IconButton
           style={{
             position: "absolute",
@@ -153,8 +152,8 @@ export default function ProductDetailsPopup({
           <CloseIcon />
         </IconButton>
 
-        <div className="information-container flex flex-col gap-2 items-start w-1/3 border-r-2 border-r-black">
-          <div className="product-information w-full flex flex-col gap-2">
+        <div className="information-container flex flex-col gap-2 items-start basis-2/5 border-r-2 border-r-black">
+          <div className="product-information w-full flex flex-col gap-2 max-h-[320px] overflow-y-auto">
             <p className="title text-black text-2xl font-semibold">
               Product information
             </p>
@@ -171,7 +170,7 @@ export default function ProductDetailsPopup({
                       verticalAlign: "top",
                     }}
                   >
-                    Mô tả:
+                    Description:
                   </td>
                   <td>
                     <textarea
@@ -201,19 +200,19 @@ export default function ProductDetailsPopup({
                   <td id="productDetailsWarranty">{product.warranty}</td>
                 </tr>
                 <tr>
-                  <td className="title">Total quantity:</td>
+                  <td className="title">Total:</td>
                   <td id="productDetailsTotalQuantity">{product.quantity}</td>
                 </tr>
                 <tr>
-                  <td className="title">Available quantity:</td>
+                  <td className="title">Available:</td>
                   <td id="productDetailsaAvailable">{product.available}</td>
                 </tr>
                 <tr>
-                  <td className="title">Sold quantity:</td>
+                  <td className="title">Sold:</td>
                   <td id="productDetailsSold">{product.sold}</td>
                 </tr>
                 <tr>
-                  <td className="title">Defective quantity:</td>
+                  <td className="title">Defective:</td>
                   <td id="productDetailsDefective">{product.defective}</td>
                 </tr>
               </tbody>
@@ -261,7 +260,7 @@ export default function ProductDetailsPopup({
             </Button>
           </div>
         </div>
-        <div className="variants-container w-2/3 flex flex-col items-center justify-between gap-4">
+        <div className="variants-container basis-3/5 flex flex-col items-center justify-between gap-4">
           {/* <div className="w-full flex justify-center items-center gap-4">
             <div className="variant-image h-32 w-32 overflow-hidden rounded-lg">
               <img
