@@ -25,15 +25,10 @@ export default function AddWarrantyOrderPopup({
   const [estimateFinishDate, setEstimateFinishDate] = useState(
     warrantyOrder?.estimateFinishDate || ""
   );
-  const [staffId, setStaffId] = useState(warrantyOrder?.staffId || 0);
   const [warrantyId, setWarrantyId] = useState(warrantyOrder?.warrantyId || 0);
 
   const validateInputs = () => {
-    if (
-      !description ||
-      !details ||
-      (!warrantyOrder && (!staffId || !warrantyId))
-    ) {
+    if (!description || !details || (!warrantyOrder && !warrantyId)) {
       toast.error("Please fill in all fields");
       return false;
     }
@@ -52,7 +47,6 @@ export default function AddWarrantyOrderPopup({
       const newWarrantyOrder: AddWarrantyOrderDTO = {
         description,
         details,
-        staffId,
         warrantyId,
         cost: cost ? Number(cost) : undefined,
         estimateFinishDate,
@@ -149,20 +143,6 @@ export default function AddWarrantyOrderPopup({
                     setCost(e.target.value);
                   }}
                   defaultValue={cost}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="staffId">Staff ID</label>
-                <input
-                  id="newWarrantyOrderStaffIdInput"
-                  name="staffId"
-                  placeholder="Staff ID"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  required
-                  onChange={(e) => {
-                    setStaffId(Number(e.target.value));
-                  }}
-                  defaultValue={staffId}
                 />
               </div>
               <div className="flex flex-col gap-2">
