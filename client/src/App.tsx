@@ -25,6 +25,7 @@ import { useEffect } from "react";
 import {
   categoryService,
   customerService,
+  invoiceService,
   permissionService,
   productService,
   promotionService,
@@ -50,6 +51,7 @@ import http from "./api/http";
 import sCustomer from "./store/customerStore";
 import warrantyService from "./services/warranty.service";
 import repairService from "./services/repair.service";
+import sInvoice from "./store/invoiceStore";
 
 function App() {
   const token =
@@ -138,6 +140,18 @@ function App() {
         }
       } catch (error) {
         console.error("Error fetching user:", error);
+      }
+    };
+    const fetchInvoices = async () => {
+      try {
+        const response = await invoiceService.getAllInvoice();
+        if (response.data.EC === 0) {
+          sInvoice.set(prev => prev.value.invoices = response.data.DT);
+        } else {
+          console.log("Failed to fetch invoices:", response.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
       }
     };
     const fetchProducts = async () => {
@@ -244,6 +258,7 @@ function App() {
       fetchUserById(),
       fetchProducts(),
       fetchProvider(),
+      fetchInvoices(),
       fetchCustomer(),
       fetchStaff(),
       fetchPromotion(),

@@ -54,7 +54,7 @@ export default function LoginForm() {
         toast.success("Login successfully!");
         nav("/");
       } else {
-        toast.error("Failed to login!")
+        toast.error("Failed to login: " + response.data.EM);
         console.log(response);
       }
     } catch (error) {

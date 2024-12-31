@@ -13,12 +13,14 @@ import { useEffect, useState } from "react";
 import { InvoiceDetailTable } from "../../components";
 import CreateInvoicePopup from "../../components/invoicePage/CreateInvoicePopup";
 import Invoice from "../../entities/Invoice";
-import invoiceService from "../../services/invoiceService";
 import PayInvoicePopup from "../../components/invoicePage/PayInvoicePopup";
+import sInvoice from "../../store/invoiceStore";
+import LoadingProgress from "../../components/LoadingProgress";
 
 export default function InvoicePage() {
   const [isCreateInvoicePopupOpen, setIsCreateInvoicePopupOpen] =
     useState<boolean>(false);
+  const invoices = sInvoice.use((state) => state.invoices);
   const [invoiceList, setInvoiceList] = useState<Invoice[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
@@ -35,26 +37,20 @@ export default function InvoicePage() {
   // };
 
   useEffect(() => {
-    const fetchInvoices = async () => {
-      try {
-        const response = await invoiceService.getAllInvoice();
-        if (response.data.EC === 0) {
-          const invoices = response.data.DT.map((invoice: object, index: number) => {
-            return {
-              ...invoice,
-              index: index + 1,
-            };
-          });
-          setInvoiceList(invoices);
-        } else {
-          console.log("Failed to fetch invoices:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching invoices:", error);
-      }
-    };
-    fetchInvoices();
-  }, []);
+    if(invoices){
+      const filteredInvoices = invoices.map((invoice, index) => {
+        return {
+          ...invoice,
+          index: index + 1,
+        };
+      });
+      setInvoiceList(filteredInvoices || []);
+    }
+  }, [invoices]);
+
+  if(!invoiceList){
+    return <LoadingProgress />;
+  }
 
   const columns: GridColDef[] = [
     {

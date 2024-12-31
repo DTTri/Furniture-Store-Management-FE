@@ -56,7 +56,7 @@ export default function ResetPasswordForm() {
           });
         nav("/login");
       } else {
-        toast("Fail to reset password", {
+        toast("Fail to reset password: " + response.data.EM, {
           type: "error",
         });
       }

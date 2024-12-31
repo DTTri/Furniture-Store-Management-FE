@@ -65,7 +65,7 @@ export default function AddWarrantyOrderPopup({
         onWarrantyOrderCreated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to add warranty order");
+        toast.error("Failed to add warranty order: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to add warranty order");
@@ -93,7 +93,7 @@ export default function AddWarrantyOrderPopup({
         onWarrantyOrderUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update warranty order");
+        toast.error("Failed to update warranty order: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to update warranty order");
