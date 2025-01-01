@@ -69,7 +69,7 @@ export default function AddVariantPopup({
         onVariantCreated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to add variant");
+        toast.error("Failed to add variant: " + response.data.EM);
         console.error("Failed to add variant:", response.data.EM);
       }
     } catch (error) {
@@ -122,7 +122,7 @@ export default function AddVariantPopup({
         onVariantUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update variant");
+        toast.error("Failed to update variant: " + response.data.EM);
         console.error("Failed to update variant:", response.data.EM);
       }
     } catch (error) {

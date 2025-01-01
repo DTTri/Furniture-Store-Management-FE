@@ -25,6 +25,7 @@ import { useEffect } from "react";
 import {
   categoryService,
   customerService,
+  invoiceService,
   permissionService,
   productService,
   promotionService,
@@ -50,8 +51,15 @@ import http from "./api/http";
 import sCustomer from "./store/customerStore";
 import warrantyService from "./services/warranty.service";
 import repairService from "./services/repair.service";
+import sInvoice from "./store/invoiceStore";
 
 function App() {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+  const today = new Date().toISOString().split("T")[0];
+  const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+    .toISOString()
+    .split("T")[0];
   sUser.set(
     (v) =>
       (v.value.token =
@@ -74,12 +82,9 @@ function App() {
       }
     };
     const fetchGeneralReportByDate = async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1)
-        .toISOString()
-        .split("T")[0];
       try {
-        const res = await reportService.getReprotByDate(firstDayOfYear, today);
+        console.log(firstDayOfMonth, today);
+        const res = await reportService.getReprotByDate(firstDayOfMonth, today);
         if (res.data.EC === 0) {
           console.log("report data successfully", res.data.DT);
           sReport.set((prev) => (prev.value.reportByDate = res.data.DT));
@@ -91,13 +96,9 @@ function App() {
       }
     };
     const fetchStaffReportByDate = async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1)
-        .toISOString()
-        .split("T")[0];
       try {
         const res = await reportService.getStaffReprotByDate(
-          firstDayOfYear,
+          firstDayOfMonth,
           today
         );
         if (res.data.EC === 0) {
@@ -142,6 +143,18 @@ function App() {
         }
       } catch (error) {
         console.error("Error fetching user:", error);
+      }
+    };
+    const fetchInvoices = async () => {
+      try {
+        const response = await invoiceService.getAllInvoice();
+        if (response.data.EC === 0) {
+          sInvoice.set(prev => prev.value.invoices = response.data.DT);
+        } else {
+          console.log("Failed to fetch invoices:", response.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
       }
     };
     const fetchProducts = async () => {

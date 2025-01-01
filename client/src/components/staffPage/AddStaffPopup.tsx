@@ -32,6 +32,12 @@ export default function AddStaffPopup({
       toast.error("Please fill in all fields");
       return false;
     }
+    if (/^\s|\s{2,}|\s$/.test(fullname)) {
+      toast("Name cannot contain leading/trailing spaces or multiple spaces", {
+        type: "error",
+      });
+      return false;
+    }
     if (
       !/^\d{10}$/.test(phone) ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
@@ -64,7 +70,7 @@ export default function AddStaffPopup({
         onStaffCreated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to add staff");
+        toast.error("Failed to add staff: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to add staff");
@@ -93,7 +99,7 @@ export default function AddStaffPopup({
         onStaffUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update staff");
+        toast.error("Failed to update staff: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to update staff");

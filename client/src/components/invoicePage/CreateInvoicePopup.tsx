@@ -216,7 +216,7 @@ export default function CreateInvoicePopup({
       toast(updatedInvoice === null ? "Invoice created successfully" : "Invoice updated successfully", { type: "success" });
       onInvoiceCreated(response.data.DT);
     } else {
-      toast("Failed to create invoice", { type: "error" });
+      toast("Failed to create invoice: " + response.data.EM, { type: "error" });
       console.log("Failed to create invoice:", response.data.EM);
     }
   };

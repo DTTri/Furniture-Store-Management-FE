@@ -234,7 +234,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
         toast("Import goods receipt successfully", { type: "success" });
         onClose();
       } else {
-        toast("Failed to import goods receipt", { type: "error" });
+        toast("Failed to import goods receipt: " + response.data.EM, { type: "error" });
         console.error("Failed to import goods receipt:", response);
       }
     } catch (error) {

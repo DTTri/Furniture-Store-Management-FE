@@ -37,6 +37,12 @@ export default function UpdateStaffInfoPopup({
       toast.error("No information has been changed");
       return false;
     }
+    if (/^\s|\s{2,}|\s$/.test(fullname)) {
+      toast("Name cannot contain leading/trailing spaces or multiple spaces", {
+        type: "error",
+      });
+      return false;
+    }
     if (
       !/^\d{10}$/.test(phone) ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
@@ -69,7 +75,7 @@ export default function UpdateStaffInfoPopup({
         sUser.set((prev) => (prev.value.info = response.data.DT));
         onClose();
       } else {
-        toast.error("Failed to update staff");
+        toast.error("Failed to update staff: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to update staff");

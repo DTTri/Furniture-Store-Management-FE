@@ -58,7 +58,7 @@ export default function ProductDetailsPopup({
         onStopSellingProduct();
         onClose();
       } else {
-        toast.error("Failed to stop selling");
+        toast.error("Failed to stop selling: " + response.data.EM);
         console.error("Failed to stop selling:", response.data.EM);
       }
     } catch (error) {

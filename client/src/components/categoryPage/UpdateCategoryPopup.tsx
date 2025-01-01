@@ -39,7 +39,7 @@ export default function UpdateCategoryPopup({
         });
         onClose();
       } else {
-        toast("Fail to update category", {
+        toast("Fail to update category: " + response.data.EM, {
           type: "error",
         });
       }

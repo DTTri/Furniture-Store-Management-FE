@@ -25,7 +25,7 @@ export default function CategoryPage() {
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "STT",
+      headerName: "Index",
       flex: 0.3,
       headerAlign: "center",
       align: "center",
@@ -115,7 +115,10 @@ export default function CategoryPage() {
           height: "fit-content",
         }}
         columns={columns}
-        rows={categoryList}
+        rows={categoryList.map((category, index) => ({
+          index: index + 1,
+          ...category,
+        })) as any}
         rowHeight={40}
         initialState={{
           pagination: {
