@@ -6,7 +6,7 @@ function printHTML(className: string, data: any[]) {
     printWindow.document.write(`
       <html>
       <head>
-        <title>Print Invoice</title>
+        <title>${Object.keys(data[0] || {}).includes('Discounted %') ? 'Print Invoice' : 'Print Warranty'}</title>
         <style>
           body {
             font-family: Arial, sans-serif;
@@ -34,17 +34,19 @@ function printHTML(className: string, data: any[]) {
             font-size: 12px;
           }
           table {
-            width: 100%;
+            width: 90%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 8px;
           }
           th, td {
             border: 1px solid #000;
-            padding: 5px;
+            padding: 3px;
             text-align: center;
           }
           th {
             background-color: #f2f2f2;
+            font-weight: medium;
+            font-size: 14px;
           }
           .footer {
             margin-top: 20px;
@@ -69,7 +71,7 @@ function printHTML(className: string, data: any[]) {
             * Mobile: 0128.258.603<br>
           </div>
           <div class="title">
-            INVOICE ORDER
+          ${Object.keys(data[0] || {}).includes('Discounted %') ? 'Invoice Order' : 'Warranty Order'}
           </div>
           <div class="sub-title">
             RETAIL FURNITURE STORE 
@@ -87,7 +89,9 @@ function printHTML(className: string, data: any[]) {
             <thead>
               <tr>
                 <th>No.</th>
-                ${Object.keys(data[0] || {}).map((key) => `<th>${key}</th>`).join("")}
+                ${Object.keys(data[0] || {})
+                  .map((key) => `<th>${key}</th>`)
+                  .join("")}
               </tr>
             </thead>
             <tbody>

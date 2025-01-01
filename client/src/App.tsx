@@ -54,10 +54,12 @@ import repairService from "./services/repair.service";
 import sInvoice from "./store/invoiceStore";
 
 function App() {
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token") || "";
   const today = new Date().toISOString().split("T")[0];
-  const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+  const firstDayOfMonth = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    1
+  )
     .toISOString()
     .split("T")[0];
   sUser.set(
@@ -149,7 +151,7 @@ function App() {
       try {
         const response = await invoiceService.getAllInvoice();
         if (response.data.EC === 0) {
-          sInvoice.set(prev => prev.value.invoices = response.data.DT);
+          sInvoice.set((prev) => (prev.value.invoices = response.data.DT));
         } else {
           console.log("Failed to fetch invoices:", response.data.EM);
         }
@@ -265,6 +267,7 @@ function App() {
         fetchCustomer(),
         fetchStaff(),
         fetchPromotion(),
+        fetchInvoices(),
         fetchWarranty(),
         fetchRepair(),
         fetchCategory(),
