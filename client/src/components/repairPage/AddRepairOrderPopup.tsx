@@ -61,7 +61,7 @@ export default function AddRepairOrderPopup({
         onRepairOrderCreated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to add repair order");
+        toast.error("Failed to add repair order: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to add repair order");
@@ -89,7 +89,7 @@ export default function AddRepairOrderPopup({
         onRepairOrderUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update repair order");
+        toast.error("Failed to update repair order: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to update repair order");

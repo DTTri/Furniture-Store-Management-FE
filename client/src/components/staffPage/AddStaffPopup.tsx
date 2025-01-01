@@ -40,11 +40,11 @@ export default function AddStaffPopup({
       return false;
     }
     if (!/^\d{10}$/.test(phone)) {
-      toast.error("Invalid phone or email");
+      toast.error("Invalid phone number");
       return false;
     }
     if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-      toast.error("Invalid phone or email");
+      toast.error("Invalid email");
       return false;
     }
     // idNumber must be decimals
@@ -106,7 +106,7 @@ export default function AddStaffPopup({
         onStaffUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update staff");
+        toast.error("Failed to update staff: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to update staff");

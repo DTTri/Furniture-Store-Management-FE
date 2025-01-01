@@ -55,7 +55,7 @@ export default function AddProviderPopup({
         onProviderCreated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to add provider");
+        toast.error("Failed to add provider: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to add provider");
@@ -83,7 +83,7 @@ export default function AddProviderPopup({
         onProviderUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update provider");
+        toast.error("Failed to update provider: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to update provider");

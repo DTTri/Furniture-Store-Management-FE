@@ -9,12 +9,19 @@ import reportService from "../../services/report.service";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import StaffReport from "../../entities/StaffReport";
 import IncomeReport from "../../entities/IncomeReport";
+import { toast } from "react-toastify";
 import formatDate from "../../utils/formatDate";
-
+        
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState(0);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedFromDate, setSelectedFromDate] = useState(
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+      .toISOString()
+      .split("T")[0]
+  );
+  const [selectedToDate, setSelectedToDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
 
   const report = sReport.use();
   const [reportData, setReportData] = useState<Report>(report.reportByDate);
@@ -38,88 +45,45 @@ export default function DashboardPage() {
     }
   }, [report]);
 
-  const handleOnDateChange = async () => {
-    const startDate =
-      selectedYear === new Date().getFullYear()
-        ? new Date(new Date().getFullYear(), 0, 1).toISOString().split("T")[0]
-        : new Date(selectedYear, 0, 1).toISOString().split("T")[0];
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1; // getMonth() returns 0-11
-    let endDate;
-    if (selectedYear < currentYear) {
-      endDate = new Date(selectedYear, selectedMonth, 0)
-        .toISOString()
-        .split("T")[0];
-    } else if (selectedYear === currentYear) {
-      if (selectedMonth < currentMonth) {
-        endDate = new Date(selectedYear, selectedMonth, 0)
-          .toISOString()
-          .split("T")[0];
-      } else if (selectedMonth === currentMonth) {
-        endDate = today.toISOString().split("T")[0];
-      } else {
-        endDate = new Date(selectedYear, selectedMonth, 0)
-          .toISOString()
-          .split("T")[0];
-      }
-    } else {
-      endDate = new Date(selectedYear, selectedMonth, 0)
-        .toISOString()
-        .split("T")[0];
+  useEffect(() => {
+    if (new Date(selectedFromDate) >= new Date(selectedToDate)) {
+      toast.error("From Date must be before To Date");
+      return;
     }
-    console.log("Date", startDate, endDate);
-    const fetchGeneralReportByDate = async () => {
-      try {
-        const res = await reportService.getReprotByDate(startDate, endDate);
-        if (res.data.EC === 0) {
-          console.log("report data successfully", res.data.DT);
-          sReport.set((prev) => (prev.value.reportByDate = res.data.DT));
-        } else {
-          console.error("Failed to fetch report by date:", res.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching report by date:", error);
-      }
-    };
-    const fetchStaffReportByDate = async () => {
-      try {
-        const res = await reportService.getStaffReprotByDate(
-          startDate,
-          endDate
+    console.log("selectedFromDate", selectedFromDate);
+    console.log("selectedToDate", selectedToDate);
+    const fetchIncomeReport = async () => {
+      try { 
+        const response = await reportService.getReprotByDate(
+          selectedFromDate,
+          selectedToDate
         );
-        if (res.data.EC === 0) {
-          console.log("report data successfully", res.data.DT);
-          sReport.set((prev) => (prev.value.staffReport = res.data.DT));
+        if (response.data.EC == 0) {
+          console.log("income report", response.data.DT);
+          setReportData(response.data.DT);
         } else {
-          console.error("Failed to fetch staff report by date:", res.data.EM);
+          console.log("income report", response.data.EM);
         }
       } catch (error) {
-        console.error("Error fetching staff report by date:", error);
       }
     };
-    const fetchIncomeReportByDate = async () => {
+    const fetchStaffReport = async () => {
       try {
-        const res = await reportService.getIncomeReprotByDate(
-          startDate,
-          endDate
+        const response = await reportService.getStaffReprotByDate(
+          selectedFromDate,
+          selectedToDate
         );
-        if (res.data.EC === 0) {
-          console.log("report data successfully", res.data.DT);
-          sReport.set((prev) => (prev.value.incomeReport = res.data.DT));
+        if (response.data.EC == 0) {
+          console.log("staff report", response.data.DT);
+          setStaffReportData(response.data.DT);
         } else {
-          console.error("Failed to fetch income report by date:", res.data.EM);
+          console.log("staff report", response.data.EM);
         }
       } catch (error) {
-        console.error("Error fetching income report by date:", error);
       }
     };
-    Promise.all([
-      fetchGeneralReportByDate(),
-      fetchStaffReportByDate(),
-      fetchIncomeReportByDate(),
-    ]);
-  };
+    Promise.all([fetchIncomeReport(), fetchStaffReport()]);
+  }, [selectedFromDate, selectedToDate]);
 
   if (!reportData || !reportStaffData || !reportIncomeData) {
     return <LoadingProgress />;
@@ -299,24 +263,24 @@ export default function DashboardPage() {
     },
   ];
 
-  const years = Array.from(
-    { length: new Date().getFullYear() - 1999 },
-    (_, i) => 2000 + i
-  );
-  const months = new Map([
-    ["January", 1],
-    ["February", 2],
-    ["March", 3],
-    ["April", 4],
-    ["May", 5],
-    ["June", 6],
-    ["July", 7],
-    ["August", 8],
-    ["September", 9],
-    ["October", 10],
-    ["November", 11],
-    ["December", 12],
-  ]);
+  // const years = Array.from(
+  //   { length: new Date().getFullYear() - 1999 },
+  //   (_, i) => 2000 + i
+  // );
+  // const months = new Map([
+  //   ["January", 1],
+  //   ["February", 2],
+  //   ["March", 3],
+  //   ["April", 4],
+  //   ["May", 5],
+  //   ["June", 6],
+  //   ["July", 7],
+  //   ["August", 8],
+  //   ["September", 9],
+  //   ["October", 10],
+  //   ["November", 11],
+  //   ["December", 12],
+  // ]);
 
   return (
     <div className="p-4">
@@ -331,32 +295,23 @@ export default function DashboardPage() {
         </Tabs>
       </div>
       <div className="w-full flex justify-end space-x-2">
-        <select
-          value={selectedMonth}
-          onChange={(e) => {
-            setSelectedMonth(Number(e.target.value));
-            handleOnDateChange();
-          }}
-        >
-          {Array.from(months.entries()).map(([monthName, monthValue]) => (
-            <option key={monthValue} value={monthValue}>
-              {monthName}
-            </option>
-          ))}
-        </select>
-        <select
-          value={selectedYear}
-          onChange={(e) => {
-            setSelectedYear(Number(e.target.value));
-            handleOnDateChange();
-          }}
-        >
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
+        <div className=" flex-row items-center border-r-2 pr-2">
+          <span className="text-base font-medium mr-2">From: </span>
+          <input
+            type="date"
+            value={selectedFromDate}
+            onChange={(e) => setSelectedFromDate(e.target.value)}
+          />
+        </div>
+        <div className=" flex-row items-center">
+          <span className="text-base font-medium mr-2">To: </span>
+          <input
+            type="date"
+            form="DD/MM/yyyy"
+            value={selectedToDate}
+            onChange={(e) => setSelectedToDate(e.target.value)}
+          />
+        </div>
       </div>
 
       {activeTab === 0 && (

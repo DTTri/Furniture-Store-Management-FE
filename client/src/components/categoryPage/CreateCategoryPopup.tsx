@@ -32,7 +32,7 @@ export default function CreateCategoryPopup({
         });
         onClose();
       } else {
-        toast("Failed to create category", {
+        toast("Failed to create category: " + response.data.EM, {
           type: "error",
         });
       }
