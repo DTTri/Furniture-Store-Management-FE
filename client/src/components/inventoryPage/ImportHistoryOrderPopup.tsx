@@ -10,6 +10,7 @@ import {
 } from "@mui/x-data-grid";
 import InfoIcon from "@mui/icons-material/Info";
 import { goodsReceiptService } from "../../services";
+import formatDate from "../../utils/formatDate";
 export default function ImprortHistoryOrderPopup({
   onClose,
 }: {
@@ -52,7 +53,17 @@ export default function ImprortHistoryOrderPopup({
   const columns: GridColDef[] = [
     { field: "index", headerName: "STT", flex: 0.5 },
     { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "receiptDate", headerName: "Date", flex: 1 },
+    {
+      field: "receiptDate",
+      headerName: "Date",
+      flex: 1,
+      valueGetter: (_, row) => {
+        if (row.receiptDate) {
+          return formatDate(row.receiptDate);
+        }
+        return "";
+      },
+    },
     { field: "staffId", headerName: "Staff ID", flex: 1 },
     { field: "providerId", headerName: "Provider ID", flex: 1 },
     { field: "totalCost", headerName: "Total Cost", flex: 1 },

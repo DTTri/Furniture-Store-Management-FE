@@ -13,6 +13,9 @@ class Http {
     console.log("SETAUTHHEADER", token);
     this.instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }
+  getAuthHeader() {
+    return this.instance.defaults.headers.common["Authorization"];
+  }
 
   removeAuthHeader() {
     delete this.instance.defaults.headers.common["Authorization"];

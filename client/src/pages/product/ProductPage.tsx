@@ -56,7 +56,7 @@ export default function ProductPage() {
 
       <div
         id="productGallery"
-        className="product-gallery w-full overflow-y-auto max-h-[500px] flex flex-wrap gap-4 p-4"
+        className="product-gallery w-full overflow-y-auto max-h-[500px] flex flex-wrap gap-4 p-2 pl-4 scroll-smooth"
       >
         {filteredProducts.map((product) => (
           <ProductCard

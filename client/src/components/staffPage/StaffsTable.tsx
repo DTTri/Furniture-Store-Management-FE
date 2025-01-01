@@ -9,6 +9,7 @@ import {
 
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import formatDate from "../../utils/formatDate";
 
 export default function StaffsTable({
   staffs,
@@ -47,6 +48,9 @@ export default function StaffsTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatDate(row.birth);
+      },
     },
     {
       field: "gender",
@@ -68,6 +72,10 @@ export default function StaffsTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        // from yyyy-mm-dd to mm-dd-yyyy
+        return formatDate(row.startDate);
+      },
     },
     {
       field: "phone",

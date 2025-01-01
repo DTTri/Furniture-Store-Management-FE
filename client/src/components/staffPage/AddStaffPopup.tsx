@@ -5,6 +5,7 @@ import UpdateStaffDTO from "./UpdateStaffDTO";
 import Staff from "../../entities/Staff";
 import staffService from "../../services/staff.service";
 import { toast } from "react-toastify";
+import formatDate from "../../utils/formatDate";
 
 export default function AddStaffPopup({
   onClose,
@@ -24,7 +25,7 @@ export default function AddStaffPopup({
   const [startDate, setStartDate] = useState(staff?.startDate || "");
   const [phone, setPhone] = useState(staff?.phone || "");
   const [email, setEmail] = useState(staff?.email || "");
-  const [role, setRole] = useState(1);
+  const [role, setRole] = useState(2);
 
   const validateInputs = () => {
     if (!fullname || !birth || !idNumber || !startDate || !phone || !email) {
@@ -135,7 +136,7 @@ export default function AddStaffPopup({
               onChange={(e) => {
                 setBirth(e.target.value);
               }}
-              defaultValue={staff?.birth}
+              defaultValue={birth}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -223,10 +224,10 @@ export default function AddStaffPopup({
                 }}
                 defaultValue={role}
               >
-                <option value={1}>Role 1</option>
-                <option value={2}>Role 2</option>
-                <option value={3}>Role 3</option>
-                <option value={4}>Role 4</option>
+                <option value={2}>Manager</option>
+                <option value={3}>Sale Staff</option>
+                <option value={4}>Inventory Staff</option>
+                <option value={5}>Repair Staff</option>
               </select>
             </div>
           )}

@@ -10,7 +10,8 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import StaffReport from "../../entities/StaffReport";
 import IncomeReport from "../../entities/IncomeReport";
 import { toast } from "react-toastify";
-
+import formatDate from "../../utils/formatDate";
+        
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [selectedFromDate, setSelectedFromDate] = useState(
@@ -116,6 +117,10 @@ export default function DashboardPage() {
       flex: 0.7,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        if (row.startDate === null) return "";
+        return formatDate(row.startDate);
+      },
     },
     {
       field: "finishDate",
@@ -123,6 +128,10 @@ export default function DashboardPage() {
       flex: 0.7,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        if (row.finishDate === null) return "";
+        return formatDate(row.finishDate);
+      },
     },
     {
       field: "totalQuantitySold",

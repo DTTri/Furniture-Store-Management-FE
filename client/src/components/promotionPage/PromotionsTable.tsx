@@ -8,6 +8,7 @@ import {
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Promotion from "../../entities/Promotion";
+import formatDate from "../../utils/formatDate";
 
 export default function PromotionsTable({
   promotions,
@@ -53,6 +54,9 @@ export default function PromotionsTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatDate(row.startDate);
+      },
     },
     {
       field: "finishDate",
@@ -60,6 +64,9 @@ export default function PromotionsTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatDate(row.finishDate);
+      },
     },
     {
       field: "actions",

@@ -9,6 +9,7 @@ import {
 
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import formatDate from "../../utils/formatDate";
 export default function WarrantyOrdersTable({
   warrantyOrders,
   onEditWarrantyOrder,
@@ -80,6 +81,10 @@ export default function WarrantyOrdersTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        if (row.estimateFinishDate === null) return "";
+        return formatDate(row.estimateFinishDate);
+      },
     },
     {
       field: "finishDate",
@@ -87,20 +92,10 @@ export default function WarrantyOrdersTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
-    },
-    {
-      field: "createdAt",
-      headerName: "Created At",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "updatedAt",
-      headerName: "Updated At",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
+      valueGetter: (_, row) => {
+        if (row.finishDate === null) return "";
+        return formatDate(row.finishDate);
+      },
     },
     {
       field: "staffId",

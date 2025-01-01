@@ -60,6 +60,12 @@ function App() {
   const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
     .toISOString()
     .split("T")[0];
+  sUser.set(
+    (v) =>
+      (v.value.token =
+        localStorage.getItem("token") || sessionStorage.getItem("token") || "")
+  );
+  const token = sUser.use((v) => v.token);
   useEffect(() => {
     http.setAuthHeader(token);
     const fetchPermissions = async () => {
@@ -247,22 +253,26 @@ function App() {
         console.error("Error fetching categories:", error);
       }
     };
-    Promise.all([
-      fetchPermissions(),
-      fetchGeneralReportByDate(),
-      fetchStaffReportByDate(),
-      fetchIncomeReportByDate(),
-      fetchUserById(),
-      fetchProducts(),
-      fetchProvider(),
-      fetchInvoices(),
-      fetchCustomer(),
-      fetchStaff(),
-      fetchPromotion(),
-      fetchWarranty(),
-      fetchRepair(),
-      fetchCategory(),
-    ]);
+    const fetchData = async () => {
+      await Promise.all([
+        fetchPermissions(),
+        fetchGeneralReportByDate(),
+        fetchStaffReportByDate(),
+        fetchIncomeReportByDate(),
+        fetchUserById(),
+        fetchProducts(),
+        fetchProvider(),
+        fetchCustomer(),
+        fetchStaff(),
+        fetchPromotion(),
+        fetchWarranty(),
+        fetchRepair(),
+        fetchCategory(),
+      ]);
+    };
+    if (token !== "" && http.getAuthHeader() !== "") {
+      fetchData();
+    }
   }, [token]);
 
   return (

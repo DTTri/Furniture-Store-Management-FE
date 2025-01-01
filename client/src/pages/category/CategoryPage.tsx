@@ -1,4 +1,3 @@
-import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import { Button } from "@mui/material";
 import {
@@ -12,8 +11,7 @@ import { useState } from "react";
 import CreateCategoryPopup from "../../components/categoryPage/CreateCategoryPopup";
 import UpdateCategoryPopup from "../../components/categoryPage/UpdateCategoryPopup";
 import { Category } from "../../entities";
-import { sCategory } from "../../store";
-import ConfirmPopup from "../../components/ConfirmPopup";
+import { sCategory, sProduct } from "../../store";
 
 export default function CategoryPage() {
   const [isCreateCategoryPopupOpen, setIsCreateCategoryPopupOpen] =
@@ -21,8 +19,8 @@ export default function CategoryPage() {
   const [isUpdateCategoryPopupOpen, setIsUpdateCategoryPopupOpen] =
     useState(false);
   const categoryList = sCategory.use((v) => v.categories);
+  const products = sProduct.use((v) => v.products);
   const [updatedCategory, setUpdatedCategory] = useState<Category>();
-  const [isShowConfirmPopup, setIsShowConfirmPopup] = useState(false);
 
   const columns: GridColDef[] = [
     {
@@ -53,6 +51,11 @@ export default function CategoryPage() {
       flex: 0.8,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        if (products.length === 0) return 0;
+        return products.filter((product) => product.catalogueId === row.id)
+          .length;
+      },
     },
     {
       field: "actionUpdate",
@@ -70,21 +73,21 @@ export default function CategoryPage() {
         />,
       ],
     },
-    {
-      field: "actionDelete",
-      type: "actions",
-      flex: 0.15,
-      getActions: () => [
-        <GridActionsCellItem
-          className="hover:bg-transparent"
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={() => {
-            setIsShowConfirmPopup(true);
-          }}
-        />,
-      ],
-    },
+    // {
+    //   field: "actionDelete",
+    //   type: "actions",
+    //   flex: 0.15,
+    //   getActions: () => [
+    //     <GridActionsCellItem
+    //       className="hover:bg-transparent"
+    //       icon={<DeleteIcon />}
+    //       label="Delete"
+    //       onClick={() => {
+    //         setIsShowConfirmPopup(true);
+    //       }}
+    //     />,
+    //   ],
+    // },
   ];
 
   return (
@@ -157,14 +160,6 @@ export default function CategoryPage() {
             });
           }}
           updatedCategory={updatedCategory || categoryList[0]}
-        />
-      )}
-      {isShowConfirmPopup && (
-        <ConfirmPopup
-          message="Do you want to delete this category?"
-          title="Warning"
-          onConfirm={() => {}}
-          onCancel={() => {}}
         />
       )}
     </div>
