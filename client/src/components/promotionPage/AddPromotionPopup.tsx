@@ -102,8 +102,9 @@ export default function AddPromotionPopup({
         return;
       }
 
-      const newRow: CreatePromotionDTO["promotionProducts"][0] = {
+      const newRow = {
         variantId: selectedVariant.id,
+        variant: `${selectedVariant.SKU} - ${selectedVariant.color} - ${selectedVariant.size}`,
         discount: 0,
       };
       setRows([...rows, newRow]);
@@ -200,7 +201,7 @@ export default function AddPromotionPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 w-2/3 min-w-[420px] h-[70vh] max-h-[80vh] overflow-auto relative">
+      <div className="popup bg-white rounded-xl p-4 w-2/3 min-w-[420px] h-[75vh] max-h-[75vh] overflow-y-auto flex flex-col justify-between gap-4 pb-4">
         {promotion && (
           <Edit
             sx={{ width: 27, height: 27 }}
@@ -208,71 +209,72 @@ export default function AddPromotionPopup({
             onClick={() => setIsEditing(!isEditing)}
           />
         )}
-        <div className="flex flex-col gap-4">
-          <div className="flex justify-around">
-            <div className="flex flex-col gap-4 w-[40%]">
-              <div className="flex flex-col gap-2">
-                <label htmlFor="name">Name</label>
-                <input
-                  id="name"
-                  name="name"
-                  placeholder="Name"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  required
-                  onChange={(e) => setName(e.target.value)}
-                  defaultValue={promotion?.name}
-                  disabled={promotion && !isEditing}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="description">Description</label>
-                <input
-                  id="description"
-                  name="description"
-                  placeholder="Description"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  required
-                  onChange={(e) => setDescription(e.target.value)}
-                  defaultValue={promotion?.description}
-                  disabled={promotion && !isEditing}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="startDate">Start Date</label>
-                <input
-                  id="startDate"
-                  name="startDate"
-                  type="date"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  required
-                  onChange={(e) => setStartDate(e.target.value)}
-                  defaultValue={promotion?.startDate}
-                  disabled={promotion && !isEditing}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="finishDate">Finish Date</label>
-                <input
-                  id="finishDate"
-                  name="finishDate"
-                  type="date"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  required
-                  onChange={(e) => setFinishDate(e.target.value)}
-                  defaultValue={promotion?.finishDate}
-                  disabled={promotion && !isEditing}
-                />
-              </div>
+
+        <div className="flex justify-between gap-4 h-full">
+          <div className="flex flex-col gap-4 basis-2/5">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="name">Name</label>
+              <input
+                id="name"
+                name="name"
+                placeholder="Name"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => setName(e.target.value)}
+                defaultValue={promotion?.name}
+                disabled={promotion && !isEditing}
+              />
             </div>
-            <div className="flex flex-col gap-2 w-1/2">
-              <form
-                id="addRowForm"
-                className="flex flex-col gap-4 p-4"
-                onSubmit={handleAddRow}
-              >
+            <div className="flex flex-col gap-2">
+              <label htmlFor="description">Description</label>
+              <input
+                id="description"
+                name="description"
+                placeholder="Description"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => setDescription(e.target.value)}
+                defaultValue={promotion?.description}
+                disabled={promotion && !isEditing}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="startDate">Start Date</label>
+              <input
+                id="startDate"
+                name="startDate"
+                type="date"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => setStartDate(e.target.value)}
+                defaultValue={promotion?.startDate}
+                disabled={promotion && !isEditing}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="finishDate">Finish Date</label>
+              <input
+                id="finishDate"
+                name="finishDate"
+                type="date"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => setFinishDate(e.target.value)}
+                defaultValue={promotion?.finishDate}
+                disabled={promotion && !isEditing}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 basis-[55%] w-full h-ful">
+            <form
+              id="addRowForm"
+              className="flex flex-col gap-4 p-4 items-center"
+              onSubmit={handleAddRow}
+            >
+              <div className="flex w-full justify-between gap-2">
                 <select
                   id="selectedProduct"
-                  className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                  className="basis-[48%] w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   onChange={(e) => {
                     setSelectedVariant(null);
                     const selectedProductId = parseInt(e.target.value);
@@ -293,7 +295,7 @@ export default function AddPromotionPopup({
                 </select>
                 <select
                   id="selectedVariant"
-                  className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                  className="basis-1/2 w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                   disabled={promotion && !isEditing && !selectedProduct}
                   onChange={(e) => {
                     const selectedVariantId = parseInt(e.target.value);
@@ -311,118 +313,142 @@ export default function AddPromotionPopup({
                     </option>
                   ))}
                 </select>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  style={{
-                    textTransform: "none",
-                  }}
-                  id="addRowButton"
-                  disabled={promotion && !isEditing}
-                >
-                  Add
-                </Button>
-              </form>
-              <div className="table-container w-full h-full overflow-hidden">
-                <DataGrid
-                  style={{
-                    borderRadius: "20px",
-                    backgroundColor: "white",
-                    height: "100%",
-                  }}
-                  rows={rows.map((row, index) => ({
-                    ...row,
-                    id: index + 1,
-                  }))}
-                  columns={[
-                    { field: "id", headerName: "ID", flex: 0.5 },
-                    { field: "variantId", headerName: "Variant ID", flex: 1 },
-                    {
-                      field: "discount",
-                      headerName: "Discount Rate",
-                      flex: 1,
-                      renderCell: (params) => (
+              </div>
+              <Button
+                type="submit"
+                variant="contained"
+                style={{
+                  textTransform: "none",
+                  width: "30%",
+                }}
+                id="addRowButton"
+                disabled={promotion && !isEditing}
+              >
+                Add
+              </Button>
+            </form>
+            <div className="table-container w-full h-full overflow-hidden">
+              <DataGrid
+                style={{
+                  borderRadius: "20px",
+                  backgroundColor: "white",
+                }}
+                className="h-full"
+                rows={rows.map((row, index) => ({
+                  ...row,
+                  id: index + 1,
+                }))}
+                columns={[
+                  {
+                    field: "id",
+                    headerName: "ID",
+                    flex: 0.5,
+                    headerAlign: "center",
+                    align: "center",
+                  },
+                  {
+                    field: "variant",
+                    headerName: "Variant",
+                    flex: 2,
+                    headerAlign: "center",
+                    align: "center",
+                  },
+                  {
+                    field: "discount",
+                    headerName: "Discount Rate",
+                    flex: 1,
+                    headerAlign: "center",
+                    align: "center",
+                    renderCell: (params) => (
+                      <div className="flex justify-center">
                         <input
                           type="number"
                           min={0}
                           max={100}
-                          value={params.row.discount}
+                          value={params.value}
                           onChange={(e) =>
                             handleDiscountRateChange(
                               params.row.variantId,
                               parseInt(e.target.value)
                             )
                           }
-                        />
-                      ),
-                    },
-                    {
-                      field: "actions",
-                      type: "actions",
-                      flex: 0.5,
-                      getActions: (params: GridRowParams) => [
-                        <GridActionsCellItem
-                          icon={<DeleteIcon />}
-                          label="Delete"
-                          onClick={() => handleDeleteRow(params.row.variantId)}
+                          className="w-16 text-center"
                           disabled={promotion && !isEditing}
-                        />,
-                      ],
+                        />
+                        <span className="ml-2 font-semibold">%</span>
+                      </div>
+                    ),
+                  },
+                  {
+                    field: "actions",
+                    type: "actions",
+                    flex: 0.5,
+                    headerAlign: "center",
+                    align: "center",
+                    getActions: (params: GridRowParams) => [
+                      <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={() => handleDeleteRow(params.row.variantId)}
+                        disabled={promotion && !isEditing}
+                      />,
+                    ],
+                  },
+                ]}
+                disableDensitySelector
+                rowHeight={40}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 4,
                     },
-                  ]}
-                  disableDensitySelector
-                  rowHeight={40}
-                  initialState={{
-                    pagination: {
-                      paginationModel: {
-                        pageSize: 6,
-                      },
-                    },
-                  }}
-                  pageSizeOptions={[6, rows.length + 1]}
-                  slots={{ toolbar: GridToolbar }}
-                  rowSelection={false}
-                />
-              </div>
+                  },
+                }}
+                pageSizeOptions={
+                  rows.length < 4 ? [4, rows.length] : [4, rows.length + 1]
+                }
+                slots={{ toolbar: GridToolbar }}
+                rowSelection={false}
+              />
             </div>
           </div>
-          <div className="buttons-container w-full flex justify-end gap-2">
+        </div>
+        <div className="buttons-container flex gap-4 w-full justify-end">
+          <Button
+            variant="contained"
+            style={{
+              backgroundColor: "red",
+              textTransform: "none",
+            }}
+            onClick={onClose}
+            id="cancelAddPromotionButton"
+          >
+            Cancel
+          </Button>
+          {promotion ? (
             <Button
               variant="contained"
               style={{
-                backgroundColor: "red",
                 textTransform: "none",
               }}
-              onClick={onClose}
-              id="cancelAddPromotionButton"
+              onClick={handleUpdatePromotion}
+              id="confirmUpdatePromotionButton"
+              disabled={promotion && !isEditing}
             >
-              Cancel
+              Update
             </Button>
-            {promotion ? (
-              <Button
-                variant="contained"
-                style={{
-                  textTransform: "none",
-                }}
-                onClick={handleUpdatePromotion}
-                id="confirmUpdatePromotionButton"
-                disabled={promotion && !isEditing}
-              >
-                Update
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                style={{
-                  textTransform: "none",
-                }}
-                onClick={handleAddPromotion}
-                id="confirmAddPromotionButton"
-              >
-                Create
-              </Button>
-            )}
-          </div>
+          ) : (
+            <Button
+              variant="contained"
+              style={{
+                textTransform: "none",
+              }}
+              onClick={handleAddPromotion}
+              id="confirmAddPromotionButton"
+            >
+              Create
+            </Button>
+          )}
         </div>
       </div>
     </div>
