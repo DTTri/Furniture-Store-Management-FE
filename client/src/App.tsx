@@ -56,6 +56,10 @@ import sInvoice from "./store/invoiceStore";
 function App() {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+  const today = new Date().toISOString().split("T")[0];
+  const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+    .toISOString()
+    .split("T")[0];
   useEffect(() => {
     http.setAuthHeader(token);
     const fetchPermissions = async () => {
@@ -72,12 +76,9 @@ function App() {
       }
     };
     const fetchGeneralReportByDate = async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1)
-        .toISOString()
-        .split("T")[0];
       try {
-        const res = await reportService.getReprotByDate(firstDayOfYear, today);
+        console.log(firstDayOfMonth, today);
+        const res = await reportService.getReprotByDate(firstDayOfMonth, today);
         if (res.data.EC === 0) {
           console.log("report data successfully", res.data.DT);
           sReport.set((prev) => (prev.value.reportByDate = res.data.DT));
@@ -89,13 +90,9 @@ function App() {
       }
     };
     const fetchStaffReportByDate = async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1)
-        .toISOString()
-        .split("T")[0];
       try {
         const res = await reportService.getStaffReprotByDate(
-          firstDayOfYear,
+          firstDayOfMonth,
           today
         );
         if (res.data.EC === 0) {

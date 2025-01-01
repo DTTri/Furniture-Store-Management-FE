@@ -55,7 +55,7 @@ export default function InvoicePage() {
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "STT",
+      headerName: "Index",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
@@ -63,7 +63,7 @@ export default function InvoicePage() {
     },
     {
       field: "createdAt",
-      headerName: "Ngày tạo",
+      headerName: "Created Date",
       flex: 1,
       valueFormatter: (params) => {
         const dateTime = format(new Date(params), "dd/MM/yyyy '--' HH:mm:ss");
@@ -74,28 +74,28 @@ export default function InvoicePage() {
     },
     {
       field: "id",
-      headerName: "Mã hóa đơn",
+      headerName: "Invoice ID",
       flex: 1,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "customerId",
-      headerName: "Mã nhân viên",
+      headerName: "Customer ID",
       flex: 1,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "staffId",
-      headerName: "Mã khách hàng",
+      headerName: "Staff ID",
       flex: 1,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "totalCost",
-      headerName: "Tổng tiền",
+      headerName: "Total",
       flex: 1,
       headerAlign: "center",
       align: "center",
