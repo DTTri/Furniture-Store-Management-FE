@@ -18,6 +18,7 @@ import {
 import CreateGoodsReceiptDTO from "./CreateGoodsReceiptDTO";
 import { toast } from "react-toastify";
 import { sVariant } from "../../store";
+import formatMoney from "../../utils/formatMoney";
 
 interface ReceiptTableRow {
   index: number;
@@ -160,7 +161,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
     {
       field: "productName",
       headerName: "Product Name",
-      flex: 2,
+      flex: 1.8,
       headerAlign: "center",
       align: "center",
     },
@@ -174,7 +175,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
     {
       field: "quantity",
       headerName: "Quantity",
-      flex: 1,
+      flex: 0.7,
       headerAlign: "center",
       align: "center",
       renderCell: (params) => (
@@ -195,13 +196,19 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.buyingPrice.toString());
+      },
     },
     {
       field: "cost",
       headerName: "Cost",
-      flex: 1,
+      flex: 1.2,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.cost.toString());
+      },
     },
     {
       field: "actions",
@@ -262,7 +269,9 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
         toast("Import goods receipt successfully", { type: "success" });
         onClose();
       } else {
-        toast("Failed to import goods receipt: " + response.data.EM, { type: "error" });
+        toast("Failed to import goods receipt: " + response.data.EM, {
+          type: "error",
+        });
         console.error("Failed to import goods receipt:", response);
       }
     } catch (error) {
@@ -394,7 +403,9 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               id="shippingCostInput"
               value={shippingCost}
             />
-            <h3 className="text-lg font-semibold">Total cost: {totalCost}</h3>
+            <h3 className="text-lg font-semibold">
+              Total cost: {formatMoney(totalCost.toString())}
+            </h3>
           </div>
           <div className="buttons-container w-full flex justify-end gap-4">
             <Button

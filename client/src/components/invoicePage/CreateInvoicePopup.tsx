@@ -1,9 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import {
-  Button,
-  InputLabel
-} from "@mui/material";
+import { Button, InputLabel } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -23,11 +20,12 @@ import Promotion from "../../entities/Promotion";
 import {
   customerService,
   promotionService,
-  variantService
+  variantService,
 } from "../../services";
 import invoiceService from "../../services/invoiceService";
 import AddCustomerPopup from "../customerPage/AddCustomerPopup";
 import InvoiceDetailDTO from "./InvoiceDetailDTO";
+import formatMoney from "../../utils/formatMoney";
 
 export default function CreateInvoicePopup({
   onClose,
@@ -50,17 +48,14 @@ export default function CreateInvoicePopup({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [
-          customersResponse,
-          variantsResponse,
-          promtionResponse,
-        ] = await Promise.all([
-          customerService.getAllCustomers(),
-          variantService.getAllVariants(),
-          promotionService.getPromotionByDate(
-            new Date().toISOString().slice(0, 10)
-          ),
-        ]);
+        const [customersResponse, variantsResponse, promtionResponse] =
+          await Promise.all([
+            customerService.getAllCustomers(),
+            variantService.getAllVariants(),
+            promotionService.getPromotionByDate(
+              new Date().toISOString().slice(0, 10)
+            ),
+          ]);
         if (customersResponse.data.EC === 0) {
           setCustomerList(customersResponse.data.DT);
         } else {
@@ -89,19 +84,23 @@ export default function CreateInvoicePopup({
 
   const [quatanty, setQuantanty] = useState<number>(0);
   const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
-  const [rows, setRows] = useState<InvoiceDetailDTO[]>((updatedInvoice?.InvoiceDetails || []).map((detail) => {
-    return {
-      id: detail.ProductVariant?.id || 0,
-      SKU: detail.ProductVariant?.SKU || "",
-      quantity: detail.quantity,
-      name: detail.ProductVariant?.size + " " + detail.ProductVariant?.color,
-      price: Math.floor(detail.ProductVariant?.price || 0),
-      discountedPrice: Math.floor(detail.unitPrice || 0),
-      discount: detail.discountedAmount || 0,
-      cost: Math.floor(detail.cost),
-    };
-  }));
-  const [totalCost, setTotalCost] = useState<number>(Math.floor(updatedInvoice?.totalCost  || 0));
+  const [rows, setRows] = useState<InvoiceDetailDTO[]>(
+    (updatedInvoice?.InvoiceDetails || []).map((detail) => {
+      return {
+        id: detail.ProductVariant?.id || 0,
+        SKU: detail.ProductVariant?.SKU || "",
+        quantity: detail.quantity,
+        name: detail.ProductVariant?.size + " " + detail.ProductVariant?.color,
+        price: Math.floor(detail.ProductVariant?.price || 0),
+        discountedPrice: Math.floor(detail.unitPrice || 0),
+        discount: detail.discountedAmount || 0,
+        cost: Math.floor(detail.cost),
+      };
+    })
+  );
+  const [totalCost, setTotalCost] = useState<number>(
+    Math.floor(updatedInvoice?.totalCost || 0)
+  );
 
   const [isShowAddCustomerPopup, setIsShowAddCustomerPopup] =
     useState<boolean>(false);
@@ -109,18 +108,17 @@ export default function CreateInvoicePopup({
     setCustomerList([...customerList, createdCustomer]);
   };
 
-  console.log(updatedInvoice?.Customer)
+  console.log(updatedInvoice?.Customer);
   //Customer information
   const [customerInfo, setCustomerInfo] = useState<Customer | null>(() => {
-    if(updatedInvoice?.Customer){
+    if (updatedInvoice?.Customer) {
       return {
         id: updatedInvoice?.customerId || 0,
         name: updatedInvoice?.Customer?.name || "",
         phone: updatedInvoice?.Customer?.phone || "",
         email: updatedInvoice?.Customer?.email || "",
       };
-    }
-    else{
+    } else {
       return null;
     }
   });
@@ -135,7 +133,10 @@ export default function CreateInvoicePopup({
       toast("Please set quatanty", { type: "error" });
       return;
     }
-    if (selectedVariant.Inventories && quatanty > (selectedVariant.Inventories[0]?.available || 0)) {
+    if (
+      selectedVariant.Inventories &&
+      quatanty > (selectedVariant.Inventories[0]?.available || 0)
+    ) {
       toast("Not enough product in stock", { type: "error" });
       return;
     }
@@ -144,12 +145,14 @@ export default function CreateInvoicePopup({
       return;
     }
     console.log(selectedVariant);
-    if(curPromotion){
+    if (curPromotion) {
       const promotionProduct = curPromotion.PromotionProducts.find(
         (promo) => promo.variantId === selectedVariant.id
       );
       if (promotionProduct) {
-        const discountedCost = selectedVariant.price - (selectedVariant.price * promotionProduct.discount) / 100;
+        const discountedCost =
+          selectedVariant.price -
+          (selectedVariant.price * promotionProduct.discount) / 100;
         const newRow: InvoiceDetailDTO = {
           id: selectedVariant.id,
           SKU: selectedVariant.SKU,
@@ -165,8 +168,7 @@ export default function CreateInvoicePopup({
         setTotalCost((prev) => Math.floor(prev + newRow.cost));
         return;
       }
-    }
-    else{
+    } else {
       const newRow: InvoiceDetailDTO = {
         id: selectedVariant?.id,
         SKU: selectedVariant.SKU,
@@ -213,7 +215,12 @@ export default function CreateInvoicePopup({
     console.log("createdInvoice", createdInvoice);
     const response = await invoiceService.createInvoice(createdInvoice);
     if (response.data.EC === 0) {
-      toast(updatedInvoice === null ? "Invoice created successfully" : "Invoice updated successfully", { type: "success" });
+      toast(
+        updatedInvoice === null
+          ? "Invoice created successfully"
+          : "Invoice updated successfully",
+        { type: "success" }
+      );
       onInvoiceCreated(response.data.DT);
     } else {
       toast("Failed to create invoice: " + response.data.EM, { type: "error" });
@@ -250,6 +257,9 @@ export default function CreateInvoicePopup({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.price.toString());
+      },
     },
     {
       field: "discount",
@@ -267,6 +277,9 @@ export default function CreateInvoicePopup({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.discountedPrice.toString());
+      },
     },
     {
       field: "quantity",
@@ -282,6 +295,9 @@ export default function CreateInvoicePopup({
       flex: 0.8,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.cost.toString());
+      },
     },
     {
       field: "actions",
@@ -320,8 +336,7 @@ export default function CreateInvoicePopup({
     );
     if (searchedCustomer) {
       setCustomerInfo(searchedCustomer);
-    }
-    else {
+    } else {
       toast("Can't find customer information", { type: "error" });
       setCustomerInfo(null);
     }
@@ -340,8 +355,7 @@ export default function CreateInvoicePopup({
     console.log("searchedVariantInList", searchedVariantInList);
     if (searchedVariantInList) {
       setSelectedVariant(searchedVariantInList);
-    }
-    else {
+    } else {
       setSelectedVariant(null);
     }
   };
@@ -394,25 +408,32 @@ export default function CreateInvoicePopup({
             >
               Search Customer
             </Button>
-            { (returnedCustomer || updatedInvoice?.Customer) && (customerInfo != null ? (
-              <div className="col-span-4 pr-5 w-full flex flex-row justify-between">
-                <p className="font-semibold">Customer name: {customerInfo.name}</p>
-                <p className="font-semibold">Customer phone: {customerInfo.phone}</p>
-                <p className="font-semibold">Customer email: {customerInfo.email}</p>
-              </div>
-            ) : (
-              <div className="col-span-4 ro w-full flex flex-row items-center gap-2">
-                <p>Can't find customer information?</p>
-                <a
-                  className="text-blue-500 font-semibold underline cursor-pointer "
-                  onClick={() => {
-                    setIsShowAddCustomerPopup(true);
-                  }}
-                >
-                  Add new Customer
-                </a>
-              </div>
-            ))}
+            {(returnedCustomer || updatedInvoice?.Customer) &&
+              (customerInfo != null ? (
+                <div className="col-span-4 pr-5 w-full flex flex-row justify-between">
+                  <p className="font-semibold">
+                    Customer name: {customerInfo.name}
+                  </p>
+                  <p className="font-semibold">
+                    Customer phone: {customerInfo.phone}
+                  </p>
+                  <p className="font-semibold">
+                    Customer email: {customerInfo.email}
+                  </p>
+                </div>
+              ) : (
+                <div className="col-span-4 ro w-full flex flex-row items-center gap-2">
+                  <p>Can't find customer information?</p>
+                  <a
+                    className="text-blue-500 font-semibold underline cursor-pointer "
+                    onClick={() => {
+                      setIsShowAddCustomerPopup(true);
+                    }}
+                  >
+                    Add new Customer
+                  </a>
+                </div>
+              ))}
             {/* <FormControl sx={{ maxWidth: 250, borderRadius: 6 }} size="small">
               <InputLabel id="demo-select-small-label">
                 Select Customer Name
@@ -510,19 +531,45 @@ export default function CreateInvoicePopup({
                 ))}
               </Select>
             </FormControl> */}
-            <input type="text" placeholder="Search SKU" className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3" id="searchProductVariantInput"
+            <input
+              type="text"
+              placeholder="Search SKU"
+              className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3"
+              id="searchProductVariantInput"
             />
             <div className="col-span-2 gap-2 grid grid-cols-[27%_1fr]">
-              <Button onClick={handleOnSearchVariant} className="col-span-1 row-span-1"  variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px", padding: "6px", maxWidth: "140px" }}>Search Variant</Button>
+              <Button
+                onClick={handleOnSearchVariant}
+                className="col-span-1 row-span-1"
+                variant="contained"
+                color="primary"
+                style={{
+                  textTransform: "none",
+                  fontSize: "14px",
+                  padding: "6px",
+                  maxWidth: "140px",
+                }}
+              >
+                Search Variant
+              </Button>
               {selectedVariant && (
                 <div className="col-span-1 pr-5 w-full flex flex-col items-center">
                   <div className="w-full grid grid-cols-[60%_1fr] items-center">
-                    <p className="font-semibold">Size: {selectedVariant.size}</p>
-                    <p className="font-semibold">Color: {selectedVariant.color}</p>
+                    <p className="font-semibold">
+                      Size: {selectedVariant.size}
+                    </p>
+                    <p className="font-semibold">
+                      Color: {selectedVariant.color}
+                    </p>
                   </div>
                   <div className="w-full grid grid-cols-[60%_1fr] items-center">
-                    <p className="font-semibold text-red-500">Available: {selectedVariant.Inventories?.[0]?.available || 0}</p>
-                    <p className="font-semibold">Price: {selectedVariant.price}</p>
+                    <p className="font-semibold text-red-500">
+                      Available:{" "}
+                      {selectedVariant.Inventories?.[0]?.available || 0}
+                    </p>
+                    <p className="font-semibold">
+                      Price: {selectedVariant.price}
+                    </p>
                   </div>
                 </div>
               )}
@@ -540,7 +587,12 @@ export default function CreateInvoicePopup({
               <Button
                 variant="contained"
                 color="primary"
-                style={{ textTransform: "none", fontSize: "14px", padding: "6px", width: "140px" }}
+                style={{
+                  textTransform: "none",
+                  fontSize: "14px",
+                  padding: "6px",
+                  width: "140px",
+                }}
                 onClick={handleAddProduct}
               >
                 Add product

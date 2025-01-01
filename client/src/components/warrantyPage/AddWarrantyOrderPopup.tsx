@@ -134,16 +134,19 @@ export default function AddWarrantyOrderPopup({
             <>
               <div className="flex flex-col gap-2">
                 <label htmlFor="cost">Cost</label>
-                <input
-                  id="newWarrantyOrderCostInput"
-                  name="cost"
-                  placeholder="Cost"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  onChange={(e) => {
-                    setCost(e.target.value);
-                  }}
-                  defaultValue={cost}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    id="newWarrantyOrderCostInput"
+                    name="cost"
+                    placeholder="Cost"
+                    className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                    onChange={(e) => {
+                      setCost(e.target.value);
+                    }}
+                    defaultValue={cost}
+                  />
+                  <span>VND</span>
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="warrantyId">Warranty ID</label>

@@ -13,6 +13,7 @@ import {
 } from "@mui/x-data-grid";
 import { productService, variantService } from "../../services";
 import { toast } from "react-toastify";
+import formatMoney from "../../utils/formatMoney";
 export default function ProductDetailsPopup({
   product,
   onClose,
@@ -111,8 +112,22 @@ export default function ProductDetailsPopup({
     { field: "SKU", headerName: "SKU", flex: 0.5 },
     { field: "color", headerName: "Color", flex: 1 },
     { field: "size", headerName: "Size", flex: 1 },
-    { field: "buyingPrice", headerName: "Buying Price", flex: 1 },
-    { field: "price", headerName: "Price", flex: 1 },
+    {
+      field: "buyingPrice",
+      headerName: "Buying Price",
+      flex: 1,
+      valueGetter: (_, row) => {
+        return formatMoney(row.buyingPrice.toString());
+      },
+    },
+    {
+      field: "price",
+      headerName: "Price",
+      flex: 1,
+      valueGetter: (_, row) => {
+        return formatMoney(row.price.toString());
+      },
+    },
     {
       field: "actions",
       type: "actions",
