@@ -130,7 +130,7 @@ export default function CreateInvoicePopup({
       return;
     }
     if (quatanty == 0) {
-      toast("Please set quatanty", { type: "error" });
+      toast("Please set quantity", { type: "error" });
       return;
     }
     if (
@@ -574,7 +574,7 @@ export default function CreateInvoicePopup({
                 </div>
               )}
             </div>
-            <span className="text-base text-[#667085] block">Quantanty</span>
+            <span className="text-base text-[#667085] block">Quantity</span>
             <input
               type="number"
               value={quatanty}

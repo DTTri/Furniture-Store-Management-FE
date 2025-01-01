@@ -283,6 +283,7 @@ function App() {
         fetchCustomer(),
         fetchStaff(),
         fetchPromotion(),
+        fetchInvoices(),
         fetchWarranty(),
         fetchRepair(),
         fetchCategory(),

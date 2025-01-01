@@ -85,7 +85,7 @@ export default function DashboardPage() {
     Promise.all([fetchIncomeReport(), fetchStaffReport()]);
   }, [selectedFromDate, selectedToDate]);
 
-  if (!reportData || !reportStaffData || !reportIncomeData) {
+  if (!reportData || !reportStaffData || !reportIncomeData || !reportData.currentPromotion) {
     return <LoadingProgress />;
   }
 
@@ -107,9 +107,13 @@ export default function DashboardPage() {
     {
       field: "status",
       headerName: "Status",
-      flex: 0.5,
+      flex: 0.8,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        if (row.status === null) return "On Going";
+        return row.status;
+      },
     },
     {
       field: "startDate",
