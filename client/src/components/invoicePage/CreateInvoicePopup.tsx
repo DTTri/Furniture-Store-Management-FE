@@ -85,8 +85,6 @@ export default function CreateInvoicePopup({
     fetchData();
   }, []);
 
-  console.log("variantList", variantList);
-
   const [quatanty, setQuantanty] = useState<number>(0);
   const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
   const [rows, setRows] = useState<InvoiceDetailDTO[]>((updatedInvoice?.InvoiceDetails || []).map((detail) => {
@@ -109,7 +107,6 @@ export default function CreateInvoicePopup({
     setCustomerList([...customerList, createdCustomer]);
   };
 
-  console.log(updatedInvoice?.Customer)
   //Customer information
   const [customerInfo, setCustomerInfo] = useState<Customer | null>(() => {
     if(updatedInvoice?.Customer){
@@ -143,46 +140,45 @@ export default function CreateInvoicePopup({
       toast("Product already added", { type: "error" });
       return;
     }
-    console.log(selectedVariant);
+    console.log("selected variant " + selectedVariant);
+    const newRow: InvoiceDetailDTO = {
+      id: selectedVariant?.id,
+      SKU: selectedVariant.SKU,
+      name: selectedVariant.size + " " + selectedVariant.color,
+      price: Math.floor(selectedVariant.price),
+      discountedPrice: Math.floor(selectedVariant.price),
+      discount: 0,
+      quantity: quatanty,
+      cost: Math.floor(selectedVariant.price * quatanty),
+    };
     if(curPromotion){
       const promotionProduct = curPromotion.PromotionProducts.find(
         (promo) => promo.variantId === selectedVariant.id
       );
+      console.log("promotionProduct", promotionProduct);
       if (promotionProduct) {
-        const discountedCost = selectedVariant.price - (selectedVariant.price * promotionProduct.discount) / 100;
-        const newRow: InvoiceDetailDTO = {
-          id: selectedVariant.id,
-          SKU: selectedVariant.SKU,
-          name: selectedVariant.size + " " + selectedVariant.color,
-          price: Math.floor(selectedVariant.price),
-          discountedPrice: Math.floor(discountedCost),
-          discount: promotionProduct.discount,
-          quantity: quatanty,
-          cost: Math.floor(discountedCost * quatanty),
-        };
+        newRow.discount = promotionProduct.discount;
+        newRow.discountedPrice = Math.floor(selectedVariant.price - (selectedVariant.price * promotionProduct.discount) / 100);
         console.log(newRow);
-        setRows([...rows, newRow]);
-        setTotalCost((prev) => Math.floor(prev + newRow.cost));
-        return;
       }
     }
-    else{
-      const newRow: InvoiceDetailDTO = {
-        id: selectedVariant?.id,
-        SKU: selectedVariant.SKU,
-        name: selectedVariant.size + " " + selectedVariant.color,
-        price: Math.floor(selectedVariant.price),
-        discountedPrice: Math.floor(selectedVariant.price),
-        discount: 0,
-        quantity: quatanty,
-        cost: Math.floor(selectedVariant.price * quatanty),
-      };
-      console.log(newRow);
-      setRows([...rows, newRow]);
-      setTotalCost((prev) => Math.floor(prev + newRow.cost));
-    }
+    // else{
+    //   const newRow: InvoiceDetailDTO = {
+    //     id: selectedVariant?.id,
+    //     SKU: selectedVariant.SKU,
+    //     name: selectedVariant.size + " " + selectedVariant.color,
+    //     price: Math.floor(selectedVariant.price),
+    //     discountedPrice: Math.floor(selectedVariant.price),
+    //     discount: 0,
+    //     quantity: quatanty,
+    //     cost: Math.floor(selectedVariant.price * quatanty),
+    //   };
+    console.log(newRow);
+    setRows([...rows, newRow]);
+    setTotalCost((prev) => Math.floor(prev + newRow.cost));
   };
 
+  console.log("rows", rows);
   const handleCreateInvoice = async () => {
     if (!customerInfo) {
       toast("Please select a customer", { type: "error" });
@@ -512,15 +508,15 @@ export default function CreateInvoicePopup({
             </FormControl> */}
             <input type="text" placeholder="Search SKU" className="border max-w-[250px] border-slate-400 max-h-[38px] rounded-md p-[6px] px-3" id="searchProductVariantInput"
             />
-            <div className="col-span-2 gap-2 grid grid-cols-[27%_1fr]">
-              <Button onClick={handleOnSearchVariant} className="col-span-1 row-span-1"  variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px", padding: "6px", maxWidth: "140px" }}>Search Variant</Button>
+            <div className="col-span-2 items-center gap-2 grid grid-cols-[27%_1fr]">
+              <Button onClick={handleOnSearchVariant} className="col-span-1 row-span-1"  variant="contained" color="primary" style={{ textTransform: "none", fontSize: "14px", padding: "6px", maxWidth: "140px", maxHeight: "35px" }}>Search Variant</Button>
               {selectedVariant && (
                 <div className="col-span-1 pr-5 w-full flex flex-col items-center">
-                  <div className="w-full grid grid-cols-[60%_1fr] items-center">
+                  <div className="w-full grid grid-cols-[65%_1fr] items-center">
                     <p className="font-semibold">Size: {selectedVariant.size}</p>
                     <p className="font-semibold">Color: {selectedVariant.color}</p>
                   </div>
-                  <div className="w-full grid grid-cols-[60%_1fr] items-center">
+                  <div className="w-full grid grid-cols-[65%_1fr] items-center">
                     <p className="font-semibold text-red-500">Available: {selectedVariant.Inventories?.[0]?.available || 0}</p>
                     <p className="font-semibold">Price: {selectedVariant.price}</p>
                   </div>
