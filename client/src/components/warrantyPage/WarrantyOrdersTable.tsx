@@ -10,6 +10,7 @@ import {
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import formatDate from "../../utils/formatDate";
+import formatMoney from "../../utils/formatMoney";
 export default function WarrantyOrdersTable({
   warrantyOrders,
   onEditWarrantyOrder,
@@ -67,6 +68,9 @@ export default function WarrantyOrdersTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.cost);
+      },
     },
     {
       field: "status",

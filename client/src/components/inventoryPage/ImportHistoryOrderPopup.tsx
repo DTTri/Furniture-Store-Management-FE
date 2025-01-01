@@ -11,6 +11,7 @@ import {
 import InfoIcon from "@mui/icons-material/Info";
 import { goodsReceiptService } from "../../services";
 import formatDate from "../../utils/formatDate";
+import formatMoney from "../../utils/formatMoney";
 export default function ImprortHistoryOrderPopup({
   onClose,
 }: {
@@ -66,7 +67,14 @@ export default function ImprortHistoryOrderPopup({
     },
     { field: "staffId", headerName: "Staff ID", flex: 1 },
     { field: "providerId", headerName: "Provider ID", flex: 1 },
-    { field: "totalCost", headerName: "Total Cost", flex: 1 },
+    {
+      field: "totalCost",
+      headerName: "Total Cost",
+      flex: 1,
+      valueGetter: (_, row) => {
+        return formatMoney(row.totalCost.toString());
+      },
+    },
     {
       field: "actions",
       type: "actions",

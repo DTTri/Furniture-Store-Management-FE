@@ -16,6 +16,7 @@ import Invoice from "../../entities/Invoice";
 import PayInvoicePopup from "../../components/invoicePage/PayInvoicePopup";
 import sInvoice from "../../store/invoiceStore";
 import LoadingProgress from "../../components/LoadingProgress";
+import formatMoney from "../../utils/formatMoney";
 
 export default function InvoicePage() {
   const [isCreateInvoicePopupOpen, setIsCreateInvoicePopupOpen] =
@@ -37,7 +38,7 @@ export default function InvoicePage() {
   // };
 
   useEffect(() => {
-    if(invoices){
+    if (invoices) {
       const filteredInvoices = invoices.map((invoice, index) => {
         return {
           ...invoice,
@@ -48,7 +49,7 @@ export default function InvoicePage() {
     }
   }, [invoices]);
 
-  if(!invoiceList){
+  if (!invoiceList) {
     return <LoadingProgress />;
   }
 
@@ -60,6 +61,38 @@ export default function InvoicePage() {
       headerAlign: "center",
       align: "center",
       width: 15,
+    },
+
+    {
+      field: "id",
+      headerName: "Invoice ID",
+      flex: 0.6,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "customerId",
+      headerName: "Customer ID",
+      flex: 0.6,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "staffId",
+      headerName: "Staff ID",
+      flex: 0.6,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "totalCost",
+      headerName: "Total",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.totalCost.toString());
+      },
     },
     {
       field: "createdAt",
@@ -73,37 +106,9 @@ export default function InvoicePage() {
       align: "center",
     },
     {
-      field: "id",
-      headerName: "Invoice ID",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "customerId",
-      headerName: "Customer ID",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "staffId",
-      headerName: "Staff ID",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "totalCost",
-      headerName: "Total",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
       field: "actions",
       type: "actions",
-      flex: 0.5,
+      flex: 0.2,
       getActions: (params: GridRowParams) => {
         return params.row.status === "paid" || params.row.status === "canceled"
           ? [

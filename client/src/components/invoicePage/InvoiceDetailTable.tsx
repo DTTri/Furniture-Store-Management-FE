@@ -7,6 +7,7 @@ import Customer from "../../entities/Customer";
 import { Button } from "@mui/material";
 import { customerService } from "../../services";
 import printHTML from "../../utils/PrintHTML";
+import formatMoney from "../../utils/formatMoney";
 
 export default function InvoiceDetailTable({
   onClose,
@@ -96,7 +97,7 @@ export default function InvoiceDetailTable({
       align: "center",
       valueGetter: (value, row) => {
         console.log(value);
-        return row.unitPrice;
+        return formatMoney(row.unitPrice.toString());
       },
     },
     {
@@ -105,6 +106,10 @@ export default function InvoiceDetailTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (value, row) => {
+        console.log(value);
+        return formatMoney(row.cost.toString());
+      },
     },
   ];
   const rows = selectedInvoice?.InvoiceDetails.map((item, index) => {
@@ -140,74 +145,78 @@ export default function InvoiceDetailTable({
               color="primary"
               style={{ textTransform: "none", fontSize: "14px" }}
               onClick={() => {
-                console.log(rows);  
-                printHTML("invoice-detail", rows?.map((row) => {
-                  return {
-                    "Index": row.index,
-                    SKU: row.SKU,
-                    Quantity: row.quantity,
-                    "Discounted %": (row.discountedAmount || 0)  + "%",
-                    Price: row.unitPrice,
-                    Cost: row.cost,
-                }}) || []); 
+                console.log(rows);
+                printHTML(
+                  "invoice-detail",
+                  rows?.map((row) => {
+                    return {
+                      Index: row.index,
+                      SKU: row.SKU,
+                      Quantity: row.quantity,
+                      "Discounted %": (row.discountedAmount || 0) + "%",
+                      Price: row.unitPrice,
+                      Cost: row.cost,
+                    };
+                  }) || []
+                );
               }}
             >
               Print Invoice
             </Button>
           </div>
         </div>
-          <div className="invoice-detail full px-3 flex flex-row font-semibold">
-            <div className="col-1 mr-[250px]">
-              <p>
-                Created Date:{" "}
-                {format(
-                  selectedInvoice?.createdAt || "1/1/2024",
-                  "dd/MM/yyyy HH:mm:ss"
-                )}
-              </p>
-              <p>Invoice ID: {selectedInvoice?.id || ""}</p>
-              <p>Staff ID: {selectedInvoice?.staffId || ""}</p>
-              <p>Invoice status: {selectedInvoice?.status || ""}</p>
-            </div>
-            <div className="col-2 w-fit">
-              <p>Customer ID: {selectedInvoice?.customerId || ""}</p>
-              <p>Customer name: {customer?.name}</p>
-              <p>Customer phone: {customer?.phone}</p>
-              <p>Customer email: {customer?.email}</p>
-            </div>
-          </div>
-          <div className="w-full">
-            <DataGrid
-              style={{
-                borderRadius: "20px",
-                border: "none",
-                backgroundColor: "white",
-                height: "100%",
-              }}
-              rows={rows}
-              columns={columns}
-              rowHeight={40}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 4,
-                  },
-                },
-              }}
-              pageSizeOptions={
-                rows && rows.length < 4
-                  ? [4, rows.length]
-                  : [4, (rows?.length || 0) + 1]
-              }
-              slots={{ toolbar: GridToolbar }}
-              rowSelection={false}
-            />
-          </div>
-          <div className="invoice-detail w-full px-4 flex flex-row mb-1 justify-end">
-            <p className="font-bold text-[20px] text-red-600 text-nowrap text-end">
-              Total Cost: {Math.floor(invoice.totalCost)}
+        <div className="invoice-detail full px-3 flex flex-row font-semibold">
+          <div className="col-1 mr-[250px]">
+            <p>
+              Created Date:{" "}
+              {format(
+                selectedInvoice?.createdAt || "1/1/2024",
+                "dd/MM/yyyy HH:mm:ss"
+              )}
             </p>
+            <p>Invoice ID: {selectedInvoice?.id || ""}</p>
+            <p>Staff ID: {selectedInvoice?.staffId || ""}</p>
+            <p>Invoice status: {selectedInvoice?.status || ""}</p>
           </div>
+          <div className="col-2 w-fit">
+            <p>Customer ID: {selectedInvoice?.customerId || ""}</p>
+            <p>Customer name: {customer?.name}</p>
+            <p>Customer phone: {customer?.phone}</p>
+            <p>Customer email: {customer?.email}</p>
+          </div>
+        </div>
+        <div className="w-full">
+          <DataGrid
+            style={{
+              borderRadius: "20px",
+              border: "none",
+              backgroundColor: "white",
+              height: "100%",
+            }}
+            rows={rows}
+            columns={columns}
+            rowHeight={40}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 4,
+                },
+              },
+            }}
+            pageSizeOptions={
+              rows && rows.length < 4
+                ? [4, rows.length]
+                : [4, (rows?.length || 0) + 1]
+            }
+            slots={{ toolbar: GridToolbar }}
+            rowSelection={false}
+          />
+        </div>
+        <div className="invoice-detail w-full px-4 flex flex-row mb-1 justify-end">
+          <p className="font-bold text-[20px] text-red-600 text-nowrap text-end">
+            Total Cost: {formatMoney(Math.floor(invoice.totalCost).toString())}
+          </p>
+        </div>
       </div>
     </div>
   );
