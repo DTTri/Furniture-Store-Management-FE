@@ -8,6 +8,7 @@ import sWarranty from "./warrantyStore";
 import sRepair from "./repairStore";
 import sPromotion from "./promotionStore";
 import sProvider from "./providerStore";
+import sVariant from "./variantStore";
 export {
   sPermission,
   sUser,
@@ -19,4 +20,5 @@ export {
   sRepair,
   sPromotion,
   sProvider,
+  sVariant,
 };

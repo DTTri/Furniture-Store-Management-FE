@@ -5,7 +5,6 @@ import UpdateStaffDTO from "./UpdateStaffDTO";
 import Staff from "../../entities/Staff";
 import staffService from "../../services/staff.service";
 import { toast } from "react-toastify";
-import formatDate from "../../utils/formatDate";
 
 export default function AddStaffPopup({
   onClose,
@@ -28,21 +27,29 @@ export default function AddStaffPopup({
   const [role, setRole] = useState(2);
 
   const validateInputs = () => {
-    if (!fullname || !birth || !idNumber || !startDate || !phone || !email) {
+    console.log(fullname, birth, idNumber, startDate, phone, email);
+    if (
+      !fullname.trim() ||
+      !birth ||
+      !idNumber.trim() ||
+      !startDate ||
+      !phone.trim() ||
+      !email.trim()
+    ) {
       toast.error("Please fill in all fields");
       return false;
     }
-    if (/^\s|\s{2,}|\s$/.test(fullname)) {
-      toast("Name cannot contain leading/trailing spaces or multiple spaces", {
-        type: "error",
-      });
+    if (!/^\d{10}$/.test(phone)) {
+      toast.error("Invalid phone number");
       return false;
     }
-    if (
-      !/^\d{10}$/.test(phone) ||
-      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
-    ) {
-      toast.error("Invalid phone or email");
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+      toast.error("Invalid email");
+      return false;
+    }
+    // idNumber must be decimals
+    if (!/^\d+$/.test(idNumber)) {
+      toast.error("ID Number must be a number");
       return false;
     }
     return true;
@@ -54,13 +61,13 @@ export default function AddStaffPopup({
     }
     try {
       const newStaff: AddStaffDTO = {
-        fullname,
+        fullname: fullname.trim(),
         birth: birth.split("/").reverse().join("-"),
         gender: gender.toLocaleLowerCase(),
-        idNumber,
+        idNumber: idNumber.trim(),
         startDate: startDate.split("/").reverse().join("-"),
-        phone,
-        email,
+        phone: phone.trim(),
+        email: email.trim(),
         role,
       };
       console.log(newStaff);
@@ -84,13 +91,13 @@ export default function AddStaffPopup({
     }
     try {
       const updatedStaff: UpdateStaffDTO = {
-        fullname,
+        fullname: fullname.trim(),
         birth: birth.split("/").reverse().join("-"),
         gender: gender.toLocaleLowerCase(),
-        idNumber,
+        idNumber: idNumber.trim(),
         startDate: startDate.split("/").reverse().join("-"),
-        phone,
-        email,
+        phone: phone.trim(),
+        email: email.trim(),
       };
       const response = await staffService.updateStaff(staff.id, updatedStaff);
       console.log(response);

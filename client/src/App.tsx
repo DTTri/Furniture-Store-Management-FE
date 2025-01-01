@@ -30,6 +30,7 @@ import {
   productService,
   promotionService,
   providerService,
+  variantService,
 } from "./services";
 import {
   sCategory,
@@ -40,6 +41,7 @@ import {
   sRepair,
   sStaff,
   sUser,
+  sVariant,
   sWarranty,
 } from "./store";
 import reportService from "./services/report.service";
@@ -171,6 +173,18 @@ function App() {
         console.error("Error fetching products:", error);
       }
     };
+    const fetchProductVariants = async () => {
+      try {
+        const res = await variantService.getAllVariants();
+        if (res.data.EC === 0) {
+          sVariant.set((v) => (v.value.variants = res.data.DT));
+        } else {
+          console.error("Failed to fetch variants:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching variants:", error);
+      }
+    };
     const fetchProvider = async () => {
       try {
         const res = await providerService.getAllProviders();
@@ -261,8 +275,10 @@ function App() {
         fetchGeneralReportByDate(),
         fetchStaffReportByDate(),
         fetchIncomeReportByDate(),
+        fetchInvoices(),
         fetchUserById(),
         fetchProducts(),
+        fetchProductVariants(),
         fetchProvider(),
         fetchCustomer(),
         fetchStaff(),
@@ -276,7 +292,7 @@ function App() {
     if (token !== "" && http.getAuthHeader() !== "") {
       fetchData();
     }
-  }, [token]);
+  }, [token, firstDayOfMonth, today]);
 
   return (
     <>
