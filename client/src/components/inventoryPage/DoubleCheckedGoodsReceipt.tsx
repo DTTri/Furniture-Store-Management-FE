@@ -44,11 +44,25 @@ export default function DoubleCheckedGoodsReceipt({
       align: "center",
     },
     {
-      field: "variantId",
-      headerName: "VariantID",
+      field: "productName",
+      headerName: "Product",
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        console.log(row);
+        return row.ProductVariant.Product.name;
+      },
+    },
+    {
+      field: "variant",
+      headerName: "Variant",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (_, row) => {
+        return `${row.ProductVariant.SKU} - ${row.ProductVariant.color} - ${row.ProductVariant.size}`;
+      },
     },
     {
       field: "buyingPrice",
