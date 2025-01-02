@@ -8,7 +8,7 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { useEffect, useState } from "react";
 import { InvoiceDetailTable } from "../../components";
 import CreateInvoicePopup from "../../components/invoicePage/CreateInvoicePopup";
@@ -180,9 +180,25 @@ export default function InvoicePage() {
             setSelectedInvoice(null);
           }}
           onInvoiceCreated={(createdInvoice: Invoice) => {
+            sInvoice.set((v) => {
+              v.value.invoices.push(createdInvoice);
+            });
             setInvoiceList([...invoiceList, createdInvoice]);
+            console.log("createdInvoice", createdInvoice);
             setIsCreateInvoicePopupOpen(false);
             setSelectedInvoice(createdInvoice);
+            setIsPayInvoicePopupOpen(true);
+          }}
+          onInvoiceUpdated={(updatedInvoice: any) => {
+            sInvoice.set((v) => {
+              v.value.invoices = v.value.invoices.map((invoice) =>
+                invoice.id === updatedInvoice.id ? updatedInvoice : invoice
+              );
+            });
+            setInvoiceList(invoiceList.map((invoice) => invoice.id === updatedInvoice.id ? updatedInvoice : invoice)); 
+            setIsCreateInvoicePopupOpen(false);
+            console.log("updatedInvoice", updatedInvoice);
+            setSelectedInvoice(updatedInvoice);
             setIsPayInvoicePopupOpen(true);
           }}
           updatedInvoice={selectedInvoice}

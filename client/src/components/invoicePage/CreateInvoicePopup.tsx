@@ -30,10 +30,12 @@ import formatMoney from "../../utils/formatMoney";
 export default function CreateInvoicePopup({
   onClose,
   onInvoiceCreated,
+  onInvoiceUpdated,
   updatedInvoice,
 }: {
   onClose: () => void;
   onInvoiceCreated: (invoice: Invoice) => void;
+  onInvoiceUpdated: (invoice: any) => void;
   updatedInvoice?: Invoice | null;
 }) {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
@@ -211,18 +213,34 @@ export default function CreateInvoicePopup({
       InvoiceDetailsData: rowInvoice,
     };
     console.log("createdInvoice", createdInvoice);
-    const response = await invoiceService.createInvoice(createdInvoice);
-    if (response.data.EC === 0) {
-      toast(
-        updatedInvoice === null
-          ? "Invoice created successfully"
-          : "Invoice updated successfully",
-        { type: "success" }
-      );
-      onInvoiceCreated(response.data.DT);
+
+    if (updatedInvoice) {
+      const response = await invoiceService.updateInvoice(updatedInvoice.id, createdInvoice);
+      if (response.data.EC === 0) {
+        toast.success("Invoice updated successfully");
+        console.log("update" + response.data.DT);
+        onInvoiceUpdated({
+          ...response.data.DT,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      } else {
+        toast("Failed to create invoice: " + response.data.EM, {
+          type: "error",
+        });
+        console.log("Failed to create invoice:", response.data.EM);
+      }
     } else {
-      toast("Failed to create invoice: " + response.data.EM, { type: "error" });
-      console.log("Failed to create invoice:", response.data.EM);
+      const response = await invoiceService.createInvoice(createdInvoice);
+      if (response.data.EC === 0) {
+        toast.success("Invoice created successfully");
+        onInvoiceCreated(response.data.DT);
+      } else {
+        toast("Failed to create invoice: " + response.data.EM, {
+          type: "error",
+        });
+        console.log("Failed to create invoice:", response.data.EM);
+      }
     }
   };
 
@@ -629,7 +647,7 @@ export default function CreateInvoicePopup({
         </div>
         <div className="px-3 w-full mb-3">
           <p className="text-[20px] text-[#D91316] font-bold text-end">
-            Total Cost: {totalCost}
+            Total Cost: {formatMoney(totalCost.toString())}
           </p>
         </div>
         <div className="buttons flex flex-row justify-end items-center gap-2">

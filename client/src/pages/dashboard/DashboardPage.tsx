@@ -59,7 +59,6 @@ export default function DashboardPage() {
           selectedToDate
         );
         if (response.data.EC == 0) {
-          console.log("income report", response.data.DT);
           setReportData(response.data.DT);
         } else {
           console.log("income report", response.data.EM);

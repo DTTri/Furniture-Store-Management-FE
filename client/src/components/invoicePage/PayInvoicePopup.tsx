@@ -18,6 +18,8 @@ import { ProductVariant } from "../../entities";
 import Invoice from "../../entities/Invoice";
 import { invoiceService, variantService } from "../../services";
 import InvoiceDetailDTO from "./InvoiceDetailDTO";
+import formatMoney from "../../utils/formatMoney";
+import LoadingProgress from "../LoadingProgress";
 
 export default function PayInvoicePopup({
   onClose,
@@ -71,6 +73,10 @@ export default function PayInvoicePopup({
     Promise.all([fetchInvoiceData(), fetchVariants()]);
   }, []);
 
+  if(!selectedInvoice || !variantList) {
+    return <LoadingProgress />;
+  }
+
   console.log(rows);
 
   const handleOnPayInvoice = async () => {
@@ -114,7 +120,7 @@ export default function PayInvoicePopup({
     {
       field: "SKU",
       headerName: "SKU",
-      flex: 1,
+      flex: 0.7,
       headerAlign: "center",
       align: "center",
       editable: true,
@@ -149,13 +155,13 @@ export default function PayInvoicePopup({
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return Number.parseFloat(row.ProductVariant?.price).toFixed(0);
+        return formatMoney(Number.parseFloat(row.ProductVariant?.price).toFixed(0));
       }
     },
     {
       field: "quantity",
       headerName: "Quantity",
-      flex: 0.8,
+      flex: 0.5,
       headerAlign: "center",
       align: "center",
       editable: true,
@@ -167,10 +173,12 @@ export default function PayInvoicePopup({
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return Number.parseFloat(row.cost).toFixed(0);
+        return formatMoney(row.cost.toString());  
       }
     }
   ];
+
+  console.log(invoice.createdAt);
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -277,7 +285,7 @@ export default function PayInvoicePopup({
             ): (
                 <div className="w-full flex flex-row items-center gap-4">
                     <p className="text-[18px] text-[#D91316] font-bold">
-                    Total Cost: {Math.round(totalCost)}
+                    Total Cost: {formatMoney(totalCost.toString())}
                     </p>
                     <div>
                         <Button variant="contained">QR Code</Button>

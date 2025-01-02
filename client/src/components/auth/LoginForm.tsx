@@ -50,7 +50,6 @@ export default function LoginForm() {
         sUser.set((prev) => (prev.value.token = response.data.DT.token));
         sUser.set((prev) => (prev.value.info = response.data.DT.staff));
         setLoading(false);
-        toast.success("Login successfully!");
         nav("/");
       } else {
         toast.error("Failed to login: " + response.data.EM);
@@ -65,7 +64,7 @@ export default function LoginForm() {
     <div
       className={`duration-700 max-w-[420px] w-full bg-white shadow-xl ${
         show ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
-      } px-9 py-11 flex flex-col mx-auto rounded-xl transform transition duration-500`}
+      } px-9 py-11 flex flex-col mx-auto rounded-3xl transform transition duration-500`}
       style={{ transition: "all 0.7s ease" }}
     >
       <div className="  bg-transparent bg-white rounded-[24px]  ">

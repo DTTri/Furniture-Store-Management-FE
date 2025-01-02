@@ -51,6 +51,7 @@ const Header: React.FC = () => {
     localStorage.removeItem("id");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("id");
+    sUser.reset();
     nav("/login");
   };
   if (!user) {
