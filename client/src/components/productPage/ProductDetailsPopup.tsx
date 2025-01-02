@@ -167,11 +167,24 @@ export default function ProductDetailsPopup({
           <CloseIcon />
         </IconButton>
 
-        <div className="information-container flex flex-col gap-2 items-start basis-2/5 border-r-2 border-r-black">
-          <div className="product-information w-full flex flex-col gap-2 max-h-[320px] overflow-y-auto">
-            <p className="title text-black text-2xl font-semibold">
-              Product information
-            </p>
+        <div className="information-container flex flex-col gap-2 items-center justify-between basis-2/5 border-r-2 border-r-black">
+          <div className="product-information w-full flex flex-col items-center gap-4 overflow-y-auto">
+            <div className="w-full">
+              <p className="title text-black text-2xl font-semibold">
+                Product information
+              </p>
+            </div>
+            <div className="product-image w-40 h-40 overflow-hidden rounded-t-lg">
+              <img
+                src={
+                  product.image && product.image !== ""
+                    ? product.image
+                    : "/images/chair.jpg"
+                }
+                alt="product"
+                className="object-contain w-full h-full"
+              />
+            </div>
             <table className="w-full">
               <tbody>
                 <tr>
@@ -214,43 +227,10 @@ export default function ProductDetailsPopup({
                   <td className="title">Warranty:</td>
                   <td id="productDetailsWarranty">{product.warranty}</td>
                 </tr>
-                <tr>
-                  <td className="title">Total:</td>
-                  <td id="productDetailsTotalQuantity">{product.quantity}</td>
-                </tr>
-                <tr>
-                  <td className="title">Available:</td>
-                  <td id="productDetailsaAvailable">{product.available}</td>
-                </tr>
-                <tr>
-                  <td className="title">Sold:</td>
-                  <td id="productDetailsSold">{product.sold}</td>
-                </tr>
-                <tr>
-                  <td className="title">Defective:</td>
-                  <td id="productDetailsDefective">{product.defective}</td>
-                </tr>
               </tbody>
             </table>
           </div>
-          <div className="provider-information w-full flex flex-col gap-2 items-start">
-            <p className="title text-black text-2xl font-semibold">
-              Provider information
-            </p>
-            <table className="w-full">
-              <tbody>
-                <tr>
-                  <td className="title">Name:</td>
-                  <td>Ronald Martin</td>
-                </tr>
-                <tr>
-                  <td className="title">Phone number:</td>
-                  <td>0987654321</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="buttons-container flex justify-between items-center gap-2">
+          <div className="buttons-container flex justify-between items-center gap-4">
             <Button
               onClick={handleUpdateProduct}
               variant="contained"

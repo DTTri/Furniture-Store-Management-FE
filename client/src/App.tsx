@@ -85,6 +85,26 @@ function App() {
         console.error("Error fetching permissions:", error);
       }
     };
+    const fetchUserPermissions = async () => {
+      try {
+        if (
+          !sUser.value.info ||
+          !sUser.value.info.Account ||
+          !sUser.value.info.Account.Role
+        )
+          return;
+        const res = await permissionService.getPermissionsByRole(
+          sUser.value.info.Account.Role.id
+        );
+        if (res.data.EC === 0) {
+          sPermission.set((v) => (v.value.userPermissions = res.data.DT));
+        } else {
+          console.error("Failed to fetch user permissions:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching user permissions:", error);
+      }
+    };
     const fetchGeneralReportByDate = async () => {
       try {
         console.log(firstDayOfMonth, today);
@@ -272,6 +292,7 @@ function App() {
     const fetchData = async () => {
       await Promise.all([
         fetchPermissions(),
+        fetchUserPermissions(),
         fetchGeneralReportByDate(),
         fetchStaffReportByDate(),
         fetchIncomeReportByDate(),

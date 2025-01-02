@@ -14,6 +14,7 @@ import {
   FaHammer,
   FaUserEdit,
 } from "react-icons/fa";
+import { sPermission, sUser } from "../store";
 
 const NavBar: React.FC = () => {
   // Khởi tạo navigate từ react-router-dom
@@ -54,6 +55,10 @@ const NavBar: React.FC = () => {
     navigate(path); // Dẫn đến trang tương ứng
   };
 
+  const userRole = sUser.use((v) => v.info.Account.Role.id);
+
+  const userPermissions = sPermission.use((v) => v.userPermissions);
+
   return (
     <div className="NavBar w-52 bg-white h-full flex flex-col shadow-md transition-all duration-300">
       {" "}
@@ -61,22 +66,25 @@ const NavBar: React.FC = () => {
       {/* Logo đã xóa */}
       {/* Danh sách các menu item */}
       <div className="NavItems flex flex-col">
-        {menuItems.map((item) => (
-          <div
-            key={item.name}
-            className={`ListMenu py-3 px-4 flex items-center w-full cursor-pointer hover:bg-[#f2f2f2] transition-all duration-100 ${
-              selectedMenu === item.name
-                ? "bg-[#c1c1c1] text-[#156fee] font-bold border-l-4 border-[#156fee]"
-                : "bg-white text-[#70747b] font-medium"
-            }`}
-            onClick={() => handleMenuClick(item.path, item.name)} // Xử lý click và điều hướng
-          >
-            <div className="Icon w-6 h-6 flex items-center justify-center">
-              {item.icon}
+        {menuItems.map((item) => {
+          if (item.name === "Role" && userRole > 1) return;
+          return (
+            <div
+              key={item.name}
+              className={`ListMenu py-3 px-4 flex items-center w-full cursor-pointer hover:bg-[#f2f2f2] transition-all duration-100 ${
+                selectedMenu === item.name
+                  ? "bg-[#c1c1c1] text-[#156fee] font-bold border-l-4 border-[#156fee]"
+                  : "bg-white text-[#70747b] font-medium"
+              }`}
+              onClick={() => handleMenuClick(item.path, item.name)} // Xử lý click và điều hướng
+            >
+              <div className="Icon w-6 h-6 flex items-center justify-center">
+                {item.icon}
+              </div>
+              <div className="Text ml-4">{item.name}</div>
             </div>
-            <div className="Text ml-4">{item.name}</div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       {/* Button Log Out (Centered) */}
       <div
