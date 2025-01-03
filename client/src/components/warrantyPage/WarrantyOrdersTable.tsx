@@ -11,6 +11,7 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import formatDate from "../../utils/formatDate";
 import formatMoney from "../../utils/formatMoney";
+import { sUser } from "../../store";
 export default function WarrantyOrdersTable({
   warrantyOrders,
   onEditWarrantyOrder,
@@ -33,6 +34,7 @@ export default function WarrantyOrdersTable({
   //     staffId: number;
   //     warrantyId: number;
   //   };
+  const userPermissions = sUser.use((v) => v.permissions);
   const columns: GridColDef[] = [
     {
       field: "index",
@@ -132,6 +134,9 @@ export default function WarrantyOrdersTable({
               onEditWarrantyOrder(warrantyOrder);
             }
           }}
+          style={{
+            visibility: userPermissions.includes(37) ? "visible" : "hidden",
+          }}
         />,
         <GridActionsCellItem
           icon={<DeleteIcon />}
@@ -145,6 +150,9 @@ export default function WarrantyOrdersTable({
               onDeleteWarrantyOrder(warrantyOrder);
             }
           }}
+          style={{
+            visibility: userPermissions.includes(38) ? "visible" : "hidden",
+          }}
         />,
       ],
     },
@@ -154,28 +162,32 @@ export default function WarrantyOrdersTable({
     index: index + 1,
   }));
   return (
-    <DataGrid
-      style={{
-        borderRadius: "20px",
-        backgroundColor: "white",
-        height: "100%",
-      }}
-      rows={rows}
-      columns={columns}
-      disableDensitySelector
-      rowHeight={40}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 8,
-          },
-        },
-      }}
-      pageSizeOptions={
-        rows.length < 8 ? [8, rows.length] : [8, rows.length + 1]
-      }
-      slots={{ toolbar: GridToolbar }}
-      rowSelection={false}
-    />
+    <>
+      {userPermissions.includes(35) && (
+        <DataGrid
+          style={{
+            borderRadius: "20px",
+            backgroundColor: "white",
+            height: "100%",
+          }}
+          rows={rows}
+          columns={columns}
+          disableDensitySelector
+          rowHeight={40}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 8,
+              },
+            },
+          }}
+          pageSizeOptions={
+            rows.length < 8 ? [8, rows.length] : [8, rows.length + 1]
+          }
+          slots={{ toolbar: GridToolbar }}
+          rowSelection={false}
+        />
+      )}
+    </>
   );
 }

@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { AddCustomerPopup, CustomersTable } from "../../components";
 import { customerService } from "../../services";
 import sCustomer from "../../store/customerStore";
+import { sUser } from "../../store";
 export default function CustomerPage() {
   const customers = sCustomer.use((v) => v.customers);
 
@@ -18,6 +19,7 @@ export default function CustomerPage() {
     setIsConfirmDeleteCustomerPopupOpen,
   ] = useState(false);
 
+  const userPermissions = sUser.use((v) => v.permissions);
   const handleDeleteCustomer = async () => {
     try {
       const res = await customerService.deleteCustomer(selectedCustomer.id);
@@ -38,19 +40,21 @@ export default function CustomerPage() {
   return (
     <div className="bg-white w-full h-full">
       <div className="header w-full flex gap-4 p-4">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setIsAddCustomerPopupOpen(true);
-          }}
-          style={{
-            textTransform: "none",
-          }}
-          id="addProductButton"
-        >
-          Add Customer
-        </Button>
+        {userPermissions.includes(27) && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setIsAddCustomerPopupOpen(true);
+            }}
+            style={{
+              textTransform: "none",
+            }}
+            id="addProductButton"
+          >
+            Add Customer
+          </Button>
+        )}
       </div>
       <div className="table-container w-full px-8 py-4">
         <CustomersTable

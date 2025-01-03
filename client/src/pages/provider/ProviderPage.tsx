@@ -3,7 +3,7 @@ import { ProvidersTable } from "../../components";
 import { useState } from "react";
 import { Provider } from "../../entities";
 import AddProviderPopup from "../../components/providerPage/AddProviderPopup";
-import { sProvider } from "../../store";
+import { sProvider, sUser } from "../../store";
 export default function ProviderPage() {
   const providers = sProvider.use((v) => v.providers);
 
@@ -13,22 +13,25 @@ export default function ProviderPage() {
   );
   const [isForUpdate, setIsForUpdate] = useState(false);
 
+  const userPermissions = sUser.use((v) => v.permissions);
   return (
     <div className="bg-white w-full h-full">
       <div className="header w-full flex gap-4 p-4">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setIsAddProviderPopupOpen(true);
-          }}
-          style={{
-            textTransform: "none",
-          }}
-          id="addProductButton"
-        >
-          Add provider
-        </Button>
+        {userPermissions.includes(51) && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setIsAddProviderPopupOpen(true);
+            }}
+            style={{
+              textTransform: "none",
+            }}
+            id="addProductButton"
+          >
+            Add provider
+          </Button>
+        )}
       </div>
       <div className="table-container w-full px-8 py-4">
         <ProvidersTable

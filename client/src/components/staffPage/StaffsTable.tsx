@@ -10,6 +10,7 @@ import {
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import formatDate from "../../utils/formatDate";
+import { sUser } from "../../store";
 
 export default function StaffsTable({
   staffs,
@@ -20,6 +21,7 @@ export default function StaffsTable({
   onEditStaff: (staff: Staff) => void;
   onDeleteStaff: (staff: Staff) => void;
 }) {
+  const userPermissions = sUser.use((v) => v.permissions);
   const columns: GridColDef[] = [
     {
       field: "index",
@@ -117,6 +119,9 @@ export default function StaffsTable({
               onEditStaff(staff);
             }
           }}
+          style={{
+            visibility: userPermissions.includes(58) ? "visible" : "hidden",
+          }}
         />,
         <GridActionsCellItem
           icon={<DeleteIcon />}
@@ -128,6 +133,9 @@ export default function StaffsTable({
               onDeleteStaff(staff);
             }
           }}
+          style={{
+            visibility: userPermissions.includes(59) ? "visible" : "hidden",
+          }}
         />,
       ],
     },
@@ -137,28 +145,32 @@ export default function StaffsTable({
     index: index + 1,
   }));
   return (
-    <DataGrid
-      style={{
-        borderRadius: "20px",
-        backgroundColor: "white",
-        height: "100%",
-      }}
-      rows={rows}
-      columns={columns}
-      disableDensitySelector
-      rowHeight={40}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 8,
-          },
-        },
-      }}
-      pageSizeOptions={
-        rows.length < 8 ? [8, rows.length] : [8, rows.length + 1]
-      }
-      slots={{ toolbar: GridToolbar }}
-      rowSelection={false}
-    />
+    <>
+      {userPermissions.includes(60) && (
+        <DataGrid
+          style={{
+            borderRadius: "20px",
+            backgroundColor: "white",
+            height: "100%",
+          }}
+          rows={rows}
+          columns={columns}
+          disableDensitySelector
+          rowHeight={40}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 8,
+              },
+            },
+          }}
+          pageSizeOptions={
+            rows.length < 8 ? [8, rows.length] : [8, rows.length + 1]
+          }
+          slots={{ toolbar: GridToolbar }}
+          rowSelection={false}
+        />
+      )}
+    </>
   );
 }

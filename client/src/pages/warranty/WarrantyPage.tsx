@@ -4,7 +4,7 @@ import { WarrantyOrder } from "../../entities";
 import warrantyService from "../../services/warranty.service";
 import WarrantyOrdersTable from "../../components/warrantyPage/WarrantyOrdersTable";
 import AddWarrantyOrderPopup from "../../components/warrantyPage/AddWarrantyOrderPopup";
-import { sWarranty } from "../../store";
+import { sUser, sWarranty } from "../../store";
 
 export default function WarrantyPage() {
   const warrantyOrders = sWarranty.use((v) => v.warrantyOrders);
@@ -36,22 +36,26 @@ export default function WarrantyPage() {
     }
   };
 
+  const userPermissions = sUser.use((v) => v.permissions);
+
   return (
     <div className="bg-white w-full h-full">
       <div className="header w-full flex gap-4 p-4">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setIsAddWarrantyOrderPopupOpen(true);
-          }}
-          style={{
-            textTransform: "none",
-          }}
-          id="addProductButton"
-        >
-          Add warranty order
-        </Button>
+        {userPermissions.includes(36) && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setIsAddWarrantyOrderPopupOpen(true);
+            }}
+            style={{
+              textTransform: "none",
+            }}
+            id="addProductButton"
+          >
+            Add warranty order
+          </Button>
+        )}
       </div>
       <div className="table-container w-full px-8 py-4">
         <WarrantyOrdersTable

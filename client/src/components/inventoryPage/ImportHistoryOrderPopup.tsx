@@ -12,6 +12,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { goodsReceiptService } from "../../services";
 import formatDate from "../../utils/formatDate";
 import formatMoney from "../../utils/formatMoney";
+import { sUser } from "../../store";
 export default function ImprortHistoryOrderPopup({
   onClose,
 }: {
@@ -44,6 +45,7 @@ export default function ImprortHistoryOrderPopup({
     isDoubleCheckedGoodReceiptPopupOpen,
     setIsDoubleCheckedGoodReceiptPopupOpen,
   ] = useState(false);
+  const userPermissions = sUser.use((v) => v.permissions);
 
   const rows = receipts.map((item, index) => {
     return {
@@ -86,6 +88,9 @@ export default function ImprortHistoryOrderPopup({
           onClick={() => {
             setSelectedGoodReceipt(params.row as GoodsReceipt);
             setIsDoubleCheckedGoodReceiptPopupOpen(true);
+          }}
+          style={{
+            visibility: userPermissions.includes(19) ? "visible" : "hidden",
           }}
         />,
       ],

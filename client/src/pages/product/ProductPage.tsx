@@ -4,7 +4,7 @@ import { Product } from "../../entities";
 import ProductDetailsPopup from "../../components/productPage/ProductDetailsPopup";
 import { Button } from "@mui/material";
 import { AddProductPopup } from "../../components";
-import { sProduct } from "../../store";
+import { sProduct, sUser } from "../../store";
 
 export default function ProductPage() {
   const [isProductDetailsPopupOpen, setIsProductDetailsPopupOpen] =
@@ -25,6 +25,7 @@ export default function ProductPage() {
     );
   }, [searchValue, products]);
 
+  const userPermissions = sUser.use((v) => v.permissions);
   return (
     <div className="w-full h-full flex flex-col">
       <div className="header w-full flex gap-4 py-4 px-5">
@@ -41,34 +42,38 @@ export default function ProductPage() {
             id="searchProductInput"
           />
         </div>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setIsAddProductPopupOpen(true)}
-          style={{
-            textTransform: "none",
-          }}
-          id="addProductButton"
-        >
-          Add product
-        </Button>
+        {userPermissions.includes(5) && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setIsAddProductPopupOpen(true)}
+            style={{
+              textTransform: "none",
+            }}
+            id="addProductButton"
+          >
+            Add product
+          </Button>
+        )}
       </div>
 
-      <div
-        id="productGallery"
-        className="product-gallery w-full overflow-y-auto max-h-[500px] grid grid-cols-5 gap-y-4 px-5 scroll-smooth"
-      >
-        {filteredProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onSeeDetailsClick={() => {
-              setSelectedProduct(product);
-              setIsProductDetailsPopupOpen(true);
-            }}
-          />
-        ))}
-      </div>
+      {userPermissions.includes(8) && (
+        <div
+          id="productGallery"
+          className="product-gallery w-full overflow-y-auto max-h-[500px] grid grid-cols-5 gap-y-4 px-5 scroll-smooth"
+        >
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onSeeDetailsClick={() => {
+                setSelectedProduct(product);
+                setIsProductDetailsPopupOpen(true);
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {isProductDetailsPopupOpen && (
         <ProductDetailsPopup

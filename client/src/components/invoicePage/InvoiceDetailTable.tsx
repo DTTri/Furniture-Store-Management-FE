@@ -8,6 +8,7 @@ import { Button } from "@mui/material";
 import { customerService } from "../../services";
 import printHTML from "../../utils/PrintHTML";
 import formatMoney from "../../utils/formatMoney";
+import ViewWarrantyDetail from "./ViewWarrantyDetail";
 
 export default function InvoiceDetailTable({
   onClose,
@@ -17,6 +18,7 @@ export default function InvoiceDetailTable({
   invoice: Invoice;
 }) {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice>();
+  const [isOpenWarrany, setIsOpenWarrany] = useState(false);
   useEffect(() => {
     const fetchInvoiceDetails = async () => {
       try {
@@ -106,8 +108,7 @@ export default function InvoiceDetailTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
-      valueGetter: (value, row) => {
-        console.log(value);
+      valueGetter: (_value, row) => {
         return formatMoney(row.cost.toString());
       },
     },
@@ -133,6 +134,14 @@ export default function InvoiceDetailTable({
         <div className="header w-full flex flex-row justify-between px-3 pt-7">
           <h3 className="font-semibold text-[28px] ">Invoice Details</h3>
           <div className="flex flex-row items-center gap-3">
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ textTransform: "none", fontSize: "14px" }}
+              onClick={() => setIsOpenWarrany(true)}
+            >
+              View Warranty
+            </Button>
             <Button
               variant="contained"
               color="primary"
@@ -211,6 +220,7 @@ export default function InvoiceDetailTable({
           </p>
         </div>
       </div>
+      {isOpenWarrany && (<ViewWarrantyDetail invoice={invoice} onClose={() => setIsOpenWarrany(false)} />)}
     </div>
   );
 }
