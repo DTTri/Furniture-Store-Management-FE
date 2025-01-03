@@ -14,6 +14,7 @@ import {
 import { productService, variantService } from "../../services";
 import { toast } from "react-toastify";
 import formatMoney from "../../utils/formatMoney";
+import { sUser } from "../../store";
 export default function ProductDetailsPopup({
   product,
   onClose,
@@ -141,6 +142,9 @@ export default function ProductDetailsPopup({
             setIsAddVariantPopupOpen(true);
             setIsForUpdateVariant(true);
           }}
+          style={{
+            visibility: userPermissions.includes(12) ? "visible" : "hidden",
+          }}
         />,
         <GridActionsCellItem
           icon={<DeleteIcon />}
@@ -149,10 +153,14 @@ export default function ProductDetailsPopup({
             setSelectedVariant(params.row as ProductVariant);
             setIsDeleteVariantConfirmationOpen(true);
           }}
+          style={{
+            visibility: userPermissions.includes(13) ? "visible" : "hidden",
+          }}
         />,
       ],
     },
   ];
+  const userPermissions = sUser.use((v) => v.permissions);
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup bg-white flex justify-around relative rounded-xl py-4 px-3 w-2/3 min-w-[420px] overflow-hidden">
@@ -231,28 +239,32 @@ export default function ProductDetailsPopup({
             </table>
           </div>
           <div className="buttons-container flex justify-between items-center gap-4">
-            <Button
-              onClick={handleUpdateProduct}
-              variant="contained"
-              style={{
-                textTransform: "none",
-              }}
-              id="updateProductButton"
-            >
-              Update
-            </Button>
-            <Button
-              onClick={() => setIsStopSellingConfirmationOpen(true)}
-              disabled={product.status === "stop selling"}
-              variant="contained"
-              style={{
-                textTransform: "none",
-                backgroundColor: "#ff0000",
-              }}
-              id="stopSellingButton"
-            >
-              Stop selling
-            </Button>
+            {userPermissions.includes(6) && (
+              <Button
+                onClick={handleUpdateProduct}
+                variant="contained"
+                style={{
+                  textTransform: "none",
+                }}
+                id="updateProductButton"
+              >
+                Update
+              </Button>
+            )}
+            {userPermissions.includes(7) && (
+              <Button
+                onClick={() => setIsStopSellingConfirmationOpen(true)}
+                disabled={product.status === "stop selling"}
+                variant="contained"
+                style={{
+                  textTransform: "none",
+                  backgroundColor: "#ff0000",
+                }}
+                id="stopSellingButton"
+              >
+                Stop selling
+              </Button>
+            )}
           </div>
         </div>
         <div className="variants-container basis-3/5 flex flex-col items-center justify-between gap-4">
@@ -351,40 +363,44 @@ export default function ProductDetailsPopup({
             <p className="title text-black text-2xl font-semibold w-full">
               Variants
             </p>
-            <DataGrid
-              style={{
-                borderRadius: "20px",
-                backgroundColor: "white",
-                height: "100%",
-              }}
-              rows={rows}
-              columns={columns}
-              rowHeight={40}
-              disableDensitySelector
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 5,
+            {userPermissions.includes(14) && (
+              <DataGrid
+                style={{
+                  borderRadius: "20px",
+                  backgroundColor: "white",
+                  height: "100%",
+                }}
+                rows={rows}
+                columns={columns}
+                rowHeight={40}
+                disableDensitySelector
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
+                    },
                   },
-                },
-              }}
-              pageSizeOptions={
-                rows.length < 5 ? [5, rows.length] : [5, rows.length + 1]
-              }
-              slots={{ toolbar: GridToolbar }}
-              rowSelection={false}
-            />
+                }}
+                pageSizeOptions={
+                  rows.length < 5 ? [5, rows.length] : [5, rows.length + 1]
+                }
+                slots={{ toolbar: GridToolbar }}
+                rowSelection={false}
+              />
+            )}
           </div>
-          <Button
-            variant="contained"
-            onClick={() => setIsAddVariantPopupOpen(true)}
-            style={{
-              textTransform: "none",
-            }}
-            id="addVariantButton"
-          >
-            Add variant
-          </Button>
+          {userPermissions.includes(11) && (
+            <Button
+              variant="contained"
+              onClick={() => setIsAddVariantPopupOpen(true)}
+              style={{
+                textTransform: "none",
+              }}
+              id="addVariantButton"
+            >
+              Add variant
+            </Button>
+          )}
         </div>
         {isStopSellingConfirmationOpen && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">

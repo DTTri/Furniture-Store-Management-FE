@@ -4,11 +4,11 @@ import AddPromotionPopup from "../../components/promotionPage/AddPromotionPopup"
 import { promotionService } from "../../services";
 import PromotionsTable from "../../components/promotionPage/PromotionsTable";
 import Promotion from "../../entities/Promotion";
-import { sPromotion } from "../../store";
+import { sPromotion, sUser } from "../../store";
 
 export default function PromotionPage() {
   const promotions = sPromotion.use((v) => v.promotions);
-
+  const userPermissions = sUser.use((v) => v.permissions);
   const [isAddPromotionPopupOpen, setIsAddPromotionPopupOpen] = useState(false);
   const [selectedPromotion, setSelectedPromotion] = useState<Promotion>(
     promotions[0]
@@ -18,19 +18,21 @@ export default function PromotionPage() {
   return (
     <div className="bg-white w-full h-full">
       <div className="header w-full flex gap-4 p-4">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setIsAddPromotionPopupOpen(true);
-          }}
-          style={{
-            textTransform: "none",
-          }}
-          id="addPromotionButton"
-        >
-          Add Promotion
-        </Button>
+        {userPermissions.includes(44) && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setIsAddPromotionPopupOpen(true);
+            }}
+            style={{
+              textTransform: "none",
+            }}
+            id="addPromotionButton"
+          >
+            Add Promotion
+          </Button>
+        )}
       </div>
       <div className="table-container w-full px-8 py-4">
         <PromotionsTable

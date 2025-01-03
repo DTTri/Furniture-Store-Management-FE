@@ -8,7 +8,7 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { InvoiceDetailTable } from "../../components";
 import CreateInvoicePopup from "../../components/invoicePage/CreateInvoicePopup";
@@ -17,6 +17,7 @@ import PayInvoicePopup from "../../components/invoicePage/PayInvoicePopup";
 import sInvoice from "../../store/invoiceStore";
 import LoadingProgress from "../../components/LoadingProgress";
 import formatMoney from "../../utils/formatMoney";
+import { sUser } from "../../store";
 
 export default function InvoicePage() {
   const [isCreateInvoicePopupOpen, setIsCreateInvoicePopupOpen] =
@@ -114,10 +115,15 @@ export default function InvoicePage() {
           ? [
               <GridActionsCellItem
                 icon={<InfoIcon />}
-                label="Delete"
+                label="Info"
                 onClick={() => {
                   setSelectedInvoice(params.row as Invoice);
                   setIsInvoiceDetailPopupOpen(true);
+                }}
+                style={{
+                  visibility: userPermissions.includes(26)
+                    ? "visible"
+                    : "hidden",
                 }}
               />,
             ]
@@ -129,50 +135,60 @@ export default function InvoicePage() {
                   setSelectedInvoice(params.row as Invoice);
                   setIsPayInvoicePopupOpen(true);
                 }}
+                style={{
+                  visibility: userPermissions.includes(21)
+                    ? "visible"
+                    : "hidden",
+                }}
               />,
             ];
       },
     },
   ];
+  const userPermissions = sUser.use((state) => state.permissions);
   return (
     <div className="bg-white w-full h-full py-6 px-7">
       <div className="header buttons flex flex-row items-center bg-white mb-4">
-        <Button
-          variant="contained"
-          color="primary"
-          style={{
-            textTransform: "none",
-          }}
-          id="addProductButton"
-          onClick={() => setIsCreateInvoicePopupOpen(true)}
-        >
-          Add Invoice
-        </Button>
+        {userPermissions.includes(21) && (
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+              textTransform: "none",
+            }}
+            id="addProductButton"
+            onClick={() => setIsCreateInvoicePopupOpen(true)}
+          >
+            Add Invoice
+          </Button>
+        )}
       </div>
-      <DataGrid
-        style={{
-          borderRadius: "10px",
-          backgroundColor: "white",
-          height: "fit-content",
-        }}
-        columns={columns}
-        rows={invoiceList}
-        rowHeight={40}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 8,
+      {userPermissions.includes(25) && (
+        <DataGrid
+          style={{
+            borderRadius: "10px",
+            backgroundColor: "white",
+            height: "fit-content",
+          }}
+          columns={columns}
+          rows={invoiceList}
+          rowHeight={40}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 8,
+              },
             },
-          },
-        }}
-        pageSizeOptions={
-          invoiceList.length < 8
-            ? [8, invoiceList.length]
-            : [8, invoiceList.length + 1]
-        }
-        slots={{ toolbar: GridToolbar }}
-        rowSelection={false}
-      />
+          }}
+          pageSizeOptions={
+            invoiceList.length < 8
+              ? [8, invoiceList.length]
+              : [8, invoiceList.length + 1]
+          }
+          slots={{ toolbar: GridToolbar }}
+          rowSelection={false}
+        />
+      )}
       {isCreateInvoicePopupOpen && (
         <CreateInvoicePopup
           onClose={() => {
@@ -189,13 +205,17 @@ export default function InvoicePage() {
             setSelectedInvoice(createdInvoice);
             setIsPayInvoicePopupOpen(true);
           }}
-          onInvoiceUpdated={(updatedInvoice: any) => {
+          onInvoiceUpdated={(updatedInvoice) => {
             sInvoice.set((v) => {
               v.value.invoices = v.value.invoices.map((invoice) =>
                 invoice.id === updatedInvoice.id ? updatedInvoice : invoice
               );
             });
-            setInvoiceList(invoiceList.map((invoice) => invoice.id === updatedInvoice.id ? updatedInvoice : invoice)); 
+            setInvoiceList(
+              invoiceList.map((invoice) =>
+                invoice.id === updatedInvoice.id ? updatedInvoice : invoice
+              )
+            );
             setIsCreateInvoicePopupOpen(false);
             console.log("updatedInvoice", updatedInvoice);
             setSelectedInvoice(updatedInvoice);

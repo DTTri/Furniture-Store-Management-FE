@@ -1,4 +1,4 @@
-import InfoIcon from "@mui/icons-material/Info";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { Button } from "@mui/material";
 import {
   DataGrid,
@@ -11,7 +11,7 @@ import { useState } from "react";
 import CreateCategoryPopup from "../../components/categoryPage/CreateCategoryPopup";
 import UpdateCategoryPopup from "../../components/categoryPage/UpdateCategoryPopup";
 import { Category } from "../../entities";
-import { sCategory, sProduct } from "../../store";
+import { sCategory, sProduct, sUser } from "../../store";
 
 export default function CategoryPage() {
   const [isCreateCategoryPopupOpen, setIsCreateCategoryPopupOpen] =
@@ -22,6 +22,7 @@ export default function CategoryPage() {
   const products = sProduct.use((v) => v.products);
   const [updatedCategory, setUpdatedCategory] = useState<Category>();
 
+  const userPermissions = sUser.use((v) => v.permissions);
   const columns: GridColDef[] = [
     {
       field: "index",
@@ -61,17 +62,21 @@ export default function CategoryPage() {
       field: "actionUpdate",
       type: "actions",
       flex: 0.15,
-      getActions: (params: GridRowParams) => [
-        <GridActionsCellItem
-          className="hover:bg-transparent"
-          icon={<InfoIcon />}
-          label="Update"
-          onClick={() => {
-            setUpdatedCategory(params.row as Category);
-            setIsUpdateCategoryPopupOpen(true);
-          }}
-        />,
-      ],
+      getActions: (params: GridRowParams) => {
+        return userPermissions.includes(2)
+          ? [
+              <GridActionsCellItem
+                className="hover:bg-transparent"
+                icon={<ModeEditIcon />}
+                label="Update"
+                onClick={() => {
+                  setUpdatedCategory(params.row as Category);
+                  setIsUpdateCategoryPopupOpen(true);
+                }}
+              />,
+            ]
+          : [];
+      },
     },
     // {
     //   field: "actionDelete",
@@ -93,48 +98,52 @@ export default function CategoryPage() {
   return (
     <div className="bg-white w-full py-6 px-7">
       <div className="header buttons flex flex-row justify-between items-center bg-white mb-4">
-        <Button
-          variant="contained"
-          color="primary"
-          style={{
-            textTransform: "none",
-          }}
-          id="addProductButton"
-          onClick={() => {
-            setIsCreateCategoryPopupOpen(true);
-          }}
-        >
-          Add Category
-        </Button>
+        {userPermissions.includes(1) && (
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+              textTransform: "none",
+            }}
+            id="addProductButton"
+            onClick={() => {
+              setIsCreateCategoryPopupOpen(true);
+            }}
+          >
+            Add Category
+          </Button>
+        )}
       </div>
-      <DataGrid
-        style={{
-          borderRadius: "10px",
-          backgroundColor: "white",
-          minHeight: "466px",
-          height: "fit-content",
-        }}
-        columns={columns}
-        rows={categoryList.map((category, index) => ({
-          index: index + 1,
-          ...category,
-        })) as any}
-        rowHeight={40}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 8,
+      {userPermissions.includes(3) && (
+        <DataGrid
+          style={{
+            borderRadius: "10px",
+            backgroundColor: "white",
+            minHeight: "466px",
+            height: "fit-content",
+          }}
+          columns={columns}
+          rows={categoryList.map((category, index) => ({
+            index: index + 1,
+            ...category,
+          }))}
+          rowHeight={40}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 8,
+              },
             },
-          },
-        }}
-        pageSizeOptions={
-          categoryList.length < 10
-            ? [10, categoryList.length]
-            : [10, categoryList.length + 1]
-        }
-        slots={{ toolbar: GridToolbar }}
-        rowSelection={false}
-      />
+          }}
+          pageSizeOptions={
+            categoryList.length < 10
+              ? [10, categoryList.length]
+              : [10, categoryList.length + 1]
+          }
+          slots={{ toolbar: GridToolbar }}
+          rowSelection={false}
+        />
+      )}
       {isCreateCategoryPopupOpen && (
         <CreateCategoryPopup
           onClose={() => {

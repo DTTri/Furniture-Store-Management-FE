@@ -4,7 +4,7 @@ import { RepairOrder } from "../../entities";
 import repairService from "../../services/repair.service";
 import RepairOrdersTable from "../../components/repairPage/RepairOrdersTable";
 import AddRepairOrderPopup from "../../components/repairPage/AddRepairOrderPopup";
-import { sRepair } from "../../store";
+import { sRepair, sUser } from "../../store";
 
 export default function RepairPage() {
   const repairOrders = sRepair.use((v) => v.repairs);
@@ -35,22 +35,26 @@ export default function RepairPage() {
     }
   };
 
+  const userPermissions = sUser.use((v) => v.permissions);
+
   return (
     <div className="bg-white w-full h-full">
       <div className="header w-full flex gap-4 p-4">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setIsAddRepairOrderPopupOpen(true);
-          }}
-          style={{
-            textTransform: "none",
-          }}
-          id="addRepairOrderButton"
-        >
-          Add repair order
-        </Button>
+        {userPermissions.includes(41) && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setIsAddRepairOrderPopupOpen(true);
+            }}
+            style={{
+              textTransform: "none",
+            }}
+            id="addRepairOrderButton"
+          >
+            Add repair order
+          </Button>
+        )}
       </div>
       <div className="table-container w-full px-8 py-4">
         <RepairOrdersTable

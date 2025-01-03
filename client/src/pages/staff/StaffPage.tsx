@@ -4,12 +4,13 @@ import { Staff } from "../../entities";
 import staffService from "../../services/staff.service";
 import StaffsTable from "../../components/staffPage/StaffsTable";
 import AddStaffPopup from "../../components/staffPage/AddStaffPopup";
-import { sStaff } from "../../store";
+import { sStaff, sUser } from "../../store";
 import { toast } from "react-toastify";
 
 export default function StaffPage() {
   const staffs = sStaff.use((v) => v.staffs);
 
+  const userPermissions = sUser.use((v) => v.permissions);
   const handleDeleteStaff = async () => {
     try {
       const res = await staffService.deleteStaff(selectedStaff.id);
@@ -39,19 +40,21 @@ export default function StaffPage() {
   return (
     <div className="bg-white w-full">
       <div className="header w-full flex gap-4 p-4">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setIsAddStaffPopupOpen(true);
-          }}
-          style={{
-            textTransform: "none",
-          }}
-          id="addStaffButton"
-        >
-          Add Staff
-        </Button>
+        {userPermissions.includes(57) && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setIsAddStaffPopupOpen(true);
+            }}
+            style={{
+              textTransform: "none",
+            }}
+            id="addStaffButton"
+          >
+            Add Staff
+          </Button>
+        )}
       </div>
       <div className="table-container w-full px-8 py-4">
         <StaffsTable

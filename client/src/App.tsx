@@ -136,11 +136,24 @@ function App() {
         console.error("Error fetching income report by date:", error);
       }
     };
+    const fetchUserPermissions = async (role: number) => {
+      try {
+        const res = await permissionService.getPermissionsByRole(role);
+        if (res.data.EC === 0) {
+          sUser.set((v) => (v.value.permissions = res.data.DT));
+        } else {
+          console.error("Failed to fetch user permissions:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching user permissions:", error);
+      }
+    };
     const fetchUserById = async () => {
       try {
         const id = localStorage.getItem("id") || sessionStorage.getItem("id");
         const res = await staffService.getStaffById(Number(id));
         if (res.data.EC === 0) {
+          fetchUserPermissions(res.data.DT.Account.Role.id);
           console.log("user data successfully", res.data.DT);
           sUser.set((v) => (v.value.info = res.data.DT));
           sUser.set((v) => (v.value.role = res.data.DT.Account.Role.id));
