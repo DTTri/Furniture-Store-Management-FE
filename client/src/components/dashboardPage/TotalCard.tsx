@@ -1,5 +1,6 @@
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import formatMoney from "../../utils/formatMoney";
 
 export default function TotalCard({
   totalCost,
@@ -37,7 +38,7 @@ export default function TotalCard({
             </div>
           )}
         </div>
-        <div className="text-[24px] font-bold text-[#232323]">{totalCost}</div>
+        <div className="text-[24px] font-bold text-[#232323]">{unit === 'Dong' ? formatMoney(totalCost.toString()) : totalCost}</div>
         <div className="text-[14px] text-[#949494]">{unit}</div>
       </div>
     </div>
