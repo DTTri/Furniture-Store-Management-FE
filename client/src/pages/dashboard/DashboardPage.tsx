@@ -257,12 +257,12 @@ export default function DashboardPage() {
     {
       id: 1,
       label: "Cash",
-      value: 7550, //reportData.paymentMethodStatistic.Cash
+      value: reportData.paymentMethodStatistic.Cash
     },
     {
       label: "QR",
       id: 2,
-      value: 330, //reportData.paymentMethodStatistic.qr
+      value: reportData.paymentMethodStatistic.qr
     },
   ];
 
