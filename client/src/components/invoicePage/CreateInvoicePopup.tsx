@@ -165,6 +165,8 @@ export default function CreateInvoicePopup({
           selectedVariant.price -
             (selectedVariant.price * promotionProduct.discount) / 100
         );
+        newRow.cost = Math.floor(newRow.discountedPrice * quatanty);
+        newRow.promotionId = curPromotion.id;
         console.log(newRow);
       }
     }
@@ -201,7 +203,7 @@ export default function CreateInvoicePopup({
         cost: row.cost,
         discountAmount: row.discount,
         unitPrice: row.discountedPrice,
-        promotionId: curPromotion?.id || 0,
+        promotionId: row.promotionId,
       };
     });
 

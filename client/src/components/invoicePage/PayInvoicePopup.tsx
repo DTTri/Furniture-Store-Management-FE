@@ -90,19 +90,23 @@ export default function PayInvoicePopup({
         return;
       }
     }
+    let flagStock = true;
     //consider the quantity of each product variant in the invoice is bigger than the available quantity in stock
     rows.forEach((row) => {
       const consideredVariant = variantList.find((variant) => variant.id === row.id);
       if (consideredVariant) {
         if (consideredVariant.Inventories && row.quantity > (consideredVariant.Inventories[0]?.available || 0)) {
-          toast("Not enough quantity in stock", { type: "error" });
-          return;
+          flagStock = false;
         }
       }
     });
+    if(!flagStock) {
+      toast("Not enough quantity in stock", { type: "error" });
+      return;
+    }
     //handle credit card payment
     try {
-      const response = await invoiceService.acceptInvoice(invoice.id);
+      const response = await invoiceService.acceptInvoice(invoice.id, "Cash");
       if (response.data.EC === 0) {
         toast("Payment success", { type: "success" });
         onPaymentSuccess(response.data.DT);
@@ -149,13 +153,13 @@ export default function PayInvoicePopup({
      }
     },
     {
-      field: "price",
+      field: "unitPrice",
       headerName: "Final Price",
       flex: 1,
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return formatMoney(Number.parseFloat(row.ProductVariant?.price).toFixed(0));
+        return formatMoney(Number.parseFloat(row.unitPrice).toFixed(0));
       }
     },
     {
@@ -177,6 +181,21 @@ export default function PayInvoicePopup({
       }
     }
   ];
+
+  const handleBankTransfer = async () => {
+    try {
+      const response = await invoiceService.bankTransfer(invoice.id, totalCost);
+      console.log(response);
+      if (response.status === 200) {
+        window.open(response.data.vpnUrl, "_blank");
+      } else {
+        toast("Bank transfer failed", { type: "error" });
+      }
+    } catch (error) {
+      toast("Bank transfer failed", { type: "error" });
+      console.error("Error bank transfer:", error);
+    }
+  }
 
   console.log(invoice.createdAt);
 
@@ -288,7 +307,7 @@ export default function PayInvoicePopup({
                     Total Cost: {formatMoney(totalCost.toString())}
                     </p>
                     <div>
-                        <Button variant="contained">QR Code</Button>
+                        <Button onClick={handleBankTransfer} variant="contained">Bank Transfer</Button>
                     </div>
                 </div>
             )}

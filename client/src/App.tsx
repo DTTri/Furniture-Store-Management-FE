@@ -54,6 +54,7 @@ import sCustomer from "./store/customerStore";
 import warrantyService from "./services/warranty.service";
 import repairService from "./services/repair.service";
 import sInvoice from "./store/invoiceStore";
+import PaymentSuccessPage from "./pages/invoice/PaymentSuccessPage";
 
 function App() {
   const today = new Date().toISOString().split("T")[0];
@@ -248,7 +249,19 @@ function App() {
         console.error("Error fetching promotions:", error);
       }
     };
-    const fetchWarranty = async () => {
+    const fetchWarranties = async () => {
+      try {
+        const res = await warrantyService.getAllWarranties();
+        if (res.data.EC === 0) {
+          sWarranty.set((v) => (v.value.warranties = res.data.DT));
+        } else {
+          console.error("Failed to fetch warranty:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching warranty:", error);
+      }
+    };
+    const fetchWarrantyOrders = async () => {
       try {
         const res = await warrantyService.getAllWarrantyOrders();
         if (res.data.EC === 0) {
@@ -294,12 +307,13 @@ function App() {
         fetchInvoices(),
         fetchProducts(),
         fetchProductVariants(),
+        fetchWarranties(),
         fetchProvider(),
         fetchCustomer(),
         fetchStaff(),
         fetchPromotion(),
         fetchInvoices(),
-        fetchWarranty(),
+        fetchWarrantyOrders(),
         fetchRepair(),
         fetchCategory(),
       ]);
@@ -328,6 +342,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/verify-token" element={<VerifyTokenPage />} />
         <Route path="/loginpage" element={<LoginPage />} />
+        <Route path="/order/vnpay_return" element={<PaymentSuccessPage />} />
         <Route
           path="/"
           element={

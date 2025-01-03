@@ -11,6 +11,7 @@ import StaffReport from "../../entities/StaffReport";
 import IncomeReport from "../../entities/IncomeReport";
 import { toast } from "react-toastify";
 import formatDate from "../../utils/formatDate";
+import formatMoney from "../../utils/formatMoney";
         
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState(0);
@@ -166,35 +167,35 @@ export default function DashboardPage() {
       align: "center",
     },
     {
-      field: "staffId",
+      field: "staffid",
       headerName: "Staff Id",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "staffName",
+      field: "staffname",
       headerName: "Staff Name",
       flex: 1.5,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "countInvoice",
+      field: "countinvoice",
       headerName: "Number of Invoice",
       flex: 0.8,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "sumTotal",
+      field: "sumtotal",
       headerName: "Total",
       flex: 0.8,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "sumQuantity",
+      field: "sumquantity",
       headerName: "Quantity",
       flex: 0.8,
       headerAlign: "center",
@@ -228,7 +229,7 @@ export default function DashboardPage() {
       align: "center",
     },
     {
-      field: "buyingprice",
+      field: "importprice",
       headerName: "Import Price",
       flex: 0.8,
       headerAlign: "center",
@@ -257,12 +258,12 @@ export default function DashboardPage() {
     {
       id: 1,
       label: "Cash",
-      value: 7550, //reportData.paymentMethodStatistic.Cash
+      value: reportData.paymentMethodStatistic.Cash
     },
     {
       label: "QR",
       id: 2,
-      value: 330, //reportData.paymentMethodStatistic.qr
+      value: reportData.paymentMethodStatistic.qr
     },
   ];
 
@@ -355,7 +356,7 @@ export default function DashboardPage() {
                       color: "gray",
                     },
                     valueFormatter: (value) =>
-                      `${value.label} - ${value.value} USD`,
+                      `${value.label}: ${formatMoney(value.value.toString())} USD`,
                   },
                 ]}
                 height={230}

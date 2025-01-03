@@ -79,6 +79,13 @@ export default function InvoicePage() {
       align: "center",
     },
     {
+      field: "status",
+      headerName: "Status",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
       field: "staffId",
       headerName: "Staff ID",
       flex: 0.6,

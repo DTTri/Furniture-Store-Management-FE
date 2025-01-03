@@ -3,7 +3,7 @@ type Report = {
   totalRevenue: number;
   totalExpense: number;
   paymentMethodStatistic: {
-    cash: number;
+    Cash: number;
     qr: number;
   };
   currentPromotion: {
