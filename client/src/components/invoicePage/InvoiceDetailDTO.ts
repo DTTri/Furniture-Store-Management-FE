@@ -7,6 +7,7 @@ type InvoiceDetailDTO = {
     price: number,
     discount: number,
     discountedPrice: number,
+    promotionId?: number,
 }
 
 export default InvoiceDetailDTO;
