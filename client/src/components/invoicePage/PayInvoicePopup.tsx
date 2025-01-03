@@ -90,16 +90,20 @@ export default function PayInvoicePopup({
         return;
       }
     }
+    let flagStock = true;
     //consider the quantity of each product variant in the invoice is bigger than the available quantity in stock
     rows.forEach((row) => {
       const consideredVariant = variantList.find((variant) => variant.id === row.id);
       if (consideredVariant) {
         if (consideredVariant.Inventories && row.quantity > (consideredVariant.Inventories[0]?.available || 0)) {
-          toast("Not enough quantity in stock", { type: "error" });
-          return;
+          flagStock = false;
         }
       }
     });
+    if(!flagStock) {
+      toast("Not enough quantity in stock", { type: "error" });
+      return;
+    }
     //handle credit card payment
     try {
       const response = await invoiceService.acceptInvoice(invoice.id, "Cash");
