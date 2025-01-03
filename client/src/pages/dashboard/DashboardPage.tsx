@@ -11,6 +11,7 @@ import StaffReport from "../../entities/StaffReport";
 import IncomeReport from "../../entities/IncomeReport";
 import { toast } from "react-toastify";
 import formatDate from "../../utils/formatDate";
+import formatMoney from "../../utils/formatMoney";
         
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState(0);
@@ -355,7 +356,7 @@ export default function DashboardPage() {
                       color: "gray",
                     },
                     valueFormatter: (value) =>
-                      `${value.label} - ${value.value} USD`,
+                      `${value.label}: ${formatMoney(value.value.toString())} USD`,
                   },
                 ]}
                 height={230}

@@ -1,7 +1,7 @@
 import ProductVariant from "./ProductVariant";
 
 type InvoiceDetail = {
-    id: string,
+    id: number,
     variantId: string,
     invoiceId: string,
     quantity: number,

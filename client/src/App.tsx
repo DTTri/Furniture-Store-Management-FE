@@ -236,7 +236,19 @@ function App() {
         console.error("Error fetching promotions:", error);
       }
     };
-    const fetchWarranty = async () => {
+    const fetchWarranties = async () => {
+      try {
+        const res = await warrantyService.getAllWarranties();
+        if (res.data.EC === 0) {
+          sWarranty.set((v) => (v.value.warranties = res.data.DT));
+        } else {
+          console.error("Failed to fetch warranty:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching warranty:", error);
+      }
+    };
+    const fetchWarrantyOrders = async () => {
       try {
         const res = await warrantyService.getAllWarrantyOrders();
         if (res.data.EC === 0) {
@@ -282,12 +294,13 @@ function App() {
         fetchInvoices(),
         fetchProducts(),
         fetchProductVariants(),
+        fetchWarranties(),
         fetchProvider(),
         fetchCustomer(),
         fetchStaff(),
         fetchPromotion(),
         fetchInvoices(),
-        fetchWarranty(),
+        fetchWarrantyOrders(),
         fetchRepair(),
         fetchCategory(),
       ]);
