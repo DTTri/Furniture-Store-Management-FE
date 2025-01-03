@@ -3,7 +3,6 @@ import GoodsReceiptDetail from "../../entities/GoodsReceiptDetail";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { goodsReceiptService } from "../../services";
-import { formatDate } from "date-fns";
 import formatMoney from "../../utils/formatMoney";
 
 export default function DoubleCheckedGoodsReceipt({

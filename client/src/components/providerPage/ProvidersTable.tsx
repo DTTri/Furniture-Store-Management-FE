@@ -6,7 +6,6 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import InfoIcon from "@mui/icons-material/Info";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
 export default function ProvidersTable({

@@ -8,7 +8,7 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { InvoiceDetailTable } from "../../components";
 import CreateInvoicePopup from "../../components/invoicePage/CreateInvoicePopup";
