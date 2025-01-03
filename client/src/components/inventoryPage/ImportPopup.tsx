@@ -14,10 +14,11 @@ import {
   goodsReceiptService,
   productService,
   providerService,
-  variantService,
 } from "../../services";
 import CreateGoodsReceiptDTO from "./CreateGoodsReceiptDTO";
 import { toast } from "react-toastify";
+import { sVariant } from "../../store";
+import formatMoney from "../../utils/formatMoney";
 
 interface ReceiptTableRow {
   index: number;
@@ -33,7 +34,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
   const [providers, setProviders] = useState<Product[]>([]);
   const [providerId, setProviderId] = useState(0);
   const [products, setProducts] = useState<Product[]>([]);
-  const [productVariants, setProductVariants] = useState<ProductVariant[]>([]);
+  const productVariants = sVariant.use((v) => v.variants);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     null
@@ -46,22 +47,12 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
   const [showDataGrid, setShowDataGrid] = useState(true); // State to control unmount and mount of DataGrid
 
   useEffect(() => {
-    const fetchProductsAndVariants = async () => {
-      const response = Promise.all([
-        productService.getAllProducts(),
-        variantService.getAllVariants(),
-      ]);
-      const [productsResponse, variantsResponse] = await response;
+    const fetchProducts = async () => {
+      const productsResponse = await productService.getAllProducts();
       if (productsResponse.data.EC === 0) {
         setProducts(productsResponse.data.DT);
       } else {
         console.error("Failed to fetch products:", productsResponse.data.EM);
-      }
-      if (variantsResponse.data.EC === 0) {
-        setProductVariants(variantsResponse.data.DT);
-        console.log(variantsResponse.data.DT);
-      } else {
-        console.error("Failed to fetch variants:", variantsResponse.data.EM);
       }
     };
     const fetchProviders = async () => {
@@ -80,7 +71,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       }
     };
 
-    fetchProductsAndVariants();
+    fetchProducts();
     fetchProviders();
   }, []);
 
@@ -157,18 +148,36 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
       field: "index",
       headerName: "STT",
       flex: 0.5,
+      headerAlign: "center",
+      align: "center",
     },
-    { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "productName", headerName: "Product Name", flex: 2 },
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "productName",
+      headerName: "Product Name",
+      flex: 1.8,
+      headerAlign: "center",
+      align: "center",
+    },
     {
       field: "sku",
       headerName: "SKU",
       flex: 1,
+      headerAlign: "center",
+      align: "center",
     },
     {
       field: "quantity",
       headerName: "Quantity",
-      flex: 2,
+      flex: 0.7,
+      headerAlign: "center",
+      align: "center",
       renderCell: (params) => (
         <input
           type="number"
@@ -177,23 +186,36 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
             handleQuantityChange(params.row.id, parseInt(e.target.value))
           }
           value={params.row.quantity}
+          className="text-center w-full"
         />
       ),
     },
     {
       field: "buyingPrice",
       headerName: "Buying Price",
-      flex: 2,
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.buyingPrice.toString());
+      },
     },
     {
       field: "cost",
       headerName: "Cost",
-      flex: 1,
+      flex: 1.2,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.cost.toString());
+      },
     },
     {
       field: "actions",
       type: "actions",
       flex: 0.5,
+      headerAlign: "center",
+      align: "center",
       getActions: (params: GridRowParams) => [
         <GridActionsCellItem
           icon={<DeleteIcon />}
@@ -214,6 +236,19 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
   }, [rows, shippingCost]);
 
   const handleImport = async () => {
+    // check if shipping cost is number
+    if (
+      isNaN(shippingCost) ||
+      shippingCost < 0 ||
+      !Number.isInteger(shippingCost)
+    ) {
+      toast("Please enter shipping cost", { type: "error" });
+      return;
+    }
+    if (isNaN(totalCost) || totalCost < 0) {
+      toast("Invalid quantity", { type: "error" });
+      return;
+    }
     const goodsReceiptDetailsData = rows.map((row) => ({
       variantId: row.id,
       quantity: row.quantity,
@@ -234,7 +269,9 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
         toast("Import goods receipt successfully", { type: "success" });
         onClose();
       } else {
-        toast("Failed to import goods receipt", { type: "error" });
+        toast("Failed to import goods receipt: " + response.data.EM, {
+          type: "error",
+        });
         console.error("Failed to import goods receipt:", response);
       }
     } catch (error) {
@@ -245,11 +282,11 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white flex justify-between flex-wrap gap-4 relative rounded-xl p-4 w-2/3 min-w-[420px] h-[80vh] max-h-[80vh] overflow-auto">
+      <div className="popup bg-white flex justify-between flex-wrap relative rounded-xl p-4 w-2/3 min-w-[420px] h-[80vh] max-h-[80vh] overflow-auto">
         <button className="absolute top-2 right-2" onClick={onClose}>
           x
         </button>
-        <div className="add-variant-to-import basis-1/3 min-w-96 border-r-2 flex flex-col gap-4  px-4">
+        <div className="add-variant-to-import basis-1/4 min-w-80 border-r-2 flex flex-col gap-4  px-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="provider" className="text-center font-bold text-lg">
               Choose provider
@@ -309,7 +346,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
                 <option value="">Choose variant</option>
                 {filteredProductVariants.map((variant) => (
                   <option key={variant.id} value={variant.id}>
-                    {`${variant.color} - ${variant.size}`}
+                    {`${variant.SKU} - ${variant.color} - ${variant.size}`}
                   </option>
                 ))}
               </select>
@@ -326,7 +363,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
             </form>
           </div>
         </div>
-        <div className="imported-variants basis-[58%] h-full flex flex-col items-center gap-3">
+        <div className="imported-variants flex-1 h-full flex flex-col items-center gap-3">
           <h2 className="text-center text-xl font-bold">Goods Receipt</h2>
 
           <div className="table-container w-[98%] h-full overflow-hidden">
@@ -364,8 +401,11 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               min={0}
               onChange={(e) => setShippingCost(parseInt(e.target.value))}
               id="shippingCostInput"
+              value={shippingCost}
             />
-            <h3 className="text-lg font-semibold">Total cost: {totalCost}</h3>
+            <h3 className="text-lg font-semibold">
+              Total cost: {formatMoney(totalCost.toString())}
+            </h3>
           </div>
           <div className="buttons-container w-full flex justify-end gap-4">
             <Button

@@ -6,6 +6,8 @@ import http from "../../api/http";
 import Customer from "../../entities/Customer";
 import { Button } from "@mui/material";
 import { customerService } from "../../services";
+import printHTML from "../../utils/PrintHTML";
+import formatMoney from "../../utils/formatMoney";
 
 export default function InvoiceDetailTable({
   onClose,
@@ -95,7 +97,7 @@ export default function InvoiceDetailTable({
       align: "center",
       valueGetter: (value, row) => {
         console.log(value);
-        return row.unitPrice;
+        return formatMoney(row.unitPrice.toString());
       },
     },
     {
@@ -104,6 +106,10 @@ export default function InvoiceDetailTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (value, row) => {
+        console.log(value);
+        return formatMoney(row.cost.toString());
+      },
     },
   ];
   const rows = selectedInvoice?.InvoiceDetails.map((item, index) => {
@@ -131,19 +137,28 @@ export default function InvoiceDetailTable({
               variant="contained"
               color="primary"
               style={{ textTransform: "none", fontSize: "14px" }}
+              onClick={() => {
+                console.log(rows);
+                printHTML(
+                  "invoice-detail",
+                  rows?.map((row) => {
+                    return {
+                      Index: row.index,
+                      SKU: row.SKU,
+                      Quantity: row.quantity,
+                      "Discounted %": (row.discountedAmount || 0) + "%",
+                      Price: row.unitPrice,
+                      Cost: row.cost,
+                    };
+                  }) || []
+                );
+              }}
             >
-              Xem phiếu bảo hành
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ textTransform: "none", fontSize: "14px" }}
-            >
-              In hóa đơn
+              Print Invoice
             </Button>
           </div>
         </div>
-        <div className="w-full px-3 flex flex-row font-semibold">
+        <div className="invoice-detail full px-3 flex flex-row font-semibold">
           <div className="col-1 mr-[250px]">
             <p>
               Created Date:{" "}
@@ -190,9 +205,9 @@ export default function InvoiceDetailTable({
             rowSelection={false}
           />
         </div>
-        <div className="w-full px-4 flex flex-row mb-1 justify-end">
+        <div className="invoice-detail w-full px-4 flex flex-row mb-1 justify-end">
           <p className="font-bold text-[20px] text-red-600 text-nowrap text-end">
-            Total Cost: {Math.floor(invoice.totalCost)}
+            Total Cost: {formatMoney(Math.floor(invoice.totalCost).toString())}
           </p>
         </div>
       </div>

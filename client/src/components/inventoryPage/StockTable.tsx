@@ -1,5 +1,6 @@
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { Product } from "../../entities";
+import { sCategory } from "../../store";
 
 export default function StockTable({ products }: { products: Product[] }) {
   // type Product = {
@@ -17,6 +18,7 @@ export default function StockTable({ products }: { products: Product[] }) {
   //     sold: number;
   //     catelogueId: string;
   //   };
+  const categories = sCategory.use((v) => v.categories);
   const columns: GridColDef[] = [
     {
       field: "index",
@@ -35,16 +37,23 @@ export default function StockTable({ products }: { products: Product[] }) {
     {
       field: "name",
       headerName: "Name",
-      flex: 1,
+      flex: 2,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "category",
+      field: "catalogueId",
       headerName: "Category",
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter(_, row) {
+        // const category = categories.find(
+        //   (category) => category.id === row.catalogueId
+        // );
+        // return category ? category.name : "";
+        return categories[row.catalogueId - 1].name;
+      },
     },
     {
       field: "price",
@@ -91,13 +100,6 @@ export default function StockTable({ products }: { products: Product[] }) {
     {
       field: "sold",
       headerName: "Sold",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "catelogueId",
-      headerName: "Catelogue ID",
       flex: 1,
       headerAlign: "center",
       align: "center",

@@ -5,6 +5,7 @@ import staffService from "../../services/staff.service";
 import StaffsTable from "../../components/staffPage/StaffsTable";
 import AddStaffPopup from "../../components/staffPage/AddStaffPopup";
 import { sStaff } from "../../store";
+import { toast } from "react-toastify";
 
 export default function StaffPage() {
   const staffs = sStaff.use((v) => v.staffs);
@@ -21,11 +22,13 @@ export default function StaffPage() {
             return p;
           })
         );
-        console.log("Successfully deleted staff");
+        toast.success("Staff deleted successfully");
       } else {
+        toast.error("Failed to delete staff");
       }
     } catch (error) {
-      console.error("Error deleting staff:", error);
+      console.log(error);
+      toast.error("Failed to delete staff");
     }
   };
   const [isAddStaffPopupOpen, setIsAddStaffPopupOpen] = useState(false);

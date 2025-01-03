@@ -24,18 +24,32 @@ export default function AddStaffPopup({
   const [startDate, setStartDate] = useState(staff?.startDate || "");
   const [phone, setPhone] = useState(staff?.phone || "");
   const [email, setEmail] = useState(staff?.email || "");
-  const [role, setRole] = useState(1);
+  const [role, setRole] = useState(2);
 
   const validateInputs = () => {
-    if (!fullname || !birth || !idNumber || !startDate || !phone || !email) {
+    console.log(fullname, birth, idNumber, startDate, phone, email);
+    if (
+      !fullname.trim() ||
+      !birth ||
+      !idNumber.trim() ||
+      !startDate ||
+      !phone.trim() ||
+      !email.trim()
+    ) {
       toast.error("Please fill in all fields");
       return false;
     }
-    if (
-      !/^\d{10}$/.test(phone) ||
-      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
-    ) {
-      toast.error("Invalid phone or email");
+    if (!/^\d{10}$/.test(phone)) {
+      toast.error("Invalid phone number");
+      return false;
+    }
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+      toast.error("Invalid email");
+      return false;
+    }
+    // idNumber must be decimals
+    if (!/^\d+$/.test(idNumber)) {
+      toast.error("ID Number must be a number");
       return false;
     }
     return true;
@@ -47,13 +61,13 @@ export default function AddStaffPopup({
     }
     try {
       const newStaff: AddStaffDTO = {
-        fullname,
+        fullname: fullname.trim(),
         birth: birth.split("/").reverse().join("-"),
         gender: gender.toLocaleLowerCase(),
-        idNumber,
+        idNumber: idNumber.trim(),
         startDate: startDate.split("/").reverse().join("-"),
-        phone,
-        email,
+        phone: phone.trim(),
+        email: email.trim(),
         role,
       };
       console.log(newStaff);
@@ -63,7 +77,7 @@ export default function AddStaffPopup({
         onStaffCreated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to add staff");
+        toast.error("Failed to add staff: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to add staff");
@@ -77,13 +91,13 @@ export default function AddStaffPopup({
     }
     try {
       const updatedStaff: UpdateStaffDTO = {
-        fullname,
+        fullname: fullname.trim(),
         birth: birth.split("/").reverse().join("-"),
         gender: gender.toLocaleLowerCase(),
-        idNumber,
+        idNumber: idNumber.trim(),
         startDate: startDate.split("/").reverse().join("-"),
-        phone,
-        email,
+        phone: phone.trim(),
+        email: email.trim(),
       };
       const response = await staffService.updateStaff(staff.id, updatedStaff);
       console.log(response);
@@ -92,7 +106,7 @@ export default function AddStaffPopup({
         onStaffUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update staff");
+        toast.error("Failed to update staff: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to update staff");
@@ -129,7 +143,7 @@ export default function AddStaffPopup({
               onChange={(e) => {
                 setBirth(e.target.value);
               }}
-              defaultValue={staff?.birth}
+              defaultValue={birth}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -217,10 +231,10 @@ export default function AddStaffPopup({
                 }}
                 defaultValue={role}
               >
-                <option value={1}>Role 1</option>
-                <option value={2}>Role 2</option>
-                <option value={3}>Role 3</option>
-                <option value={4}>Role 4</option>
+                <option value={2}>Manager</option>
+                <option value={3}>Sale Staff</option>
+                <option value={4}>Inventory Staff</option>
+                <option value={5}>Repair Staff</option>
               </select>
             </div>
           )}

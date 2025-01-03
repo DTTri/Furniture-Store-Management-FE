@@ -73,11 +73,12 @@ export default function AddProductPopup({
       warranty,
       image: key !== "" ? uploadedImage : undefined,
     };
+    onClose();
+
     try {
       const response = await productService.createProduct(newProductDTO);
       if (response.data.EC === 0) {
         onProductCreated(response.data.DT);
-        onClose();
       } else {
         console.error("Failed to add product:", response.data.EM);
       }
@@ -127,6 +128,8 @@ export default function AddProductPopup({
         key !== "" ? "https://seuit-qlnt.s3.amazonaws.com/" + key : undefined,
     };
     console.log(newProductDTO);
+    onClose();
+
     try {
       const response = await productService.updateProduct(
         product?.id,
@@ -136,7 +139,6 @@ export default function AddProductPopup({
         console.log(response.data.DT);
         toast("Product updated successfully", { type: "success" });
         onProductUpdated(response.data.DT);
-        onClose();
       } else {
         toast(response.data.EM, { type: "error" });
         console.error("Failed to update product:", response.data.EM);
@@ -194,7 +196,7 @@ export default function AddProductPopup({
             <img
               src={image !== "" ? image : "/images/chair.jpg"}
               alt="product"
-              className="w-full"
+              className="w-full max-h-[250px] object-contain"
             />
             <input
               type="file"

@@ -18,6 +18,8 @@ import { ProductVariant } from "../../entities";
 import Invoice from "../../entities/Invoice";
 import { invoiceService, variantService } from "../../services";
 import InvoiceDetailDTO from "./InvoiceDetailDTO";
+import formatMoney from "../../utils/formatMoney";
+import LoadingProgress from "../LoadingProgress";
 
 export default function PayInvoicePopup({
   onClose,
@@ -71,6 +73,10 @@ export default function PayInvoicePopup({
     Promise.all([fetchInvoiceData(), fetchVariants()]);
   }, []);
 
+  if(!selectedInvoice || !variantList) {
+    return <LoadingProgress />;
+  }
+
   console.log(rows);
 
   const handleOnPayInvoice = async () => {
@@ -84,19 +90,23 @@ export default function PayInvoicePopup({
         return;
       }
     }
+    let flagStock = true;
     //consider the quantity of each product variant in the invoice is bigger than the available quantity in stock
     rows.forEach((row) => {
       const consideredVariant = variantList.find((variant) => variant.id === row.id);
       if (consideredVariant) {
         if (consideredVariant.Inventories && row.quantity > (consideredVariant.Inventories[0]?.available || 0)) {
-          toast("Not enough quantity in stock", { type: "error" });
-          return;
+          flagStock = false;
         }
       }
     });
+    if(!flagStock) {
+      toast("Not enough quantity in stock", { type: "error" });
+      return;
+    }
     //handle credit card payment
     try {
-      const response = await invoiceService.acceptInvoice(invoice.id);
+      const response = await invoiceService.acceptInvoice(invoice.id, "Cash");
       if (response.data.EC === 0) {
         toast("Payment success", { type: "success" });
         onPaymentSuccess(response.data.DT);
@@ -114,7 +124,7 @@ export default function PayInvoicePopup({
     {
       field: "SKU",
       headerName: "SKU",
-      flex: 1,
+      flex: 0.7,
       headerAlign: "center",
       align: "center",
       editable: true,
@@ -149,13 +159,13 @@ export default function PayInvoicePopup({
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return Number.parseFloat(row.ProductVariant?.price).toFixed(0);
+        return formatMoney(Number.parseFloat(row.ProductVariant?.price).toFixed(0));
       }
     },
     {
       field: "quantity",
       headerName: "Quantity",
-      flex: 0.8,
+      flex: 0.5,
       headerAlign: "center",
       align: "center",
       editable: true,
@@ -167,10 +177,27 @@ export default function PayInvoicePopup({
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return Number.parseFloat(row.cost).toFixed(0);
+        return formatMoney(row.cost.toString());  
       }
     }
   ];
+
+  const handleBankTransfer = async () => {
+    try {
+      const response = await invoiceService.bankTransfer(invoice.id, totalCost);
+      console.log(response);
+      if (response.status === 200) {
+        window.open(response.data.vpnUrl, "_blank");
+      } else {
+        toast("Bank transfer failed", { type: "error" });
+      }
+    } catch (error) {
+      toast("Bank transfer failed", { type: "error" });
+      console.error("Error bank transfer:", error);
+    }
+  }
+
+  console.log(invoice.createdAt);
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -277,10 +304,10 @@ export default function PayInvoicePopup({
             ): (
                 <div className="w-full flex flex-row items-center gap-4">
                     <p className="text-[18px] text-[#D91316] font-bold">
-                    Total Cost: {Math.round(totalCost)}
+                    Total Cost: {formatMoney(totalCost.toString())}
                     </p>
                     <div>
-                        <Button variant="contained">QR Code</Button>
+                        <Button onClick={handleBankTransfer} variant="contained">Bank Transfer</Button>
                     </div>
                 </div>
             )}

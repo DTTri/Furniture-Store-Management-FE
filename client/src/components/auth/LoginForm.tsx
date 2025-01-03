@@ -15,6 +15,7 @@ import LoginDTO from "../../entities/DTO/LoginDTO";
 import authenService from "../../services/authen.service";
 import { sUser } from "../../store";
 import LoadingProgress from "../LoadingProgress";
+import { permissionService } from "../../services";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -30,7 +31,18 @@ export default function LoginForm() {
   }, []);
 
   const nav = useNavigate();
-
+  const fetchUserPermissions = async (role: number) => {
+    try {
+      const res = await permissionService.getPermissionsByRole(role);
+      if (res.data.EC === 0) {
+        sUser.set((v) => (v.value.permissions = res.data.DT));
+      } else {
+        console.error("Failed to fetch user permissions:", res.data.EM);
+      }
+    } catch (error) {
+      console.error("Error fetching user permissions:", error);
+    }
+  };
   const handleOnLogin = async () => {
     setLoading(true);
     try {
@@ -39,7 +51,9 @@ export default function LoginForm() {
         password: password,
       };
       const response = await authenService.login(loginDto);
+      console.log("Login response:", response);
       if (response.data.EC === 0) {
+        fetchUserPermissions(response.data.DT.role);
         if (rememberMe) {
           localStorage.setItem("token", response.data.DT.token);
           localStorage.setItem("id", response.data.DT.staff.id);
@@ -49,12 +63,11 @@ export default function LoginForm() {
         }
         sUser.set((prev) => (prev.value.token = response.data.DT.token));
         sUser.set((prev) => (prev.value.info = response.data.DT.staff));
+        sUser.set((prev) => (prev.value.role = response.data.DT.role));
         setLoading(false);
-        toast.success("Login successfully!");
         nav("/");
       } else {
-        toast.error("Failed to login!");
-        console.log(response);
+        toast.error("Failed to login: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to login!: " + error);
@@ -66,7 +79,7 @@ export default function LoginForm() {
     <div
       className={`duration-700 max-w-[420px] w-full bg-white shadow-xl ${
         show ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
-      } px-9 py-11 flex flex-col mx-auto rounded-xl transform transition duration-500`}
+      } px-9 py-11 flex flex-col mx-auto rounded-3xl transform transition duration-500`}
       style={{ transition: "all 0.7s ease" }}
     >
       <div className="  bg-transparent bg-white rounded-[24px]  ">

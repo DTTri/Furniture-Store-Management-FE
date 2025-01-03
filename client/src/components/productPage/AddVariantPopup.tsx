@@ -69,7 +69,7 @@ export default function AddVariantPopup({
         onVariantCreated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to add variant");
+        toast.error("Failed to add variant: " + response.data.EM);
         console.error("Failed to add variant:", response.data.EM);
       }
     } catch (error) {
@@ -122,7 +122,7 @@ export default function AddVariantPopup({
         onVariantUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update variant");
+        toast.error("Failed to update variant: " + response.data.EM);
         console.error("Failed to update variant:", response.data.EM);
       }
     } catch (error) {
@@ -148,34 +148,40 @@ export default function AddVariantPopup({
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="buyingPrice">Buying Price</label>
-            <input
-              type="number"
-              id="addVariantBuyingPriceInput"
-              name="buyingPrice"
-              placeholder="Buying Price"
-              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              defaultValue={buyingPrice}
-              min={0}
-              onChange={(e) => setBuyingPrice(Number(e.target.value))}
-              style={{
-                appearance: "textfield",
-              }}
-              required
-            />
+            <div className="flex gap-2 items-center">
+              <input
+                type="number"
+                id="addVariantBuyingPriceInput"
+                name="buyingPrice"
+                placeholder="Buying Price"
+                className=" border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                defaultValue={buyingPrice}
+                min={0}
+                onChange={(e) => setBuyingPrice(Number(e.target.value))}
+                style={{
+                  appearance: "textfield",
+                }}
+                required
+              />
+              <span>VND</span>
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="price">Price</label>
-            <input
-              type="number"
-              id="addVariantPriceInput"
-              name="price"
-              placeholder="Price"
-              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              defaultValue={price}
-              min={0}
-              onChange={(e) => setPrice(Number(e.target.value))}
-              required
-            />
+            <div className="flex gap-2 items-center">
+              <input
+                type="number"
+                id="addVariantPriceInput"
+                name="price"
+                placeholder="Price"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                defaultValue={price}
+                min={0}
+                onChange={(e) => setPrice(Number(e.target.value))}
+                required
+              />
+              <span>VND</span>
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="color">Color</label>

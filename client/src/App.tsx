@@ -25,10 +25,12 @@ import { useEffect } from "react";
 import {
   categoryService,
   customerService,
+  invoiceService,
   permissionService,
   productService,
   promotionService,
   providerService,
+  variantService,
 } from "./services";
 import {
   sCategory,
@@ -39,6 +41,7 @@ import {
   sRepair,
   sStaff,
   sUser,
+  sVariant,
   sWarranty,
 } from "./store";
 import reportService from "./services/report.service";
@@ -50,8 +53,18 @@ import http from "./api/http";
 import sCustomer from "./store/customerStore";
 import warrantyService from "./services/warranty.service";
 import repairService from "./services/repair.service";
+import sInvoice from "./store/invoiceStore";
+import PaymentSuccessPage from "./pages/invoice/PaymentSuccessPage";
 
 function App() {
+  const today = new Date().toISOString().split("T")[0];
+  const firstDayOfMonth = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    1
+  )
+    .toISOString()
+    .split("T")[0];
   sUser.set(
     (v) =>
       (v.value.token =
@@ -73,13 +86,11 @@ function App() {
         console.error("Error fetching permissions:", error);
       }
     };
+
     const fetchGeneralReportByDate = async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1)
-        .toISOString()
-        .split("T")[0];
       try {
-        const res = await reportService.getReprotByDate(firstDayOfYear, today);
+        console.log(firstDayOfMonth, today);
+        const res = await reportService.getReprotByDate(firstDayOfMonth, today);
         if (res.data.EC === 0) {
           console.log("report data successfully", res.data.DT);
           sReport.set((prev) => (prev.value.reportByDate = res.data.DT));
@@ -91,13 +102,9 @@ function App() {
       }
     };
     const fetchStaffReportByDate = async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1)
-        .toISOString()
-        .split("T")[0];
       try {
         const res = await reportService.getStaffReprotByDate(
-          firstDayOfYear,
+          firstDayOfMonth,
           today
         );
         if (res.data.EC === 0) {
@@ -137,11 +144,24 @@ function App() {
         if (res.data.EC === 0) {
           console.log("user data successfully", res.data.DT);
           sUser.set((v) => (v.value.info = res.data.DT));
+          sUser.set((v) => (v.value.role = res.data.DT.Account.Role.id));
         } else {
           console.error("Failed to fetch user:", res.data.EM);
         }
       } catch (error) {
         console.error("Error fetching user:", error);
+      }
+    };
+    const fetchInvoices = async () => {
+      try {
+        const response = await invoiceService.getAllInvoice();
+        if (response.data.EC === 0) {
+          sInvoice.set((prev) => (prev.value.invoices = response.data.DT));
+        } else {
+          console.log("Failed to fetch invoices:", response.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
       }
     };
     const fetchProducts = async () => {
@@ -154,6 +174,18 @@ function App() {
         }
       } catch (error) {
         console.error("Error fetching products:", error);
+      }
+    };
+    const fetchProductVariants = async () => {
+      try {
+        const res = await variantService.getAllVariants();
+        if (res.data.EC === 0) {
+          sVariant.set((v) => (v.value.variants = res.data.DT));
+        } else {
+          console.error("Failed to fetch variants:", res.data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching variants:", error);
       }
     };
     const fetchProvider = async () => {
@@ -242,16 +274,19 @@ function App() {
     };
     const fetchData = async () => {
       await Promise.all([
+        fetchUserById(),
         fetchPermissions(),
         fetchGeneralReportByDate(),
         fetchStaffReportByDate(),
         fetchIncomeReportByDate(),
-        fetchUserById(),
+        fetchInvoices(),
         fetchProducts(),
+        fetchProductVariants(),
         fetchProvider(),
         fetchCustomer(),
         fetchStaff(),
         fetchPromotion(),
+        fetchInvoices(),
         fetchWarranty(),
         fetchRepair(),
         fetchCategory(),
@@ -260,7 +295,7 @@ function App() {
     if (token !== "" && http.getAuthHeader() !== "") {
       fetchData();
     }
-  }, [token]);
+  }, [token, firstDayOfMonth, today]);
 
   return (
     <>
@@ -281,6 +316,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/verify-token" element={<VerifyTokenPage />} />
         <Route path="/loginpage" element={<LoginPage />} />
+        <Route path="/order/vnpay_return" element={<PaymentSuccessPage />} />
         <Route
           path="/"
           element={

@@ -8,17 +8,20 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { useEffect, useState } from "react";
 import { InvoiceDetailTable } from "../../components";
 import CreateInvoicePopup from "../../components/invoicePage/CreateInvoicePopup";
 import Invoice from "../../entities/Invoice";
-import invoiceService from "../../services/invoiceService";
 import PayInvoicePopup from "../../components/invoicePage/PayInvoicePopup";
+import sInvoice from "../../store/invoiceStore";
+import LoadingProgress from "../../components/LoadingProgress";
+import formatMoney from "../../utils/formatMoney";
 
 export default function InvoicePage() {
   const [isCreateInvoicePopupOpen, setIsCreateInvoicePopupOpen] =
     useState<boolean>(false);
+  const invoices = sInvoice.use((state) => state.invoices);
   const [invoiceList, setInvoiceList] = useState<Invoice[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
@@ -35,39 +38,72 @@ export default function InvoicePage() {
   // };
 
   useEffect(() => {
-    const fetchInvoices = async () => {
-      try {
-        const response = await invoiceService.getAllInvoice();
-        if (response.data.EC === 0) {
-          const invoices = response.data.DT.map((invoice: object, index: number) => {
-            return {
-              ...invoice,
-              index: index + 1,
-            };
-          });
-          setInvoiceList(invoices);
-        } else {
-          console.log("Failed to fetch invoices:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching invoices:", error);
-      }
-    };
-    fetchInvoices();
-  }, []);
+    if (invoices) {
+      const filteredInvoices = invoices.map((invoice, index) => {
+        return {
+          ...invoice,
+          index: index + 1,
+        };
+      });
+      setInvoiceList(filteredInvoices || []);
+    }
+  }, [invoices]);
+
+  if (!invoiceList) {
+    return <LoadingProgress />;
+  }
 
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "STT",
+      headerName: "Index",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
       width: 15,
     },
+
+    {
+      field: "id",
+      headerName: "Invoice ID",
+      flex: 0.6,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "customerId",
+      headerName: "Customer ID",
+      flex: 0.6,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "staffId",
+      headerName: "Staff ID",
+      flex: 0.6,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "totalCost",
+      headerName: "Total",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.totalCost.toString());
+      },
+    },
     {
       field: "createdAt",
-      headerName: "Ngày tạo",
+      headerName: "Created Date",
       flex: 1,
       valueFormatter: (params) => {
         const dateTime = format(new Date(params), "dd/MM/yyyy '--' HH:mm:ss");
@@ -77,37 +113,9 @@ export default function InvoicePage() {
       align: "center",
     },
     {
-      field: "id",
-      headerName: "Mã hóa đơn",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "customerId",
-      headerName: "Mã nhân viên",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "staffId",
-      headerName: "Mã khách hàng",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "totalCost",
-      headerName: "Tổng tiền",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
       field: "actions",
       type: "actions",
-      flex: 0.5,
+      flex: 0.2,
       getActions: (params: GridRowParams) => {
         return params.row.status === "paid" || params.row.status === "canceled"
           ? [
@@ -179,9 +187,25 @@ export default function InvoicePage() {
             setSelectedInvoice(null);
           }}
           onInvoiceCreated={(createdInvoice: Invoice) => {
+            sInvoice.set((v) => {
+              v.value.invoices.push(createdInvoice);
+            });
             setInvoiceList([...invoiceList, createdInvoice]);
+            console.log("createdInvoice", createdInvoice);
             setIsCreateInvoicePopupOpen(false);
             setSelectedInvoice(createdInvoice);
+            setIsPayInvoicePopupOpen(true);
+          }}
+          onInvoiceUpdated={(updatedInvoice: any) => {
+            sInvoice.set((v) => {
+              v.value.invoices = v.value.invoices.map((invoice) =>
+                invoice.id === updatedInvoice.id ? updatedInvoice : invoice
+              );
+            });
+            setInvoiceList(invoiceList.map((invoice) => invoice.id === updatedInvoice.id ? updatedInvoice : invoice)); 
+            setIsCreateInvoicePopupOpen(false);
+            console.log("updatedInvoice", updatedInvoice);
+            setSelectedInvoice(updatedInvoice);
             setIsPayInvoicePopupOpen(true);
           }}
           updatedInvoice={selectedInvoice}

@@ -25,11 +25,19 @@ class invoiceService {
   async deleteInvoice(id: number) {
     return http.delete(this.getURI(`delete-catalogue/${id}`));
   }
-  async acceptInvoice(id: number) {
-    return http.put(this.getURI(`accept-invoice/${id}`), {});
+  async acceptInvoice(id: number, paymentMethod: string) {
+    return http.put(this.getURI(`accept-invoice/${id}`), { paymentMethod });
   }
   async rejectInvoice(id: number) {
     return http.put(this.getURI(`reject-invoice/${id}`), {});
+  }
+  async bankTransfer(id: number, paidAmount: number) {
+    return http.post(`order-vnpay/create_payment_url`, {
+      "invoiceId": id,
+      "amount": paidAmount,
+      "bankCode": "VNBANK",
+      "language": "vn"
+    });
   }
 }
 

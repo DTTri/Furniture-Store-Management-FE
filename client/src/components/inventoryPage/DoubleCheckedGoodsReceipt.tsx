@@ -3,6 +3,8 @@ import GoodsReceiptDetail from "../../entities/GoodsReceiptDetail";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { goodsReceiptService } from "../../services";
+import { formatDate } from "date-fns";
+import formatMoney from "../../utils/formatMoney";
 
 export default function DoubleCheckedGoodsReceipt({
   onClose,
@@ -44,11 +46,25 @@ export default function DoubleCheckedGoodsReceipt({
       align: "center",
     },
     {
-      field: "variantId",
-      headerName: "VariantID",
+      field: "productName",
+      headerName: "Product",
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        console.log(row);
+        return row.ProductVariant.Product.name;
+      },
+    },
+    {
+      field: "variant",
+      headerName: "Variant",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (_, row) => {
+        return `${row.ProductVariant.SKU} - ${row.ProductVariant.color} - ${row.ProductVariant.size}`;
+      },
     },
     {
       field: "buyingPrice",
@@ -56,6 +72,9 @@ export default function DoubleCheckedGoodsReceipt({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.buyingPrice.toString());
+      },
     },
     {
       field: "quantity",
@@ -70,6 +89,9 @@ export default function DoubleCheckedGoodsReceipt({
       flex: 1,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.cost.toString());
+      },
     },
   ];
   const rows = receiptDetails.map((detail, index) => {

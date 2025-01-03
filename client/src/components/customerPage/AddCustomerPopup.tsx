@@ -25,6 +25,12 @@ export default function AddCustomerPopup({
       });
       return false;
     }
+    if (/^\s|\s{2,}|\s$/.test(name)) {
+      toast("Name cannot contain leading/trailing spaces or multiple spaces", {
+        type: "error",
+      });
+      return false;
+    }
     if (
       !/^\d{10}$/.test(phone) ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
@@ -52,7 +58,7 @@ export default function AddCustomerPopup({
         toast("Customer created successfully", { type: "success" });
         onClose();
       } else {
-        toast("Failed to create customer", { type: "error" });
+        toast("Failed to create customer: " + res.data.EM, { type: "error" });
         console.error("Failed to create customer:", res.data.EM);
       }
     } catch (error) {

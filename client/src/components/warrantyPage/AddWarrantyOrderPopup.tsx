@@ -25,15 +25,10 @@ export default function AddWarrantyOrderPopup({
   const [estimateFinishDate, setEstimateFinishDate] = useState(
     warrantyOrder?.estimateFinishDate || ""
   );
-  const [staffId, setStaffId] = useState(warrantyOrder?.staffId || 0);
   const [warrantyId, setWarrantyId] = useState(warrantyOrder?.warrantyId || 0);
 
   const validateInputs = () => {
-    if (
-      !description ||
-      !details ||
-      (!warrantyOrder && (!staffId || !warrantyId))
-    ) {
+    if (!description || !details || (!warrantyOrder && !warrantyId)) {
       toast.error("Please fill in all fields");
       return false;
     }
@@ -52,7 +47,6 @@ export default function AddWarrantyOrderPopup({
       const newWarrantyOrder: AddWarrantyOrderDTO = {
         description,
         details,
-        staffId,
         warrantyId,
         cost: cost ? Number(cost) : undefined,
         estimateFinishDate,
@@ -65,7 +59,7 @@ export default function AddWarrantyOrderPopup({
         onWarrantyOrderCreated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to add warranty order");
+        toast.error("Failed to add warranty order: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to add warranty order");
@@ -93,7 +87,7 @@ export default function AddWarrantyOrderPopup({
         onWarrantyOrderUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update warranty order");
+        toast.error("Failed to update warranty order: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to update warranty order");
@@ -140,30 +134,19 @@ export default function AddWarrantyOrderPopup({
             <>
               <div className="flex flex-col gap-2">
                 <label htmlFor="cost">Cost</label>
-                <input
-                  id="newWarrantyOrderCostInput"
-                  name="cost"
-                  placeholder="Cost"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  onChange={(e) => {
-                    setCost(e.target.value);
-                  }}
-                  defaultValue={cost}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="staffId">Staff ID</label>
-                <input
-                  id="newWarrantyOrderStaffIdInput"
-                  name="staffId"
-                  placeholder="Staff ID"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  required
-                  onChange={(e) => {
-                    setStaffId(Number(e.target.value));
-                  }}
-                  defaultValue={staffId}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    id="newWarrantyOrderCostInput"
+                    name="cost"
+                    placeholder="Cost"
+                    className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                    onChange={(e) => {
+                      setCost(e.target.value);
+                    }}
+                    defaultValue={cost}
+                  />
+                  <span>VND</span>
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="warrantyId">Warranty ID</label>

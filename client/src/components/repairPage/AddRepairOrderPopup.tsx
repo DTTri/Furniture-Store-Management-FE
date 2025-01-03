@@ -28,11 +28,10 @@ export default function AddRepairOrderPopup({
   const [estimateFinishDate, setEstimateFinishDate] = useState(
     repairOrder?.estimateFinishDate || ""
   );
-  const [staffId, setStaffId] = useState(repairOrder?.staffId || 0);
   const [customerId, setCustomerId] = useState(repairOrder?.customerId || 0);
   const [status, setStatus] = useState(repairOrder?.status || "");
   const validateInputs = () => {
-    if (!productName || !description || !details || !staffId || !customerId) {
+    if (!productName || !description || !details || !customerId) {
       toast.error("Please fill in all fields");
       return false;
     }
@@ -52,7 +51,6 @@ export default function AddRepairOrderPopup({
         productName,
         description,
         details,
-        staffId,
         customerId,
         cost: cost ? Number(cost) : undefined,
         estimateFinishDate,
@@ -63,7 +61,7 @@ export default function AddRepairOrderPopup({
         onRepairOrderCreated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to add repair order");
+        toast.error("Failed to add repair order: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to add repair order");
@@ -91,7 +89,7 @@ export default function AddRepairOrderPopup({
         onRepairOrderUpdated(response.data.DT);
         onClose();
       } else {
-        toast.error("Failed to update repair order");
+        toast.error("Failed to update repair order: " + response.data.EM);
       }
     } catch (error) {
       toast.error("Failed to update repair order");
@@ -157,30 +155,19 @@ export default function AddRepairOrderPopup({
             <>
               <div className="flex flex-col gap-2">
                 <label htmlFor="cost">Cost</label>
-                <input
-                  id="newRepairOrderCostInput"
-                  name="cost"
-                  placeholder="Cost"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  onChange={(e) => {
-                    setCost(e.target.value);
-                  }}
-                  defaultValue={cost}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="staffId">Staff ID</label>
-                <input
-                  id="newRepairOrderStaffIdInput"
-                  name="staffId"
-                  placeholder="Staff ID"
-                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  required
-                  onChange={(e) => {
-                    setStaffId(Number(e.target.value));
-                  }}
-                  defaultValue={staffId}
-                />
+                <div className="flex gap-2 items-center">
+                  <input
+                    id="newRepairOrderCostInput"
+                    name="cost"
+                    placeholder="Cost"
+                    className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                    onChange={(e) => {
+                      setCost(e.target.value);
+                    }}
+                    defaultValue={cost}
+                  />
+                  <span>VND</span>
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="customerId">Customer ID</label>

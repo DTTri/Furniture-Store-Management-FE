@@ -13,6 +13,7 @@ import {
 } from "@mui/x-data-grid";
 import { productService, variantService } from "../../services";
 import { toast } from "react-toastify";
+import formatMoney from "../../utils/formatMoney";
 export default function ProductDetailsPopup({
   product,
   onClose,
@@ -49,7 +50,6 @@ export default function ProductDetailsPopup({
 
   const handleUpdateProduct = () => {
     onOpenUpdateProductPopup(product);
-    onClose();
   };
   const handleStopSelling = async () => {
     try {
@@ -59,7 +59,7 @@ export default function ProductDetailsPopup({
         onStopSellingProduct();
         onClose();
       } else {
-        toast.error("Failed to stop selling");
+        toast.error("Failed to stop selling: " + response.data.EM);
         console.error("Failed to stop selling:", response.data.EM);
       }
     } catch (error) {
@@ -112,8 +112,22 @@ export default function ProductDetailsPopup({
     { field: "SKU", headerName: "SKU", flex: 0.5 },
     { field: "color", headerName: "Color", flex: 1 },
     { field: "size", headerName: "Size", flex: 1 },
-    { field: "buyingPrice", headerName: "Buying Price", flex: 1 },
-    { field: "price", headerName: "Price", flex: 1 },
+    {
+      field: "buyingPrice",
+      headerName: "Buying Price",
+      flex: 1,
+      valueGetter: (_, row) => {
+        return formatMoney(row.buyingPrice.toString());
+      },
+    },
+    {
+      field: "price",
+      headerName: "Price",
+      flex: 1,
+      valueGetter: (_, row) => {
+        return formatMoney(row.price.toString());
+      },
+    },
     {
       field: "actions",
       type: "actions",
@@ -141,7 +155,7 @@ export default function ProductDetailsPopup({
   ];
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white flex justify-around relative rounded-xl p-4 w-2/3 min-w-[420px] overflow-hidden">
+      <div className="popup bg-white flex justify-around relative rounded-xl py-4 px-3 w-2/3 min-w-[420px] overflow-hidden">
         <IconButton
           style={{
             position: "absolute",
@@ -153,11 +167,24 @@ export default function ProductDetailsPopup({
           <CloseIcon />
         </IconButton>
 
-        <div className="information-container flex flex-col gap-2 items-start w-1/3 border-r-2 border-r-black">
-          <div className="product-information w-full flex flex-col gap-2">
-            <p className="title text-black text-2xl font-semibold">
-              Product information
-            </p>
+        <div className="information-container flex flex-col gap-2 items-center justify-between basis-2/5 border-r-2 border-r-black">
+          <div className="product-information w-full flex flex-col items-center gap-4 overflow-y-auto">
+            <div className="w-full">
+              <p className="title text-black text-2xl font-semibold">
+                Product information
+              </p>
+            </div>
+            <div className="product-image w-40 h-40 overflow-hidden rounded-t-lg">
+              <img
+                src={
+                  product.image && product.image !== ""
+                    ? product.image
+                    : "/images/chair.jpg"
+                }
+                alt="product"
+                className="object-contain w-full h-full"
+              />
+            </div>
             <table className="w-full">
               <tbody>
                 <tr>
@@ -171,7 +198,7 @@ export default function ProductDetailsPopup({
                       verticalAlign: "top",
                     }}
                   >
-                    Mô tả:
+                    Description:
                   </td>
                   <td>
                     <textarea
@@ -200,43 +227,10 @@ export default function ProductDetailsPopup({
                   <td className="title">Warranty:</td>
                   <td id="productDetailsWarranty">{product.warranty}</td>
                 </tr>
-                <tr>
-                  <td className="title">Total quantity:</td>
-                  <td id="productDetailsTotalQuantity">{product.quantity}</td>
-                </tr>
-                <tr>
-                  <td className="title">Available quantity:</td>
-                  <td id="productDetailsaAvailable">{product.available}</td>
-                </tr>
-                <tr>
-                  <td className="title">Sold quantity:</td>
-                  <td id="productDetailsSold">{product.sold}</td>
-                </tr>
-                <tr>
-                  <td className="title">Defective quantity:</td>
-                  <td id="productDetailsDefective">{product.defective}</td>
-                </tr>
               </tbody>
             </table>
           </div>
-          <div className="provider-information w-full flex flex-col gap-2 items-start">
-            <p className="title text-black text-2xl font-semibold">
-              Provider information
-            </p>
-            <table className="w-full">
-              <tbody>
-                <tr>
-                  <td className="title">Name:</td>
-                  <td>Ronald Martin</td>
-                </tr>
-                <tr>
-                  <td className="title">Phone number:</td>
-                  <td>0987654321</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="buttons-container flex justify-between items-center gap-2">
+          <div className="buttons-container flex justify-between items-center gap-4">
             <Button
               onClick={handleUpdateProduct}
               variant="contained"
@@ -261,7 +255,7 @@ export default function ProductDetailsPopup({
             </Button>
           </div>
         </div>
-        <div className="variants-container w-2/3 flex flex-col items-center justify-between gap-4">
+        <div className="variants-container basis-3/5 flex flex-col items-center justify-between gap-4">
           {/* <div className="w-full flex justify-center items-center gap-4">
             <div className="variant-image h-32 w-32 overflow-hidden rounded-lg">
               <img
