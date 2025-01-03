@@ -165,6 +165,7 @@ export default function CreateInvoicePopup({
           selectedVariant.price -
             (selectedVariant.price * promotionProduct.discount) / 100
         );
+        newRow.cost = Math.floor(newRow.discountedPrice * quatanty);
         console.log(newRow);
       }
     }
