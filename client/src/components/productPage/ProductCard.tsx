@@ -11,9 +11,9 @@ export default function ProductCard({
     <div
       onClick={onSeeDetailsClick}
       data-product-id={product.id}
-      className="product-card w-[252px] h-[265px] bg-white rounded-lg border border-y-zinc-200 shadow-md shadow-slate-300 transform transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-slate-400 cursor-pointer"
+      className="product-card w-[238px] h-[285px] bg-white rounded-lg border border-y-zinc-200 shadow-md shadow-slate-300 transform transition duration-300 hover:shadow-lg hover:shadow-slate-400 cursor-pointer"
     >
-      <div className="product-image w-full h-1/2 overflow-hidden rounded-t-lg">
+      <div className="product-image w-full h-[57%] p-1 overflow-hidden rounded-t-lg">
         <img
           src={
             product.image && product.image !== ""
@@ -21,7 +21,7 @@ export default function ProductCard({
               : "/images/chair.jpg"
           }
           alt="product"
-          className="object-contain w-full"
+          className="max-w-full h-full object-contain mx-auto"
         />
       </div>
       <div className="product-info w-full p-4">

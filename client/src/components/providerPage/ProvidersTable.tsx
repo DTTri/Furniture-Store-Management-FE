@@ -98,11 +98,11 @@ export default function ProvidersTable({
             }
           }}
         />,
-        <GridActionsCellItem
-          icon={<InfoIcon />}
-          label="Info"
-          onClick={() => {}}
-        />,
+        // <GridActionsCellItem
+        //   icon={<InfoIcon />}
+        //   label="Info"
+        //   onClick={() => {}}
+        // />,
       ],
     },
   ];

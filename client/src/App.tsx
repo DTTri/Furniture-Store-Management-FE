@@ -273,12 +273,12 @@ function App() {
     };
     const fetchData = async () => {
       await Promise.all([
+        fetchUserById(),
         fetchPermissions(),
         fetchGeneralReportByDate(),
         fetchStaffReportByDate(),
         fetchIncomeReportByDate(),
         fetchInvoices(),
-        fetchUserById(),
         fetchProducts(),
         fetchProductVariants(),
         fetchProvider(),

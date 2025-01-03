@@ -137,13 +137,6 @@ export default function InvoiceDetailTable({
               variant="contained"
               color="primary"
               style={{ textTransform: "none", fontSize: "14px" }}
-            >
-              View Warranty Order
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ textTransform: "none", fontSize: "14px" }}
               onClick={() => {
                 console.log(rows);
                 printHTML(

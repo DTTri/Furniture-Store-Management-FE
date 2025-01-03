@@ -27,7 +27,7 @@ export default function ProductPage() {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="header w-full flex gap-4 p-4">
+      <div className="header w-full flex gap-4 py-4 px-5">
         <div className="search-bar w-2/5">
           <input
             type="text"
@@ -56,7 +56,7 @@ export default function ProductPage() {
 
       <div
         id="productGallery"
-        className="product-gallery w-full overflow-y-auto max-h-[500px] flex flex-wrap gap-4 p-2 pl-4 scroll-smooth"
+        className="product-gallery w-full overflow-y-auto max-h-[500px] grid grid-cols-5 gap-y-4 px-5 scroll-smooth"
       >
         {filteredProducts.map((product) => (
           <ProductCard
