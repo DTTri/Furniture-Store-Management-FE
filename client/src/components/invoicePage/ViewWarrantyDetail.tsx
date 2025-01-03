@@ -37,7 +37,7 @@ export default function ViewWarrantyDetail({
   return (
     <div>
       <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="popup bg-white rounded-xl p-4 max-w-[450px] w-full max-h-[750px] overflow-auto relative">
+        <div className="popup bg-white rounded-xl p-4 max-w-[400px] w-full max-h-[750px] overflow-auto relative">
           <button
             className="absolute flex flex-col items-center top-2 right-4 w-7 h-7 bg-black text-white rounded-full"
             onClick={onClose}

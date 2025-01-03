@@ -150,6 +150,7 @@ export default function DashboardPage() {
       flex: 0.8,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => formatMoney(row.totalRevenue.toString()),
     },
   ];
   const promotionRows = [
@@ -193,6 +194,9 @@ export default function DashboardPage() {
       flex: 0.8,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.sumtotal.toString());
+      }
     },
     {
       field: "sumquantity",
@@ -234,6 +238,9 @@ export default function DashboardPage() {
       flex: 0.8,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.importprice.toString());
+      }
     },
     {
       field: "sumquantity",
@@ -248,6 +255,9 @@ export default function DashboardPage() {
       flex: 0.8,
       headerAlign: "center",
       align: "center",
+      valueGetter: (_, row) => {
+        return formatMoney(row.sumcost.toString());
+      }
     },
   ];
   const incomeRows = reportIncomeData.map((income, index) => ({
@@ -325,19 +335,19 @@ export default function DashboardPage() {
               isIncrease={true}
               title="Total Sold Product"
               totalCost={reportData.totalSoldProduct}
-              unit="USD"
+              unit="products"
             />
             <TotalCard
               isIncrease={true}
               title="Total Revenue"
               totalCost={reportData.totalRevenue}
-              unit="USD"
+              unit="Dong"
             />
             <TotalCard
               isIncrease={true}
               title="Total Expense"
               totalCost={reportData.totalExpense}
-              unit="People"
+              unit="Dong"
             />
           </div>
           <div className="charts w-full flex flex-row gap-3">
@@ -443,11 +453,10 @@ export default function DashboardPage() {
             />
             <p className="font-bold text-[20px] text-end mt-2 text-[#C71026]">
               Total Cost:{" "}
-              {incomeRows.reduce(
+              {formatMoney(incomeRows.reduce(
                 (acc, row) => acc + parseFloat(row.sumcost.toString()),
                 0
-              )}{" "}
-              USD
+              ).toString())}
             </p>
           </div>
         </div>
