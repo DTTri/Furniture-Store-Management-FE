@@ -102,7 +102,7 @@ export default function PayInvoicePopup({
     });
     //handle credit card payment
     try {
-      const response = await invoiceService.acceptInvoice(invoice.id);
+      const response = await invoiceService.acceptInvoice(invoice.id, "Cash");
       if (response.data.EC === 0) {
         toast("Payment success", { type: "success" });
         onPaymentSuccess(response.data.DT);
@@ -177,6 +177,21 @@ export default function PayInvoicePopup({
       }
     }
   ];
+
+  const handleBankTransfer = async () => {
+    try {
+      const response = await invoiceService.bankTransfer(invoice.id, totalCost);
+      console.log(response);
+      if (response.status === 200) {
+        window.open(response.data.vpnUrl, "_blank");
+      } else {
+        toast("Bank transfer failed", { type: "error" });
+      }
+    } catch (error) {
+      toast("Bank transfer failed", { type: "error" });
+      console.error("Error bank transfer:", error);
+    }
+  }
 
   console.log(invoice.createdAt);
 
@@ -288,7 +303,7 @@ export default function PayInvoicePopup({
                     Total Cost: {formatMoney(totalCost.toString())}
                     </p>
                     <div>
-                        <Button variant="contained">QR Code</Button>
+                        <Button onClick={handleBankTransfer} variant="contained">Bank Transfer</Button>
                     </div>
                 </div>
             )}

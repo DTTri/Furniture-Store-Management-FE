@@ -54,6 +54,7 @@ import sCustomer from "./store/customerStore";
 import warrantyService from "./services/warranty.service";
 import repairService from "./services/repair.service";
 import sInvoice from "./store/invoiceStore";
+import PaymentSuccessPage from "./pages/invoice/PaymentSuccessPage";
 
 function App() {
   const today = new Date().toISOString().split("T")[0];
@@ -315,6 +316,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/verify-token" element={<VerifyTokenPage />} />
         <Route path="/loginpage" element={<LoginPage />} />
+        <Route path="/order/vnpay_return" element={<PaymentSuccessPage />} />
         <Route
           path="/"
           element={
