@@ -14,13 +14,11 @@ import {
   FaHammer,
   FaUserEdit,
 } from "react-icons/fa";
-import { sPermission, sUser } from "../store";
+import { sUser } from "../store";
 
 const NavBar: React.FC = () => {
-  // Khởi tạo navigate từ react-router-dom
   const navigate = useNavigate();
 
-  // Danh sách menu items với tên và biểu tượng
   const menuItems = [
     { name: "Dashboard", icon: <FaChartBar />, path: "/" },
     { name: "Invoice", icon: <FaFileInvoice />, path: "/invoice" },
@@ -36,15 +34,11 @@ const NavBar: React.FC = () => {
     { name: "Role", icon: <FaUserEdit />, path: "/role" },
   ];
 
-  // State để lưu trữ menu item được chọn
   const [selectedMenu, setSelectedMenu] = useState<string>("Dashboard");
   const currentPath = window.location.pathname;
   useEffect(() => {
-    // Lấy path hiện tại
     const path = currentPath;
-    // Tìm menu item tương ứng với path hiện tại
     const menuItem = menuItems.find((item) => item.path === path);
-    // Nếu tìm thấy thì cập nhật menu item được chọn
     if (menuItem) {
       setSelectedMenu(menuItem.name);
     }
@@ -55,16 +49,10 @@ const NavBar: React.FC = () => {
     navigate(path); // Dẫn đến trang tương ứng
   };
 
-  const userRole = sUser.use((v) => v.info.Account.Role.id);
-
-  const userPermissions = sPermission.use((v) => v.userPermissions);
+  const userRole = sUser.use((v) => v.role);
 
   return (
     <div className="NavBar w-52 bg-white h-full flex flex-col shadow-md transition-all duration-300">
-      {" "}
-      {/* Thêm margin-top ở đây */}
-      {/* Logo đã xóa */}
-      {/* Danh sách các menu item */}
       <div className="NavItems flex flex-col">
         {menuItems.map((item) => {
           if (item.name === "Role" && userRole > 1) return;

@@ -9,7 +9,9 @@ class PermissionService {
     return await http.get(this.getUri("/get-all-permissions"));
   }
   async getPermissionsByRole(roleId: number) {
-    return await http.get(this.getUri("/permissions-by-role/" + roleId));
+    return await http.get(
+      this.getUri("/permissions-by-role/" + roleId.toString())
+    );
   }
   async updatePermissions(roleId: number, permissions: number[]) {
     return await http.put(this.getUri("/update-permissons/" + roleId), {
