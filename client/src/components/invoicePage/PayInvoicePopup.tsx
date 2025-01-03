@@ -153,13 +153,13 @@ export default function PayInvoicePopup({
      }
     },
     {
-      field: "price",
+      field: "unitPrice",
       headerName: "Final Price",
       flex: 1,
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return formatMoney(Number.parseFloat(row.ProductVariant?.price).toFixed(0));
+        return formatMoney(Number.parseFloat(row.unitPrice).toFixed(0));
       }
     },
     {
