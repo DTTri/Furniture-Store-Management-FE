@@ -83,17 +83,33 @@ export default function CreateInvoicePopup({
 
   const [quatanty, setQuantanty] = useState<number>(0);
   const [showDataGrid, setShowDataGrid] = useState<boolean>(true);
-  const [rows, setRows] = useState<InvoiceDetailDTO[]>(
+  const [rows, setRows] = useState<InvoiceDetailDTO[]>(    
     (updatedInvoice?.InvoiceDetails || []).map((detail) => {
+      let discount = 0;
+      let finalPrice = detail.unitPrice;
+      if(detail.promotionId){
+        const promotionProduct = curPromotion?.PromotionProducts.find(
+          (promo) => promo.variantId === detail.ProductVariant?.id
+        );
+        if (promotionProduct) {
+          discount = promotionProduct.discount
+          finalPrice = Math.floor(
+            detail.unitPrice -
+              (detail.unitPrice * promotionProduct.discount) / 100
+          );
+        }
+      }
       return {
         id: detail.ProductVariant?.id || 0,
         SKU: detail.ProductVariant?.SKU || "",
         quantity: detail.quantity,
         name: detail.ProductVariant?.size + " " + detail.ProductVariant?.color,
-        price: Math.floor(detail.ProductVariant?.price || 0),
-        discountedPrice: Math.floor(detail.unitPrice || 0),
-        discount: detail.discountedAmount || 0,
+        unitPrice: Math.floor(detail.unitPrice || 0),
+        discountAmount: detail.discountedAmount || 0,
         cost: Math.floor(detail.cost),
+        finalPrice: finalPrice,
+        promotionId: detail.promotionId,
+        discount: discount,
       };
     })
   );
@@ -147,10 +163,11 @@ export default function CreateInvoicePopup({
       id: selectedVariant?.id,
       SKU: selectedVariant.SKU,
       name: selectedVariant.size + " " + selectedVariant.color,
-      price: Math.floor(selectedVariant.price),
-      discountedPrice: Math.floor(selectedVariant.price),
-      discount: 0,
+      unitPrice: Math.floor(selectedVariant.price),
+      discountAmount: 0,
       quantity: quatanty,
+      discount: 0,
+      finalPrice: Math.floor(selectedVariant.price),
       cost: Math.floor(selectedVariant.price * quatanty),
     };
     if (curPromotion) {
@@ -159,12 +176,12 @@ export default function CreateInvoicePopup({
       );
       console.log("promotionProduct", promotionProduct);
       if (promotionProduct) {
-        newRow.discount = promotionProduct.discount;
-        newRow.discountedPrice = Math.floor(
-          selectedVariant.price -
-            (selectedVariant.price * promotionProduct.discount) / 100
+        newRow.discountAmount = Math.floor(
+          (selectedVariant.price * promotionProduct.discount) / 100
         );
-        newRow.cost = Math.floor(newRow.discountedPrice * quatanty);
+        newRow.finalPrice = newRow.unitPrice - newRow.discountAmount;
+        newRow.discount = promotionProduct.discount;
+        newRow.cost = Math.floor(newRow.finalPrice * quatanty);
         newRow.promotionId = curPromotion.id;
         console.log(newRow);
       }
@@ -200,8 +217,8 @@ export default function CreateInvoicePopup({
         variantId: row.id,
         quantity: row.quantity,
         cost: row.cost,
-        discountAmount: row.discount,
-        unitPrice: row.discountedPrice,
+        discountAmount: row.discountAmount,
+        unitPrice: row.unitPrice,
         promotionId: row.promotionId,
       };
     });
@@ -272,13 +289,13 @@ export default function CreateInvoicePopup({
       align: "center",
     },
     {
-      field: "price",
-      headerName: "Price",
+      field: "unitPrice",
+      headerName: "Unit Price",
       flex: 1,
       headerAlign: "center",
       align: "center",
       valueGetter: (_, row) => {
-        return formatMoney(row.price.toString());
+        return formatMoney(row.unitPrice.toString());
       },
     },
     {
@@ -292,13 +309,13 @@ export default function CreateInvoicePopup({
       },
     },
     {
-      field: "discountedPrice",
-      headerName: "Discounted Price",
+      field: "discountAmount",
+      headerName: "Discounted Amount",
       flex: 1,
       headerAlign: "center",
       align: "center",
       valueGetter: (_, row) => {
-        return formatMoney(row.discountedPrice.toString());
+        return formatMoney(row.discountAmount.toString());
       },
     },
     {

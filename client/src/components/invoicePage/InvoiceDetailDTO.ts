@@ -4,9 +4,10 @@ type InvoiceDetailDTO = {
     name: string,
     quantity: number, 
     cost: number,
-    price: number,
-    discount: number,
-    discountedPrice: number,
+    unitPrice: number,
+    discount?: number,
+    discountAmount: number,
+    finalPrice: number,
     promotionId?: number,
 }
 
