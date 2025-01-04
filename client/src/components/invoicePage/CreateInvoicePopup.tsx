@@ -1,4 +1,3 @@
-import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Button, InputLabel } from "@mui/material";
 import {
@@ -35,7 +34,7 @@ export default function CreateInvoicePopup({
 }: {
   onClose: () => void;
   onInvoiceCreated: (invoice: Invoice) => void;
-  onInvoiceUpdated: (invoice: any) => void;
+  onInvoiceUpdated: (invoice: Invoice) => void;
   updatedInvoice?: Invoice | null;
 }) {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
@@ -217,7 +216,10 @@ export default function CreateInvoicePopup({
     console.log("createdInvoice", createdInvoice);
 
     if (updatedInvoice) {
-      const response = await invoiceService.updateInvoice(updatedInvoice.id, createdInvoice);
+      const response = await invoiceService.updateInvoice(
+        updatedInvoice.id,
+        createdInvoice
+      );
       if (response.data.EC === 0) {
         toast.success("Invoice updated successfully");
         console.log("update" + response.data.DT);
@@ -389,17 +391,11 @@ export default function CreateInvoicePopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 max-w-[1096px] w-full max-h-[650px] overflow-auto relative">
-        <div className="header w-full px-2 py-2 flex flex-row items-center justify-between border-b-[1px] border-b-slate-400">
-          <h2 className="text-[22px] font-semibold text-[#383E49]">
-            {updatedInvoice ? "Update Invoice" : "Create Invoice"}
-          </h2>
-          <CloseIcon
-            className="cursor-pointer hover:bg-slate-100 mb-2 rounded-full"
-            sx={{ width: 25, height: 25 }}
-            onClick={onClose}
-          />
-        </div>
+      <div className="popup bg-white rounded-xl p-4 max-w-[1096px] w-full max-h-[650px] overflow-auto flex flex-col gap-2">
+        <h2 className="text-[22px] font-semibold text-[#383E49]">
+          {updatedInvoice ? "Update Invoice" : "Create Invoice"}
+        </h2>
+        <hr className="w-full border-[#E1E8F1] border-t-2" />
         <div className="w-full grid">
           <div className="row-1 py-4 px-4 grid grid-cols-[14%_1fr_24%_1fr] items-center grid-rows-[50%_50%] gap-x-3 gap-y-3 border-b-[1px] border-b-slate-400">
             <span className="text-base text-[#667085] block">

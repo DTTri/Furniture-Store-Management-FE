@@ -173,26 +173,13 @@ export default function AddProductPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 w-1/2 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
-        <div className="container w-full flex justify-around ">
+      <div className="popup bg-white rounded-xl p-4 w-1/2 min-w-[390px] overflow-y-auto flex flex-col gap-2">
+        <h2 className="text-xl text-[#383E49] font-bold flex-1">
+          {product ? "Update" : "Add new"} product
+        </h2>
+        <hr className="w-full border-[#E1E8F1] border-t-2" />
+        <div className="container w-full flex justify-around gap-4 mb-4">
           <div className="image-container basis-[45%] flex flex-col justify-center items-center gap-4 overflow-hidden ">
-            {/* <Dropzone
-              ref={dropzoneRef}
-              onChangeStatus={handleChangeStatus}
-              maxFiles={1}
-              multiple={false}
-              inputContent="Drop a file here or click to browse"
-              accept="image/*"
-              submitButtonDisabled={false}
-              classNames={{
-                dropzone: `w-full min-h-[250px] bg-white text-2xl text-placeHolder flex items-center justify-center text-center`,
-                submitButton: "hidden",
-                previewImage:
-                  "w-full rounded-md flex items-center justify-center",
-                submitButtonContainer: "hidden",
-                inputLabel: "text-blue-500 hover:text-blue-700 cursor-pointer",
-              }}
-            /> */}
             <img
               src={image !== "" ? image : "/images/chair.jpg"}
               alt="product"
@@ -210,7 +197,7 @@ export default function AddProductPopup({
               }}
             />
           </div>
-          <div className="information-container basis-1/2 flex flex-col gap-4">
+          <div className="add-product-information-container basis-1/2 flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="name">Name</label>
               <input
@@ -238,7 +225,7 @@ export default function AddProductPopup({
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label htmlFor="catalogue">Catalogue</label>
+              <label htmlFor="catalogue">Category</label>
               <select
                 value={catalogueId}
                 name="catalogue"

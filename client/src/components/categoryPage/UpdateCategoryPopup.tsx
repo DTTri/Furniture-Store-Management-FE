@@ -1,5 +1,4 @@
 import { useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import { Category, Product } from "../../entities";
 import { Button } from "@mui/material";
 import categoryService from "../../services/categoryService";
@@ -56,32 +55,25 @@ export default function UpdateCategoryPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="relative popup bg-white flex flex-col flex-wrap gap-2 rounded-xl px-4 py-4 pt-11 w-2/3 max-w-[600px] max-h-[40vh] overflow-auto">
-        <div className="header flex flex-row justify-between items-center mb-4 bg-white">
-          <h2 className="text-2xl text-[#383E49] font-bold flex-1 uppercase">
-            Update Category
-          </h2>
-          <CloseIcon
-            sx={{ width: 27, height: 27 }}
-            className="absolute top-2 right-[14px] hover:bg-slate-100 rounded-full cursor-pointer"
-            onClick={onClose}
-          />
-        </div>
-        <div className="w-full flex flex-row items-center mb-4 gap-2 ">
+      <div className="popup bg-white flex flex-col flex-wrap gap-2 rounded-xl px-4 py-2 max-w-[600px] max-h-[40vh] overflow-auto">
+        <h2 className="text-xl text-[#383E49] font-bold flex-1">
+          Update category
+        </h2>
+        <hr className="w-full border-[#E1E8F1] border-t-2 mb-2" />
+        <div className="w-full flex flex-row items-center mb-4 gap-4">
           <span className="text-[#383E49] font-semibold block">
             Category Name:
           </span>
           <input
             type="text"
             placeholder="Input Category Name"
-            className="w-[50%] border border-slate-400 overflow-hidden p-1 rounded-md"
-            style={{ border: "0", outline: "none" }}
+            className="border min-w-80 border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
             value={categoryName}
             onChange={(e) => {
               setCategoryName(e.target.value);
             }}
             id="searchProductInput"
-          ></input>
+          />
         </div>
 
         <div className="buttons flex flex-row justify-end items-center gap-2">

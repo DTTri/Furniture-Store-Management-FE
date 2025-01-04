@@ -201,18 +201,23 @@ export default function AddPromotionPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 w-2/3 min-w-[420px] h-[75vh] max-h-[75vh] overflow-y-auto flex flex-col justify-between gap-4 pb-4">
-        {promotion && (
-          <Edit
-            sx={{ width: 27, height: 27 }}
-            className="absolute top-2 right-[14px] hover:bg-slate-100 rounded-full cursor-pointer p-[2px]"
-            onClick={() => setIsEditing(!isEditing)}
-          />
-        )}
-
-        <div className="flex justify-between gap-4 h-full">
-          <div className="flex flex-col gap-4 basis-2/5">
-            <div className="flex flex-col gap-2">
+      <div className="popup bg-white rounded-xl p-4 w-2/3 min-w-[390px] max-h-[80%] overflow-y-auto relative flex flex-col gap-2">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl text-[#383E49] font-bold flex-1">
+            {promotion ? "Update" : "Add new"} promotion
+          </h2>
+          {promotion && (
+            <Edit
+              sx={{ width: 32, height: 32 }}
+              className=" hover:bg-slate-100 rounded-full cursor-pointer p-[2px]"
+              onClick={() => setIsEditing(!isEditing)}
+            />
+          )}
+        </div>
+        <hr className="w-full border-[#E1E8F1] border-t-2 mb-2" />
+        <div className="flex justify-between h-full flex-wrap">
+          <div className="flex flex-col gap-4 basis-1/3 w-full mb-4">
+            <div className="flex flex-col gap-2 ">
               <label htmlFor="name">Name</label>
               <input
                 id="name"
@@ -265,55 +270,54 @@ export default function AddPromotionPopup({
               />
             </div>
           </div>
-          <div className="flex flex-col gap-2 basis-[55%] w-full h-ful">
+          <div className="flex flex-col gap-4 basis-[63%] w-full">
             <form
               id="addRowForm"
-              className="flex flex-col gap-4 p-4 items-center"
+              className="flex w-full justify-between gap-2"
               onSubmit={handleAddRow}
             >
-              <div className="flex w-full justify-between gap-2">
-                <select
-                  id="selectedProduct"
-                  className="basis-[48%] w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  onChange={(e) => {
-                    setSelectedVariant(null);
-                    const selectedProductId = parseInt(e.target.value);
-                    setSelectedProduct(
-                      products.find(
-                        (product) => product.id === selectedProductId
-                      ) ?? null
-                    );
-                  }}
-                  disabled={promotion && !isEditing}
-                >
-                  <option value="">Choose product</option>
-                  {products.map((product) => (
-                    <option key={product.id} value={product.id}>
-                      {product.name}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  id="selectedVariant"
-                  className="basis-1/2 w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  disabled={promotion && !isEditing && !selectedProduct}
-                  onChange={(e) => {
-                    const selectedVariantId = parseInt(e.target.value);
-                    setSelectedVariant(
-                      productVariants.find(
-                        (variant) => variant.id === selectedVariantId
-                      ) ?? null
-                    );
-                  }}
-                >
-                  <option value="">Choose variant</option>
-                  {productVariants.map((variant) => (
-                    <option key={variant.id} value={variant.id}>
-                      {`${variant.color} - ${variant.size}`}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <select
+                id="selectedProduct"
+                className="basis-[48%] w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                onChange={(e) => {
+                  setSelectedVariant(null);
+                  const selectedProductId = parseInt(e.target.value);
+                  setSelectedProduct(
+                    products.find(
+                      (product) => product.id === selectedProductId
+                    ) ?? null
+                  );
+                }}
+                disabled={promotion && !isEditing}
+              >
+                <option value="">Choose product</option>
+                {products.map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                id="selectedVariant"
+                className="basis-1/2 w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                disabled={promotion && !isEditing && !selectedProduct}
+                onChange={(e) => {
+                  const selectedVariantId = parseInt(e.target.value);
+                  setSelectedVariant(
+                    productVariants.find(
+                      (variant) => variant.id === selectedVariantId
+                    ) ?? null
+                  );
+                }}
+              >
+                <option value="">Choose variant</option>
+                {productVariants.map((variant) => (
+                  <option key={variant.id} value={variant.id}>
+                    {`${variant.color} - ${variant.size}`}
+                  </option>
+                ))}
+              </select>
+
               <Button
                 type="submit"
                 variant="contained"
@@ -327,13 +331,13 @@ export default function AddPromotionPopup({
                 Add
               </Button>
             </form>
-            <div className="table-container w-full h-full overflow-hidden">
+            <div className="table-container w-full h-full">
               <DataGrid
                 style={{
                   borderRadius: "20px",
                   backgroundColor: "white",
+                  height: "100%",
                 }}
-                className="h-full"
                 rows={rows.map((row, index) => ({
                   ...row,
                   id: index + 1,
@@ -400,12 +404,12 @@ export default function AddPromotionPopup({
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: 4,
+                      pageSize: 3,
                     },
                   },
                 }}
                 pageSizeOptions={
-                  rows.length < 4 ? [4, rows.length] : [4, rows.length + 1]
+                  rows.length < 3 ? [3, rows.length] : [3, rows.length + 1]
                 }
                 slots={{ toolbar: GridToolbar }}
                 rowSelection={false}
