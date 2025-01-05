@@ -212,14 +212,19 @@ export default function AddWarrantyOrderPopup({
         <div className="buttons-container w-full flex justify-end gap-2">
           {warrantyOrder && (
             <Button
-              variant="contained"
+              variant="outlined"
               color="primary"
-              style={{ textTransform: "none", fontSize: "14px" }}
+              style={{
+                textTransform: "none",
+                fontSize: "14px",
+                border: "1px solid black",
+                color: "black",
+              }}
               onClick={() => {
                 printWarrantyOrder(warrantyOrder);
               }}
             >
-              Print Invoice
+              Print
             </Button>
           )}
           <Button

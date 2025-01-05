@@ -5,6 +5,7 @@ import UpdateRepairOrderDTO from "./UpdateRepairOrderDTO";
 import RepairOrder from "../../entities/RepairOrder";
 import repairService from "../../services/repair.service";
 import { toast } from "react-toastify";
+import printRepairOrder from "./printRepairOrder";
 
 export default function AddRepairOrderPopup({
   onClose,
@@ -227,6 +228,23 @@ export default function AddRepairOrderPopup({
           </div>
         </div>
         <div className="buttons-container w-full flex justify-end gap-2">
+          {repairOrder && (
+            <Button
+              variant="outlined"
+              color="primary"
+              style={{
+                textTransform: "none",
+                fontSize: "14px",
+                border: "1px solid black",
+                color: "black",
+              }}
+              onClick={() => {
+                printRepairOrder(repairOrder);
+              }}
+            >
+              Print
+            </Button>
+          )}
           <Button
             variant="outlined"
             style={{
