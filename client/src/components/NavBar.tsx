@@ -59,10 +59,10 @@ const NavBar: React.FC = () => {
           return (
             <div
               key={item.name}
-              className={`ListMenu py-3 px-4 flex items-center w-full cursor-pointer hover:bg-[#f2f2f2] transition-all duration-100 ${
+              className={`ListMenu py-3 px-4 flex items-center w-full cursor-pointer  transition-all duration-100 ${
                 selectedMenu === item.name
                   ? "bg-[#c1c1c1] text-[#156fee] font-bold border-l-4 border-[#156fee]"
-                  : "bg-white text-[#70747b] font-medium"
+                  : "bg-white text-[#70747b] font-medium hover:bg-[#f2f2f2]"
               }`}
               onClick={() => handleMenuClick(item.path, item.name)} // Xử lý click và điều hướng
             >

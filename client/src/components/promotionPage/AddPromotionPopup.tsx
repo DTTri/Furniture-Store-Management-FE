@@ -42,6 +42,7 @@ export default function AddPromotionPopup({
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     null
   );
+  const [showDataGrid, setShowDataGrid] = useState(true);
   const [rows, setRows] = useState<CreatePromotionDTO["promotionProducts"]>([]);
   const userPermissions = sUser.use((v) => v.permissions);
   useEffect(() => {
@@ -115,7 +116,15 @@ export default function AddPromotionPopup({
 
   const handleDeleteRow = (variantId: number) => {
     const updatedRows = rows.filter((row) => row.variantId !== variantId);
-    setRows(updatedRows);
+    if (updatedRows.length === 0) {
+      setShowDataGrid(false);
+      setTimeout(() => {
+        setRows([]);
+        setShowDataGrid(true);
+      }, 0);
+    } else {
+      setRows(updatedRows);
+    }
   };
 
   const handleDiscountRateChange = (variantId: number, discount: number) => {
@@ -359,88 +368,90 @@ export default function AddPromotionPopup({
               </Button>
             </form>
             <div className="table-container w-full h-full">
-              <DataGrid
-                style={{
-                  borderRadius: "20px",
-                  backgroundColor: "white",
-                  height: "100%",
-                }}
-                rows={rows.map((row, index) => ({
-                  ...row,
-                  id: index + 1,
-                }))}
-                columns={[
-                  {
-                    field: "id",
-                    headerName: "ID",
-                    flex: 0.5,
-                    headerAlign: "center",
-                    align: "center",
-                  },
-                  {
-                    field: "variant",
-                    headerName: "Variant",
-                    flex: 2,
-                    headerAlign: "center",
-                    align: "center",
-                  },
-                  {
-                    field: "discount",
-                    headerName: "Discount Rate",
-                    flex: 1,
-                    headerAlign: "center",
-                    align: "center",
-                    renderCell: (params) => (
-                      <div className="flex justify-center">
-                        <input
-                          type="number"
-                          min={0}
-                          max={100}
-                          value={params.value}
-                          onChange={(e) =>
-                            handleDiscountRateChange(
-                              params.row.variantId,
-                              parseInt(e.target.value)
-                            )
-                          }
-                          className="w-16 text-center"
-                          disabled={promotion && !isEditing}
-                        />
-                        <span className="ml-2 font-semibold">%</span>
-                      </div>
-                    ),
-                  },
-                  {
-                    field: "actions",
-                    type: "actions",
-                    flex: 0.5,
-                    headerAlign: "center",
-                    align: "center",
-                    getActions: (params: GridRowParams) => [
-                      <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Delete"
-                        onClick={() => handleDeleteRow(params.row.variantId)}
-                        disabled={promotion && !isEditing}
-                      />,
-                    ],
-                  },
-                ]}
-                disableDensitySelector
-                rowHeight={40}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 3,
+              {showDataGrid && (
+                <DataGrid
+                  style={{
+                    borderRadius: "20px",
+                    backgroundColor: "white",
+                    height: "100%",
+                  }}
+                  rows={rows.map((row, index) => ({
+                    ...row,
+                    id: index + 1,
+                  }))}
+                  columns={[
+                    {
+                      field: "id",
+                      headerName: "ID",
+                      flex: 0.5,
+                      headerAlign: "center",
+                      align: "center",
                     },
-                  },
-                }}
-                pageSizeOptions={
-                  rows.length < 3 ? [3, rows.length] : [3, rows.length + 1]
-                }
-                slots={{ toolbar: GridToolbar }}
-                rowSelection={false}
-              />
+                    {
+                      field: "variant",
+                      headerName: "Variant",
+                      flex: 2,
+                      headerAlign: "center",
+                      align: "center",
+                    },
+                    {
+                      field: "discount",
+                      headerName: "Discount Rate",
+                      flex: 1,
+                      headerAlign: "center",
+                      align: "center",
+                      renderCell: (params) => (
+                        <div className="flex justify-center">
+                          <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={params.value}
+                            onChange={(e) =>
+                              handleDiscountRateChange(
+                                params.row.variantId,
+                                parseInt(e.target.value)
+                              )
+                            }
+                            className="w-16 text-center"
+                            disabled={promotion && !isEditing}
+                          />
+                          <span className="ml-2 font-semibold">%</span>
+                        </div>
+                      ),
+                    },
+                    {
+                      field: "actions",
+                      type: "actions",
+                      flex: 0.5,
+                      headerAlign: "center",
+                      align: "center",
+                      getActions: (params: GridRowParams) => [
+                        <GridActionsCellItem
+                          icon={<DeleteIcon />}
+                          label="Delete"
+                          onClick={() => handleDeleteRow(params.row.variantId)}
+                          disabled={promotion && !isEditing}
+                        />,
+                      ],
+                    },
+                  ]}
+                  disableDensitySelector
+                  rowHeight={40}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 3,
+                      },
+                    },
+                  }}
+                  pageSizeOptions={
+                    rows.length < 3 ? [3, rows.length] : [3, rows.length + 1]
+                  }
+                  slots={{ toolbar: GridToolbar }}
+                  rowSelection={false}
+                />
+              )}
             </div>
           </div>
         </div>
