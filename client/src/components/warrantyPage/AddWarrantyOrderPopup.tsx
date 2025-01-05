@@ -27,6 +27,7 @@ export default function AddWarrantyOrderPopup({
   );
   const [warrantyId, setWarrantyId] = useState(warrantyOrder?.warrantyId || 0);
 
+  const [status, setStatus] = useState(warrantyOrder?.status || "");
   const validateInputs = () => {
     if (!description || !details || (!warrantyOrder && !warrantyId)) {
       toast.error("Please fill in all fields");
@@ -76,6 +77,7 @@ export default function AddWarrantyOrderPopup({
         description,
         details,
         estimateFinishDate,
+        status,
       };
       const response = await warrantyService.updateWarrantyOrder(
         warrantyOrder.id,
@@ -185,6 +187,24 @@ export default function AddWarrantyOrderPopup({
                   defaultValue={estimateFinishDate}
                 />
               </div>
+              {warrantyOrder && (
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="catalogue">Status</label>
+                  <select
+                    value={status}
+                    name="status"
+                    id="newWarrantyOrderStatusInput"
+                    onChange={(e) => {
+                      console.log(e.target.value);
+                      setStatus(e.target.value);
+                    }}
+                    className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="done">Done</option>
+                  </select>
+                </div>
+              )}
             </div>
           </div>
         </div>

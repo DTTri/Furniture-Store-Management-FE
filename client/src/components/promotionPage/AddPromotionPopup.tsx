@@ -17,6 +17,8 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Edit } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import formatDate from "../../utils/formatDate";
+import { sUser } from "../../store";
 export default function AddPromotionPopup({
   onClose,
   onPromotionCreated,
@@ -42,6 +44,7 @@ export default function AddPromotionPopup({
     null
   );
   const [rows, setRows] = useState<CreatePromotionDTO["promotionProducts"]>([]);
+  const userPermissions = sUser.use((v) => v.permissions);
   useEffect(() => {
     const fetchProductsAndVariants = async () => {
       const response = Promise.all([
@@ -196,6 +199,31 @@ export default function AddPromotionPopup({
     } catch (error) {
       toast("Failed to update promotion", { type: "error" });
       console.error("Error updating promotion:", error);
+    }
+  };
+
+  const handleStopPromotion = async () => {
+    if (!promotion) {
+      toast("No promotion to stop", { type: "error" });
+      return;
+    }
+    try {
+      const res = await promotionService.stopPromotion(promotion.id);
+      onClose();
+      if (res.data.EC === 0) {
+        toast("End promotion successfully", { type: "success" });
+        onPromotionUpdated({
+          ...promotion,
+          finishDate: new Date().toISOString().split("T")[0],
+        });
+        onClose();
+      } else {
+        toast("Failed to stop promotion", { type: "error" });
+        console.error("Failed to stop promotion:", res.data.EM);
+      }
+    } catch (error) {
+      toast("Failed to stop promotion", { type: "error" });
+      console.error("Error stopping promotion:", error);
     }
   };
 
@@ -418,10 +446,24 @@ export default function AddPromotionPopup({
           </div>
         </div>
         <div className="buttons-container flex gap-4 w-full justify-end">
+          {userPermissions.includes(46) &&
+            promotion &&
+            promotion.finishDate > new Date().toISOString().split("T")[0] && (
+              <Button
+                variant="contained"
+                style={{
+                  backgroundColor: "red",
+                  textTransform: "none",
+                }}
+                onClick={handleStopPromotion}
+                id="stopPromotionButton"
+              >
+                End promotion
+              </Button>
+            )}
           <Button
-            variant="contained"
+            variant="outlined"
             style={{
-              backgroundColor: "red",
               textTransform: "none",
             }}
             onClick={onClose}

@@ -209,16 +209,18 @@ export default function AddRepairOrderPopup({
               {repairOrder && (
                 <div className="flex flex-col gap-2">
                   <label htmlFor="status">Status</label>
-                  <input
-                    id="updateRepairOrderStatusInput"
+                  <select
+                    value={status}
                     name="status"
-                    placeholder="Status"
-                    className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                    id="updateRepairOrderStatusInput"
                     onChange={(e) => {
                       setStatus(e.target.value);
                     }}
-                    defaultValue={status}
-                  />
+                    className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="done">Done</option>
+                  </select>
                 </div>
               )}
             </div>
