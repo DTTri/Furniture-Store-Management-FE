@@ -413,13 +413,10 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
         </div>
         <div className="buttons-container w-full flex justify-end gap-4">
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={onClose}
             color="primary"
             style={{
-              backgroundColor: "transparent",
-              border: "1px solid #1976d2",
-              color: "#1976d2",
               textTransform: "none",
             }}
             id="cancelImportButton"

@@ -17,7 +17,6 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Edit } from "@mui/icons-material";
 import { toast } from "react-toastify";
-import formatDate from "../../utils/formatDate";
 import { sUser } from "../../store";
 export default function AddPromotionPopup({
   onClose,

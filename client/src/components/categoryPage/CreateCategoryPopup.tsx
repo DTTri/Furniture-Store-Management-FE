@@ -68,12 +68,11 @@ export default function CreateCategoryPopup({
 
         <div className="buttons flex flex-row justify-end items-center gap-2">
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             style={{
               textTransform: "none",
               fontSize: "14px",
-              backgroundColor: "#D91316",
             }}
             id=""
             onClick={onClose}

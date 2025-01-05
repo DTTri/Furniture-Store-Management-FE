@@ -74,15 +74,6 @@ const NavBar: React.FC = () => {
           );
         })}
       </div>
-      {/* Button Log Out (Centered) */}
-      <div
-        className="SignOutBtn w-[164px] h-10 bg-[#d91316] rounded-[10px] shadow flex justify-center items-center cursor-pointer mx-auto mt-4"
-        onClick={() => navigate("/loginpage")}
-      >
-        <div className="Text text-white text-base font-medium font-['Product sans'] leading-normal">
-          Log Out
-        </div>
-      </div>
     </div>
   );
 };

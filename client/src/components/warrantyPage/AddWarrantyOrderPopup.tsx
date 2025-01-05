@@ -210,9 +210,8 @@ export default function AddWarrantyOrderPopup({
         </div>
         <div className="buttons-container w-full flex justify-end gap-2">
           <Button
-            variant="contained"
+            variant="outlined"
             style={{
-              backgroundColor: "red",
               textTransform: "none",
             }}
             onClick={onClose}
