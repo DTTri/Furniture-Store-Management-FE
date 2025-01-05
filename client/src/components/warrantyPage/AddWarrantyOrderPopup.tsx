@@ -5,6 +5,7 @@ import UpdateWarrantyOrderDTO from "./UpdateWarrantyOrderDTO";
 import WarrantyOrder from "../../entities/WarrantyOrder";
 import warrantyService from "../../services/warranty.service";
 import { toast } from "react-toastify";
+import printWarrantyOrder from "./printWarrantyOrder";
 
 export default function AddWarrantyOrderPopup({
   onClose,
@@ -105,7 +106,7 @@ export default function AddWarrantyOrderPopup({
             {warrantyOrder ? "Update" : "Add new"} warranty order
           </h2>
           <hr className="w-full border-[#E1E8F1] border-t-2" />
-          <div className="flex w-full justify-between gap-4 flex-wrap mb-4">
+          <div className="warranty-order-details flex w-full justify-between gap-4 flex-wrap mb-4">
             <div className="flex flex-col gap-2 basis-1/2">
               <div className="flex flex-col gap-2">
                 <label htmlFor="description">Description</label>
@@ -209,6 +210,18 @@ export default function AddWarrantyOrderPopup({
           </div>
         </div>
         <div className="buttons-container w-full flex justify-end gap-2">
+          {warrantyOrder && (
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ textTransform: "none", fontSize: "14px" }}
+              onClick={() => {
+                printWarrantyOrder(warrantyOrder);
+              }}
+            >
+              Print Invoice
+            </Button>
+          )}
           <Button
             variant="outlined"
             style={{
