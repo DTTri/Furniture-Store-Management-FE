@@ -113,17 +113,27 @@ export default function DoubleCheckedGoodsReceipt({
         <div className="header w-full flex flex-row justify-between pl-4">
           <h3 className="font-semibold text-[28px] ">Goods Receipt</h3>
         </div>
-        <div className="w-full px-4 flex flex-row">
-          <div className="col-1 mr-[250px]">
+        <div className="w-full px-8 flex gap-40 items-center mb-1 flex-wrap gap-y-2">
+          <div className="">
             <p>Created Date: {goodsReceipt.receiptDate}</p>
             <p>Receipt ID: {goodsReceipt.id}</p>
-            <p>Provider ID: {goodsReceipt.providerId}</p>
           </div>
-          <div className="col-2 w-fit">
+          {/* <hr className="w-[1px] h-16 bg-gray-500" /> */}
+          <div className="">
+            <p>Provider ID: {goodsReceipt.providerId}</p>
             <p>Staff ID: {goodsReceipt.staffId}</p>
           </div>
+          {/* <hr className="w-[1px] h-16 bg-gray-500" /> */}
+          <div className="">
+            <p className="">
+              Total Cost: {formatMoney(goodsReceipt.totalCost.toString())}
+            </p>
+            <p className="">
+              Shipping: {formatMoney(goodsReceipt.shipping.toString())}
+            </p>
+          </div>
         </div>
-        <div className="w-full">
+        <div className="w-full h-full">
           <DataGrid
             style={{
               borderRadius: "20px",
@@ -147,16 +157,6 @@ export default function DoubleCheckedGoodsReceipt({
             slots={{ toolbar: GridToolbar }}
             rowSelection={false}
           />
-        </div>
-        <div className="w-full px-4 flex flex-row mb-1">
-          <div className="col-1 mr-[250px]">
-            <p className="font-semibold text-[18px] text-nowrap">
-              Total Cost: {goodsReceipt.totalCost}
-            </p>
-            <p className="font-semibold text-[18px] text-nowrap">
-              Shipping: {goodsReceipt.shipping}
-            </p>
-          </div>
         </div>
       </div>
     </div>

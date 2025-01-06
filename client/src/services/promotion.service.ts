@@ -24,6 +24,9 @@ class PromotionService {
   async deletePromotion(id: number) {
     return await http.delete(this.getUri(`/delete-promotion/${id}`));
   }
+  async stopPromotion(id: number) {
+    return await http.patch(this.getUri(`/stop-promotion`), { id });
+  }
 }
 const promotionService = new PromotionService();
 export default promotionService;

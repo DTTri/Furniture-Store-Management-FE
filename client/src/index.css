@@ -21,9 +21,16 @@
     opacity: 1;
   }
 }
-
-.popup {
-  animation: popup-animation 0.2s ease-out;
+@layer utilities {
+  /* .add-product-information-container {
+  } */
+  .popup {
+    animation: popup-animation 0.2s ease-out;
+    overflow: auto;
+    label {
+      @apply font-semibold;
+    }
+  }
 }
 
 .fade-in {

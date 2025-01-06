@@ -96,7 +96,11 @@ export default function AddCustomerPopup({
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup bg-white rounded-xl p-4 w-1/4 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
-        <div className="w-full flex flex-col gap-4">
+        <h2 className="text-xl text-[#383E49] font-bold flex-1">
+          {customer ? "Update" : "Add new"} customer
+        </h2>
+        <hr className="w-full border-[#E1E8F1] border-t-2 mb-2" />
+        <div className="w-full flex flex-col gap-4 mb-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="name">Name</label>
             <input
@@ -142,9 +146,8 @@ export default function AddCustomerPopup({
         </div>
         <div className="buttons-container w-full flex justify-end gap-2">
           <Button
-            variant="contained"
+            variant="outlined"
             style={{
-              backgroundColor: "red",
               textTransform: "none",
             }}
             onClick={onClose}

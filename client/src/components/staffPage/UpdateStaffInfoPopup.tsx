@@ -1,4 +1,3 @@
-import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 import { useState } from "react";
 import UpdateStaffInfoDTO from "../../entities/DTO/UpdateStaffInfoDTO";
@@ -9,7 +8,7 @@ import { toast } from "react-toastify";
 
 export default function UpdateStaffInfoPopup({
   onClose,
-  staff
+  staff,
 }: {
   onClose: () => void;
   staff: Staff;
@@ -85,8 +84,7 @@ export default function UpdateStaffInfoPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="relative popup bg-white rounded-xl p-4 w-1/4 min-w-[390px] overflow-y-auto flex flex-col gap-2">
-        <CloseIcon className="absolute top-2 right-2 cursor-pointer hover:bg-slate-300 rounded-full" onClick={onClose} />
+      <div className="popup bg-white rounded-xl p-4 w-1/4 min-w-[390px] overflow-y-auto flex flex-col gap-2">
         <div className="w-full flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="fullname">Full Name</label>
@@ -177,9 +175,8 @@ export default function UpdateStaffInfoPopup({
         </div>
         <div className="buttons-container w-full flex justify-end gap-2">
           <Button
-            variant="contained"
+            variant="outlined"
             style={{
-              backgroundColor: "red",
               textTransform: "none",
             }}
             onClick={onClose}

@@ -17,6 +17,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Edit } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import { sUser } from "../../store";
 export default function AddPromotionPopup({
   onClose,
   onPromotionCreated,
@@ -41,7 +42,9 @@ export default function AddPromotionPopup({
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     null
   );
+  const [showDataGrid, setShowDataGrid] = useState(true);
   const [rows, setRows] = useState<CreatePromotionDTO["promotionProducts"]>([]);
+  const userPermissions = sUser.use((v) => v.permissions);
   useEffect(() => {
     const fetchProductsAndVariants = async () => {
       const response = Promise.all([
@@ -113,7 +116,15 @@ export default function AddPromotionPopup({
 
   const handleDeleteRow = (variantId: number) => {
     const updatedRows = rows.filter((row) => row.variantId !== variantId);
-    setRows(updatedRows);
+    if (updatedRows.length === 0) {
+      setShowDataGrid(false);
+      setTimeout(() => {
+        setRows([]);
+        setShowDataGrid(true);
+      }, 0);
+    } else {
+      setRows(updatedRows);
+    }
   };
 
   const handleDiscountRateChange = (variantId: number, discount: number) => {
@@ -199,20 +210,50 @@ export default function AddPromotionPopup({
     }
   };
 
+  const handleStopPromotion = async () => {
+    if (!promotion) {
+      toast("No promotion to stop", { type: "error" });
+      return;
+    }
+    try {
+      const res = await promotionService.stopPromotion(promotion.id);
+      onClose();
+      if (res.data.EC === 0) {
+        toast("End promotion successfully", { type: "success" });
+        onPromotionUpdated({
+          ...promotion,
+          finishDate: new Date().toISOString().split("T")[0],
+        });
+        onClose();
+      } else {
+        toast("Failed to stop promotion", { type: "error" });
+        console.error("Failed to stop promotion:", res.data.EM);
+      }
+    } catch (error) {
+      toast("Failed to stop promotion", { type: "error" });
+      console.error("Error stopping promotion:", error);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 w-2/3 min-w-[420px] h-[75vh] max-h-[75vh] overflow-y-auto flex flex-col justify-between gap-4 pb-4">
-        {promotion && (
-          <Edit
-            sx={{ width: 27, height: 27 }}
-            className="absolute top-2 right-[14px] hover:bg-slate-100 rounded-full cursor-pointer p-[2px]"
-            onClick={() => setIsEditing(!isEditing)}
-          />
-        )}
-
-        <div className="flex justify-between gap-4 h-full">
-          <div className="flex flex-col gap-4 basis-2/5">
-            <div className="flex flex-col gap-2">
+      <div className="popup bg-white rounded-xl p-4 w-2/3 min-w-[390px] max-h-[80%] overflow-y-auto relative flex flex-col gap-2">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl text-[#383E49] font-bold flex-1">
+            {promotion ? "Update" : "Add new"} promotion
+          </h2>
+          {promotion && (
+            <Edit
+              sx={{ width: 32, height: 32 }}
+              className=" hover:bg-slate-100 rounded-full cursor-pointer p-[2px]"
+              onClick={() => setIsEditing(!isEditing)}
+            />
+          )}
+        </div>
+        <hr className="w-full border-[#E1E8F1] border-t-2 mb-2" />
+        <div className="flex justify-between h-full flex-wrap">
+          <div className="flex flex-col gap-4 basis-1/3 w-full mb-4">
+            <div className="flex flex-col gap-2 ">
               <label htmlFor="name">Name</label>
               <input
                 id="name"
@@ -265,55 +306,54 @@ export default function AddPromotionPopup({
               />
             </div>
           </div>
-          <div className="flex flex-col gap-2 basis-[55%] w-full h-ful">
+          <div className="flex flex-col gap-4 basis-[63%] w-full">
             <form
               id="addRowForm"
-              className="flex flex-col gap-4 p-4 items-center"
+              className="flex w-full justify-between gap-2"
               onSubmit={handleAddRow}
             >
-              <div className="flex w-full justify-between gap-2">
-                <select
-                  id="selectedProduct"
-                  className="basis-[48%] w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  onChange={(e) => {
-                    setSelectedVariant(null);
-                    const selectedProductId = parseInt(e.target.value);
-                    setSelectedProduct(
-                      products.find(
-                        (product) => product.id === selectedProductId
-                      ) ?? null
-                    );
-                  }}
-                  disabled={promotion && !isEditing}
-                >
-                  <option value="">Choose product</option>
-                  {products.map((product) => (
-                    <option key={product.id} value={product.id}>
-                      {product.name}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  id="selectedVariant"
-                  className="basis-1/2 w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                  disabled={promotion && !isEditing && !selectedProduct}
-                  onChange={(e) => {
-                    const selectedVariantId = parseInt(e.target.value);
-                    setSelectedVariant(
-                      productVariants.find(
-                        (variant) => variant.id === selectedVariantId
-                      ) ?? null
-                    );
-                  }}
-                >
-                  <option value="">Choose variant</option>
-                  {productVariants.map((variant) => (
-                    <option key={variant.id} value={variant.id}>
-                      {`${variant.color} - ${variant.size}`}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <select
+                id="selectedProduct"
+                className="basis-[48%] w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                onChange={(e) => {
+                  setSelectedVariant(null);
+                  const selectedProductId = parseInt(e.target.value);
+                  setSelectedProduct(
+                    products.find(
+                      (product) => product.id === selectedProductId
+                    ) ?? null
+                  );
+                }}
+                disabled={promotion && !isEditing}
+              >
+                <option value="">Choose product</option>
+                {products.map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                id="selectedVariant"
+                className="basis-1/2 w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                disabled={promotion && !isEditing && !selectedProduct}
+                onChange={(e) => {
+                  const selectedVariantId = parseInt(e.target.value);
+                  setSelectedVariant(
+                    productVariants.find(
+                      (variant) => variant.id === selectedVariantId
+                    ) ?? null
+                  );
+                }}
+              >
+                <option value="">Choose variant</option>
+                {productVariants.map((variant) => (
+                  <option key={variant.id} value={variant.id}>
+                    {`${variant.color} - ${variant.size}`}
+                  </option>
+                ))}
+              </select>
+
               <Button
                 type="submit"
                 variant="contained"
@@ -327,97 +367,113 @@ export default function AddPromotionPopup({
                 Add
               </Button>
             </form>
-            <div className="table-container w-full h-full overflow-hidden">
-              <DataGrid
-                style={{
-                  borderRadius: "20px",
-                  backgroundColor: "white",
-                }}
-                className="h-full"
-                rows={rows.map((row, index) => ({
-                  ...row,
-                  id: index + 1,
-                }))}
-                columns={[
-                  {
-                    field: "id",
-                    headerName: "ID",
-                    flex: 0.5,
-                    headerAlign: "center",
-                    align: "center",
-                  },
-                  {
-                    field: "variant",
-                    headerName: "Variant",
-                    flex: 2,
-                    headerAlign: "center",
-                    align: "center",
-                  },
-                  {
-                    field: "discount",
-                    headerName: "Discount Rate",
-                    flex: 1,
-                    headerAlign: "center",
-                    align: "center",
-                    renderCell: (params) => (
-                      <div className="flex justify-center">
-                        <input
-                          type="number"
-                          min={0}
-                          max={100}
-                          value={params.value}
-                          onChange={(e) =>
-                            handleDiscountRateChange(
-                              params.row.variantId,
-                              parseInt(e.target.value)
-                            )
-                          }
-                          className="w-16 text-center"
-                          disabled={promotion && !isEditing}
-                        />
-                        <span className="ml-2 font-semibold">%</span>
-                      </div>
-                    ),
-                  },
-                  {
-                    field: "actions",
-                    type: "actions",
-                    flex: 0.5,
-                    headerAlign: "center",
-                    align: "center",
-                    getActions: (params: GridRowParams) => [
-                      <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Delete"
-                        onClick={() => handleDeleteRow(params.row.variantId)}
-                        disabled={promotion && !isEditing}
-                      />,
-                    ],
-                  },
-                ]}
-                disableDensitySelector
-                rowHeight={40}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 4,
+            <div className="table-container w-full h-full">
+              {showDataGrid && (
+                <DataGrid
+                  style={{
+                    borderRadius: "20px",
+                    backgroundColor: "white",
+                    height: "100%",
+                  }}
+                  rows={rows.map((row, index) => ({
+                    ...row,
+                    id: index + 1,
+                  }))}
+                  columns={[
+                    {
+                      field: "id",
+                      headerName: "ID",
+                      flex: 0.5,
+                      headerAlign: "center",
+                      align: "center",
                     },
-                  },
-                }}
-                pageSizeOptions={
-                  rows.length < 4 ? [4, rows.length] : [4, rows.length + 1]
-                }
-                slots={{ toolbar: GridToolbar }}
-                rowSelection={false}
-              />
+                    {
+                      field: "variant",
+                      headerName: "Variant",
+                      flex: 2,
+                      headerAlign: "center",
+                      align: "center",
+                    },
+                    {
+                      field: "discount",
+                      headerName: "Discount Rate",
+                      flex: 1,
+                      headerAlign: "center",
+                      align: "center",
+                      renderCell: (params) => (
+                        <div className="flex justify-center">
+                          <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={params.value}
+                            onChange={(e) =>
+                              handleDiscountRateChange(
+                                params.row.variantId,
+                                parseInt(e.target.value)
+                              )
+                            }
+                            className="w-16 text-center"
+                            disabled={promotion && !isEditing}
+                          />
+                          <span className="ml-2 font-semibold">%</span>
+                        </div>
+                      ),
+                    },
+                    {
+                      field: "actions",
+                      type: "actions",
+                      flex: 0.5,
+                      headerAlign: "center",
+                      align: "center",
+                      getActions: (params: GridRowParams) => [
+                        <GridActionsCellItem
+                          icon={<DeleteIcon />}
+                          label="Delete"
+                          onClick={() => handleDeleteRow(params.row.variantId)}
+                          disabled={promotion && !isEditing}
+                        />,
+                      ],
+                    },
+                  ]}
+                  disableDensitySelector
+                  rowHeight={40}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 3,
+                      },
+                    },
+                  }}
+                  pageSizeOptions={
+                    rows.length < 3 ? [3, rows.length] : [3, rows.length + 1]
+                  }
+                  slots={{ toolbar: GridToolbar }}
+                  rowSelection={false}
+                />
+              )}
             </div>
           </div>
         </div>
         <div className="buttons-container flex gap-4 w-full justify-end">
+          {userPermissions.includes(46) &&
+            promotion &&
+            promotion.finishDate > new Date().toISOString().split("T")[0] && (
+              <Button
+                variant="contained"
+                style={{
+                  backgroundColor: "red",
+                  textTransform: "none",
+                }}
+                onClick={handleStopPromotion}
+                id="stopPromotionButton"
+              >
+                End promotion
+              </Button>
+            )}
           <Button
-            variant="contained"
+            variant="outlined"
             style={{
-              backgroundColor: "red",
               textTransform: "none",
             }}
             onClick={onClose}

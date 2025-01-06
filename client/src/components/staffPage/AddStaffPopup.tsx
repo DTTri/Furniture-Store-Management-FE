@@ -116,134 +116,143 @@ export default function AddStaffPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white rounded-xl p-4 w-1/4 min-w-[390px] overflow-y-auto relative flex flex-col gap-2">
-        <div className="w-full flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="fullname">Full Name</label>
-            <input
-              id="newStaffFullnameInput"
-              name="fullname"
-              placeholder="Full Name"
-              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              required
-              onChange={(e) => {
-                setFullname(e.target.value);
-              }}
-              defaultValue={staff?.fullname}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="birth">Birth</label>
-            <input
-              id="newStaffBirthInput"
-              name="birth"
-              type="date"
-              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              required
-              onChange={(e) => {
-                setBirth(e.target.value);
-              }}
-              defaultValue={birth}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="gender">Gender</label>
-            <select
-              id="newStaffGenderInput"
-              name="gender"
-              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              required
-              onChange={(e) => {
-                setGender(e.target.value);
-              }}
-              defaultValue={staff?.gender}
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="idNumber">ID Number</label>
-            <input
-              id="newStaffIdNumberInput"
-              name="idNumber"
-              placeholder="ID Number"
-              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              required
-              onChange={(e) => {
-                setIdNumber(e.target.value);
-              }}
-              defaultValue={staff?.idNumber}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="startDate">Start Date</label>
-            <input
-              id="newStaffStartDateInput"
-              name="startDate"
-              type="date"
-              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              required
-              onChange={(e) => {
-                setStartDate(e.target.value);
-              }}
-              defaultValue={staff?.startDate}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="phone">Phone</label>
-            <input
-              id="newStaffPhoneInput"
-              name="phone"
-              placeholder="Phone"
-              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              required
-              onChange={(e) => {
-                setPhone(e.target.value);
-              }}
-              defaultValue={staff?.phone}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="email">Email</label>
-            <input
-              id="newStaffEmailInput"
-              name="email"
-              placeholder="Email"
-              className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              required
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              defaultValue={staff?.email}
-            />
-          </div>
-          {!staff && (
+      <div className="popup bg-white rounded-xl p-4 w-2/5 min-w-[390px] max-h-[80%] overflow-y-auto relative flex flex-col gap-2">
+        <h2 className="text-xl text-[#383E49] font-bold flex-1">
+          {staff ? "Update" : "Add new"} staff
+        </h2>
+        <hr className="w-full border-[#E1E8F1] border-t-2 mb-2" />
+        <div className="w-full flex justify-between gap-4 mb-4 flex-wrap">
+          <div className="flex-1">
             <div className="flex flex-col gap-2">
-              <label htmlFor="role">Role</label>
-              <select
-                id="newStaffRoleInput"
-                name="role"
+              <label htmlFor="fullname">Full Name</label>
+              <input
+                id="newStaffFullnameInput"
+                name="fullname"
+                placeholder="Full Name"
                 className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 required
                 onChange={(e) => {
-                  setRole(Number(e.target.value));
+                  setFullname(e.target.value);
                 }}
-                defaultValue={role}
+                defaultValue={staff?.fullname}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="gender">Gender</label>
+              <select
+                id="newStaffGenderInput"
+                name="gender"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => {
+                  setGender(e.target.value);
+                }}
+                defaultValue={staff?.gender}
               >
-                <option value={2}>Manager</option>
-                <option value={3}>Sale Staff</option>
-                <option value={4}>Inventory Staff</option>
-                <option value={5}>Repair Staff</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
               </select>
             </div>
-          )}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email">Email</label>
+              <input
+                id="newStaffEmailInput"
+                name="email"
+                placeholder="Email"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                defaultValue={staff?.email}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="startDate">Start Date</label>
+              <input
+                id="newStaffStartDateInput"
+                name="startDate"
+                type="date"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                }}
+                defaultValue={staff?.startDate}
+              />
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="flex flex-col gap-2 w-full">
+              <label htmlFor="birth">Birth</label>
+              <input
+                id="newStaffBirthInput"
+                name="birth"
+                type="date"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => {
+                  setBirth(e.target.value);
+                }}
+                defaultValue={birth}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="phone">Phone</label>
+              <input
+                id="newStaffPhoneInput"
+                name="phone"
+                placeholder="Phone"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                }}
+                defaultValue={staff?.phone}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="idNumber">ID Number</label>
+              <input
+                id="newStaffIdNumberInput"
+                name="idNumber"
+                placeholder="ID Number"
+                className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                required
+                onChange={(e) => {
+                  setIdNumber(e.target.value);
+                }}
+                defaultValue={staff?.idNumber}
+              />
+            </div>
+            {!staff && (
+              <div className="flex flex-col gap-2">
+                <label htmlFor="role">Role</label>
+                <select
+                  id="newStaffRoleInput"
+                  name="role"
+                  className="border border-gray-500 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                  required
+                  onChange={(e) => {
+                    setRole(Number(e.target.value));
+                  }}
+                  defaultValue={role}
+                >
+                  <option value={2}>Manager</option>
+                  <option value={3}>Sale Staff</option>
+                  <option value={4}>Inventory Staff</option>
+                  <option value={5}>Repair Staff</option>
+                </select>
+              </div>
+            )}
+          </div>
         </div>
         <div className="buttons-container w-full flex justify-end gap-2">
           <Button
-            variant="contained"
+            variant="outlined"
             style={{
-              backgroundColor: "red",
               textTransform: "none",
             }}
             onClick={onClose}

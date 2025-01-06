@@ -282,14 +282,15 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white flex justify-between flex-wrap relative rounded-xl p-4 w-2/3 min-w-[420px] h-[80vh] max-h-[80vh] overflow-auto">
-        <button className="absolute top-2 right-2" onClick={onClose}>
-          x
-        </button>
-        <div className="add-variant-to-import basis-1/4 min-w-80 border-r-2 flex flex-col gap-4  px-4">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="provider" className="text-center font-bold text-lg">
-              Choose provider
+      <div className="popup bg-white flex flex-col gap-2 rounded-xl p-4 w-2/3 min-w-[420px] h-[85vh] max-h-[85vh] overflow-auto">
+        <h2 className="text-xl text-[#383E49] font-bold flex-1">
+          Create goods receipt
+        </h2>
+        <hr className="w-full border-[#E1E8F1] border-t-2" />
+        <div className="w-full h-full flex flex-col gap-4 mb-4">
+          <div className="flex gap-2">
+            <label htmlFor="provider" className="">
+              Choose provider:
             </label>
             <select
               id="provider"
@@ -303,16 +304,16 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               ))}
             </select>
           </div>
-          <div>
-            <p className="text-center font-bold text-lg">Choose variant</p>
+          <hr className="w-full border-[#E1E8F1] border-t-2" />
+          <div className="w-full h-full flex flex-col gap-3">
             <form
               id="addRowForm"
-              className="flex flex-col gap-4"
+              className="flex gap-2 w-full"
               onSubmit={handleAddRow}
             >
               <select
                 id="selectedProduct"
-                className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                className="w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 onChange={(e) => {
                   setSelectedVariant(null);
                   const selectedProductId = parseInt(e.target.value);
@@ -332,7 +333,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               </select>
               <select
                 id="selectedVariant"
-                className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                className="w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
                 disabled={!selectedProduct}
                 onChange={(e) => {
                   const selectedVariantId = parseInt(e.target.value);
@@ -355,84 +356,83 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
                 variant="contained"
                 style={{
                   textTransform: "none",
+                  flexBasis: "20%",
+                  marginLeft: "12px",
                 }}
                 id="addRowButton"
               >
                 Add
               </Button>
             </form>
+
+            <div className="table-container w-[98%] h-full overflow-hidden">
+              {showDataGrid && (
+                <DataGrid
+                  style={{
+                    borderRadius: "20px",
+                    backgroundColor: "white",
+                    height: "100%",
+                  }}
+                  rows={rows}
+                  columns={columns}
+                  disableDensitySelector
+                  rowHeight={40}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 3,
+                      },
+                    },
+                  }}
+                  pageSizeOptions={
+                    rows.length < 3 ? [3, rows.length] : [3, rows.length + 1]
+                  }
+                  slots={{ toolbar: GridToolbar }}
+                  rowSelection={false}
+                />
+              )}
+            </div>
+            <div className="flex justify-between w-full px-4">
+              <div className="flex gap-2 items-center">
+                <label htmlFor="shippingCost">Shipping cost:</label>
+                <input
+                  type="number"
+                  className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
+                  min={0}
+                  onChange={(e) => setShippingCost(parseInt(e.target.value))}
+                  id="shippingCostInput"
+                  value={shippingCost}
+                />
+                <span className="text-gray-500">VND</span>
+              </div>
+              <h3 className="text-lg font-semibold">
+                Total cost: {formatMoney(totalCost.toString())}
+              </h3>
+            </div>
           </div>
         </div>
-        <div className="imported-variants flex-1 h-full flex flex-col items-center gap-3">
-          <h2 className="text-center text-xl font-bold">Goods Receipt</h2>
-
-          <div className="table-container w-[98%] h-full overflow-hidden">
-            {showDataGrid && (
-              <DataGrid
-                style={{
-                  borderRadius: "20px",
-                  backgroundColor: "white",
-                  height: "100%",
-                }}
-                rows={rows}
-                columns={columns}
-                disableDensitySelector
-                rowHeight={40}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 6,
-                    },
-                  },
-                }}
-                pageSizeOptions={
-                  rows.length < 6 ? [6, rows.length] : [6, rows.length + 1]
-                }
-                slots={{ toolbar: GridToolbar }}
-                rowSelection={false}
-              />
-            )}
-          </div>
-          <div className="flex justify-between w-full px-8">
-            <input
-              type="number"
-              placeholder="Shipping Cost"
-              className="border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-              min={0}
-              onChange={(e) => setShippingCost(parseInt(e.target.value))}
-              id="shippingCostInput"
-              value={shippingCost}
-            />
-            <h3 className="text-lg font-semibold">
-              Total cost: {formatMoney(totalCost.toString())}
-            </h3>
-          </div>
-          <div className="buttons-container w-full flex justify-end gap-4">
-            <Button
-              variant="contained"
-              onClick={onClose}
-              color="primary"
-              style={{
-                backgroundColor: "transparent",
-                border: "1px solid #1976d2",
-                color: "#1976d2",
-                textTransform: "none",
-              }}
-              id="cancelImportButton"
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              style={{
-                textTransform: "none",
-              }}
-              onClick={handleImport}
-              id="confirmImportButton"
-            >
-              Confirm
-            </Button>
-          </div>
+        <div className="buttons-container w-full flex justify-end gap-4">
+          <Button
+            variant="outlined"
+            onClick={onClose}
+            color="primary"
+            style={{
+              textTransform: "none",
+            }}
+            id="cancelImportButton"
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            style={{
+              textTransform: "none",
+            }}
+            onClick={handleImport}
+            id="confirmImportButton"
+          >
+            Confirm
+          </Button>
         </div>
       </div>
     </div>

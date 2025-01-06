@@ -59,10 +59,10 @@ const NavBar: React.FC = () => {
           return (
             <div
               key={item.name}
-              className={`ListMenu py-3 px-4 flex items-center w-full cursor-pointer hover:bg-[#f2f2f2] transition-all duration-100 ${
+              className={`ListMenu py-3 px-4 flex items-center w-full cursor-pointer  transition-all duration-100 ${
                 selectedMenu === item.name
                   ? "bg-[#c1c1c1] text-[#156fee] font-bold border-l-4 border-[#156fee]"
-                  : "bg-white text-[#70747b] font-medium"
+                  : "bg-white text-[#70747b] font-medium hover:bg-[#f2f2f2]"
               }`}
               onClick={() => handleMenuClick(item.path, item.name)} // Xử lý click và điều hướng
             >
@@ -73,15 +73,6 @@ const NavBar: React.FC = () => {
             </div>
           );
         })}
-      </div>
-      {/* Button Log Out (Centered) */}
-      <div
-        className="SignOutBtn w-[164px] h-10 bg-[#d91316] rounded-[10px] shadow flex justify-center items-center cursor-pointer mx-auto mt-4"
-        onClick={() => navigate("/loginpage")}
-      >
-        <div className="Text text-white text-base font-medium font-['Product sans'] leading-normal">
-          Log Out
-        </div>
       </div>
     </div>
   );
