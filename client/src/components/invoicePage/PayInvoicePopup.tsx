@@ -154,12 +154,22 @@ export default function PayInvoicePopup({
     },
     {
       field: "unitPrice",
-      headerName: "Final Price",
-      flex: 1,
+      headerName: "Unit Price",
+      flex: 0.7,
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return formatMoney(Number.parseFloat(row.unitPrice).toFixed(0));
+        return formatMoney(row.unitPrice.toString());  
+      }
+    },
+    {
+      field: "discountAmount",
+      headerName: "Discount Amount",
+      flex: 0.7,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (_params, row) => {
+        return formatMoney(row.discountAmount.toString());
       }
     },
     {
@@ -286,7 +296,7 @@ export default function PayInvoicePopup({
             {method === "cash" ? (
                 <div className="w-full flex flex-col mx-auto gap-2">
                     <p className="text-[18px] text-[#D91316] font-bold">
-                    Total Cost: {Number(totalCost).toFixed(0)}
+                    Total Cost: {formatMoney(Number(totalCost).toFixed(0))}
                     </p>
                     <div className="flex flex-row items-center gap-2">
                         <span className="text-[18px] font-boldtext-base text-[#000000] block">Cash: </span>
@@ -298,7 +308,7 @@ export default function PayInvoicePopup({
                             }}/>
                     </div>
                     <div>
-                        <span className="text-[18px] font-boldtext-base text-[#000000]">Change: {cash - totalCost}</span>
+                        <span className="text-[18px] font-boldtext-base text-[#000000]">Change: {formatMoney((cash - totalCost).toString())}</span>
                     </div>
                 </div>
             ): (
