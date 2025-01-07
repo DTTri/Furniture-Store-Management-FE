@@ -79,7 +79,7 @@ export default function InvoiceDetailTable({
       flex: 1,
       headerAlign: "center",
       align: "center",
-      valueGetter: (value, row) => {
+      valueGetter: (_value, row) => {
         return formatMoney(row.unitPrice.toString());
       },
     },
@@ -92,7 +92,7 @@ export default function InvoiceDetailTable({
     },
     {
       field: "discountAmount",
-      headerName: "Discount",
+      headerName: "Discount Amount",
       flex: 0.7,
       headerAlign: "center",
       align: "center",

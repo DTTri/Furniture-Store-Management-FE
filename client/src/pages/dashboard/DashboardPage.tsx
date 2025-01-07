@@ -21,7 +21,9 @@ export default function DashboardPage() {
       .split("T")[0]
   );
   const [selectedToDate, setSelectedToDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date(new Date().setDate(new Date().getDate() - 1))
+      .toISOString()
+      .split("T")[0]
   );
 
   const report = sReport.use();
