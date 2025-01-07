@@ -8,6 +8,7 @@ type InvoiceDetail = {
     cost: number,
     unitPrice: number,
     discountedAmount: number,
+    promotionId?: number,
     ProductVariant?: ProductVariant
 }
 

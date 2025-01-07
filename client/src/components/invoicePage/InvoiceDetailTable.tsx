@@ -74,6 +74,16 @@ export default function InvoiceDetailTable({
       align: "center",
     },
     {
+      field: "unitPrice",
+      headerName: "Price",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (_value, row) => {
+        return formatMoney(row.unitPrice.toString());
+      },
+    },
+    {
       field: "quantity",
       headerName: "Quantity",
       flex: 1,
@@ -82,25 +92,13 @@ export default function InvoiceDetailTable({
     },
     {
       field: "discountAmount",
-      headerName: "Discounted ",
-      flex: 0.8,
+      headerName: "Discount Amount",
+      flex: 0.7,
       headerAlign: "center",
       align: "center",
-      valueGetter: (value, row) => {
-        console.log(value);
-        return row.discountAmount + "%";
-      },
-    },
-    {
-      field: "Price",
-      headerName: "Price",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-      valueGetter: (value, row) => {
-        console.log(value);
-        return formatMoney(row.unitPrice.toString());
-      },
+      valueGetter: (_params, row) => {
+        return formatMoney(row.discountAmount.toString());
+      }
     },
     {
       field: "cost",
