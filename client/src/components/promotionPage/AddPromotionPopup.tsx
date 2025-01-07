@@ -107,7 +107,6 @@ export default function AddPromotionPopup({
 
       const newRow = {
         variantId: selectedVariant.id,
-        variant: `${selectedVariant.SKU} - ${selectedVariant.color} - ${selectedVariant.size}`,
         discount: 0,
       };
       setRows([...rows, newRow]);
@@ -393,6 +392,12 @@ export default function AddPromotionPopup({
                       flex: 2,
                       headerAlign: "center",
                       align: "center",
+                      valueGetter: (_, row) => {
+                        const variant = allVariants.find(
+                          (variant) => variant.id === row.variantId
+                        );
+                        return `${variant?.SKU} - ${variant?.color} - ${variant?.size}`;
+                      },
                     },
                     {
                       field: "discount",
