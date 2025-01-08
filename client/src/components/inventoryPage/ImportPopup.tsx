@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProductVariant from "../../entities/ProductVariant";
 import { Product } from "../../entities";
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -19,7 +19,9 @@ import CreateGoodsReceiptDTO from "./CreateGoodsReceiptDTO";
 import { toast } from "react-toastify";
 import { sVariant } from "../../store";
 import formatMoney from "../../utils/formatMoney";
-
+import AddIcon from "@mui/icons-material/Add";
+import AddProductPopup from "../productPage/AddProductPopup";
+import AddVariantPopup from "../productPage/AddVariantPopup";
 interface ReceiptTableRow {
   index: number;
   id: number;
@@ -46,6 +48,9 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
   const [shippingCost, setShippingCost] = useState(0);
   const [showDataGrid, setShowDataGrid] = useState(true); // State to control unmount and mount of DataGrid
 
+  const [isAddProductPopupOpen, setIsAddProductPopupOpen] = useState(false);
+
+  const [isAddVariantPopupOpen, setIsAddVariantPopupOpen] = useState(false);
   useEffect(() => {
     const fetchProducts = async () => {
       const productsResponse = await productService.getAllProducts();
@@ -311,46 +316,68 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               className="flex gap-2 w-full"
               onSubmit={handleAddRow}
             >
-              <select
-                id="selectedProduct"
-                className="w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                onChange={(e) => {
-                  setSelectedVariant(null);
-                  const selectedProductId = parseInt(e.target.value);
-                  setSelectedProduct(
-                    products.find(
-                      (product) => product.id === selectedProductId
-                    ) ?? null
-                  );
-                }}
-              >
-                <option value="">Choose product</option>
-                {products.map((product) => (
-                  <option key={product.id} value={product.id}>
-                    {product.name}
-                  </option>
-                ))}
-              </select>
-              <select
-                id="selectedVariant"
-                className="w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500"
-                disabled={!selectedProduct}
-                onChange={(e) => {
-                  const selectedVariantId = parseInt(e.target.value);
-                  setSelectedVariant(
-                    filteredProductVariants.find(
-                      (variant) => variant.id === selectedVariantId
-                    ) ?? null
-                  );
-                }}
-              >
-                <option value="">Choose variant</option>
-                {filteredProductVariants.map((variant) => (
-                  <option key={variant.id} value={variant.id}>
-                    {`${variant.SKU} - ${variant.color} - ${variant.size}`}
-                  </option>
-                ))}
-              </select>
+              <div className="flex w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500">
+                <select
+                  id="selectedProduct"
+                  className="w-full h-full border-none outline-none"
+                  onChange={(e) => {
+                    setSelectedVariant(null);
+                    const selectedProductId = parseInt(e.target.value);
+                    setSelectedProduct(
+                      products.find(
+                        (product) => product.id === selectedProductId
+                      ) ?? null
+                    );
+                  }}
+                >
+                  <option value="">Choose product</option>
+                  {products.map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.name}
+                    </option>
+                  ))}
+                </select>
+                <IconButton
+                  className="open-add-product-popup"
+                  onClick={() => {
+                    setIsAddProductPopupOpen(true);
+                  }}
+                >
+                  <AddIcon />
+                </IconButton>
+              </div>
+
+              <div className="flex w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500">
+                <select
+                  id="selectedVariant"
+                  className="w-full h-full"
+                  disabled={!selectedProduct}
+                  onChange={(e) => {
+                    const selectedVariantId = parseInt(e.target.value);
+                    setSelectedVariant(
+                      filteredProductVariants.find(
+                        (variant) => variant.id === selectedVariantId
+                      ) ?? null
+                    );
+                  }}
+                >
+                  <option value="">Choose variant</option>
+                  {filteredProductVariants.map((variant) => (
+                    <option key={variant.id} value={variant.id}>
+                      {`${variant.SKU} - ${variant.color} - ${variant.size}`}
+                    </option>
+                  ))}
+                </select>
+                <IconButton
+                  className="open-add-variant-popup"
+                  onClick={() => {
+                    setIsAddVariantPopupOpen(true);
+                  }}
+                  disabled={!selectedProduct}
+                >
+                  <AddIcon />
+                </IconButton>
+              </div>
               <Button
                 type="submit"
                 variant="contained"
@@ -435,6 +462,49 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
           </Button>
         </div>
       </div>
+      {isAddProductPopupOpen && (
+        <AddProductPopup
+          onClose={() => setIsAddProductPopupOpen(false)}
+          onProductCreated={(product) => {
+            setProducts([...products, product]);
+            setSelectedProduct(product);
+            setFilteredProductVariants(
+              productVariants.filter(
+                (variant) => variant.productId === product.id
+              )
+            );
+          }}
+          onProductUpdated={(product) => {
+            setProducts(
+              products.map((p) => (p.id === product.id ? product : p))
+            );
+            setSelectedProduct(product);
+            setFilteredProductVariants(
+              productVariants.filter(
+                (variant) => variant.productId === product.id
+              )
+            );
+          }}
+        />
+      )}
+      {isAddVariantPopupOpen && selectedProduct && (
+        <AddVariantPopup
+          productId={selectedProduct?.id}
+          onClose={() => setIsAddVariantPopupOpen(false)}
+          onVariantCreated={(variant) => {
+            setFilteredProductVariants([...filteredProductVariants, variant]);
+            setSelectedVariant(variant);
+          }}
+          onVariantUpdated={(variant) => {
+            setFilteredProductVariants(
+              filteredProductVariants.map((v) =>
+                v.id === variant.id ? variant : v
+              )
+            );
+            setSelectedVariant(variant);
+          }}
+        />
+      )}
     </div>
   );
 }
