@@ -154,8 +154,9 @@ export default function InvoicePage() {
   ];
   const userPermissions = sUser.use((state) => state.permissions);
   return (
-    <div className="bg-white w-full h-full py-6 px-7">
-      <div className="header buttons flex flex-row items-center bg-white mb-4">
+    <div className="bg-white w-full h-full p-4">
+      <div className="header flex flex-row justify-between items-center mb-4 px-4">
+        <h2 className="page-header">Invoice</h2>
         {userPermissions.includes(21) && (
           <Button
             variant="contained"

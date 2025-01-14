@@ -15,8 +15,9 @@ export default function ProviderPage() {
 
   const userPermissions = sUser.use((v) => v.permissions);
   return (
-    <div className="bg-white w-full h-full">
-      <div className="header w-full flex gap-4 p-4">
+    <div className="bg-white w-full h-full p-4">
+      <div className="header flex flex-row justify-between items-center mb-4 px-4">
+        <h2 className="page-header">Provider</h2>
         {userPermissions.includes(51) && (
           <Button
             variant="contained"
@@ -33,7 +34,7 @@ export default function ProviderPage() {
           </Button>
         )}
       </div>
-      <div className="table-container w-full px-8 py-4">
+      <div className="table-container w-full">
         <ProvidersTable
           providers={providers}
           onEditProvider={(provider) => {

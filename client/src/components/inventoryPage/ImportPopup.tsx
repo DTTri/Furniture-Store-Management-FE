@@ -316,7 +316,7 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
               className="flex gap-2 w-full"
               onSubmit={handleAddRow}
             >
-              <div className="flex w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500">
+              <div className="h-10 flex w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500">
                 <select
                   id="selectedProduct"
                   className="w-full h-full border-none outline-none"
@@ -347,10 +347,10 @@ export default function ImportPopup({ onClose }: { onClose: () => void }) {
                 </IconButton>
               </div>
 
-              <div className="flex w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500">
+              <div className="h-10 flex w-full border border-gray-500 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-blue-500">
                 <select
                   id="selectedVariant"
-                  className="w-full h-full"
+                  className="w-full h-full border-none outline-none"
                   disabled={!selectedProduct}
                   onChange={(e) => {
                     const selectedVariantId = parseInt(e.target.value);

@@ -25,7 +25,7 @@ const NavBar: React.FC = () => {
     { name: "Inventory", icon: <FaBoxes />, path: "/inventory" },
     { name: "Product", icon: <FaShoppingCart />, path: "/product" },
     { name: "Category", icon: <FaTag />, path: "/category" },
-    { name: "Supplier", icon: <FaTruck />, path: "/provider" },
+    { name: "Provider", icon: <FaTruck />, path: "/provider" },
     { name: "Customer", icon: <FaUsers />, path: "/customer" },
     { name: "Staff", icon: <FaUserTie />, path: "/staff" },
     { name: "Promotion", icon: <FaGift />, path: "/promotion" },

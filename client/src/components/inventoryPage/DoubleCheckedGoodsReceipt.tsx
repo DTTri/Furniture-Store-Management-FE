@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { goodsReceiptService } from "../../services";
 import formatMoney from "../../utils/formatMoney";
+import { IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function DoubleCheckedGoodsReceipt({
   onClose,
@@ -104,14 +106,21 @@ export default function DoubleCheckedGoodsReceipt({
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup flex flex-col gap-4 bg-white relative rounded-xl p-4 w-2/3 h-[80vh] overflow-hidden">
-        <button
-          className="absolute flex flex-col items-center top-2 right-4 w-7 h-7 bg-black text-white rounded-full"
+        <IconButton
+          style={{
+            position: "absolute",
+            top: "0",
+            right: "0",
+          }}
           onClick={onClose}
         >
-          <span className="text-[16px] font-bold">x</span>
-        </button>
-        <div className="header w-full flex flex-row justify-between pl-4">
-          <h3 className="font-semibold text-[28px] ">Goods Receipt</h3>
+          <CloseIcon />
+        </IconButton>
+        <div className="header w-full flex flex-col gap-2">
+          <h2 className="text-xl text-[#383E49] font-bold flex-1">
+            Goods Receipt Details
+          </h2>
+          <hr className="w-full border-[#E1E8F1] border-t-2" />
         </div>
         <div className="w-full px-8 flex gap-40 items-center mb-1 flex-wrap gap-y-2">
           <div className="">

@@ -85,7 +85,11 @@ export default function UpdateStaffInfoPopup({
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="popup bg-white rounded-xl p-4 w-1/4 min-w-[390px] overflow-y-auto flex flex-col gap-2">
-        <div className="w-full flex flex-col gap-4">
+        <h2 className="text-xl text-[#383E49] font-bold flex-1">
+          Update Staff Information
+        </h2>
+        <hr className="w-full border-[#E1E8F1] border-t-2" />
+        <div className="w-full flex flex-col gap-2 mb-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="fullname">Full Name</label>
             <input

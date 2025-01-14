@@ -13,6 +13,9 @@ import { goodsReceiptService } from "../../services";
 import formatDate from "../../utils/formatDate";
 import formatMoney from "../../utils/formatMoney";
 import { sUser } from "../../store";
+import CloseIcon from "@mui/icons-material/Close";
+import { IconButton } from "@mui/material";
+
 export default function ImprortHistoryOrderPopup({
   onClose,
 }: {
@@ -98,15 +101,22 @@ export default function ImprortHistoryOrderPopup({
   ];
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="popup bg-white gap-4 relative rounded-xl p-4 w-2/3 max-h-[80vh] overflow-hidden">
-        <button
-          className="absolute flex flex-col items-center top-2 right-4 w-7 h-7 bg-black text-white rounded-full"
+      <div className="popup bg-white flex flex-col gap-4 relative rounded-xl p-4 w-2/3 max-h-[80vh] overflow-hidden">
+        <IconButton
+          style={{
+            position: "absolute",
+            top: "0",
+            right: "0",
+          }}
           onClick={onClose}
         >
-          <span className="text-[16px] font-bold">x</span>
-        </button>
-        <div className="header w-full flex flex-row justify-between pl-4 mb-5">
-          <h3 className="font-semibold text-[28px] ">Import history</h3>
+          <CloseIcon />
+        </IconButton>
+        <div className="header w-full flex flex-col gap-2">
+          <h2 className="text-xl text-[#383E49] font-bold flex-1">
+            Import History
+          </h2>
+          <hr className="w-full border-[#E1E8F1] border-t-2" />
         </div>
         <div className="w-full px-1 ">
           {/* <td className="text-center">{index + 1}</td>
