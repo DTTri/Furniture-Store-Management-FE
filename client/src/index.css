@@ -24,6 +24,9 @@
 @layer utilities {
   /* .add-product-information-container {
   } */
+  .page-header {
+    @apply font-bold text-3xl -ml-4;
+  }
   .popup {
     animation: popup-animation 0.2s ease-out;
     overflow: auto;

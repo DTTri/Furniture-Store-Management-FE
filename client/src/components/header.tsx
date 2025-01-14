@@ -32,16 +32,19 @@ const Header: React.FC = () => {
   };
 
   const handleClickOutside = (e: any) => {
-    if(!dropDownRef.current.contains(e.target) && !userButtonRef.current.contains(e.target)) {
+    if (
+      !dropDownRef.current.contains(e.target) &&
+      !userButtonRef.current.contains(e.target)
+    ) {
       setIsDropdownOpen(false);
     }
-  }
-  useEffect(()=> {
-    document.addEventListener('mousedown', handleClickOutside);
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const onCloseUpdateStaffInfo = () => {
     setIsUpdateStaffInfoPopupOpen(false);
   };
@@ -104,8 +107,12 @@ const Header: React.FC = () => {
             </div>
           </div>
           {isDropdownOpen && (
-            <div ref={dropDownRef}
-            className={`absolute w-[150px] right-[-24px] top-[45px] rounded-sm bg-[#f1eeee] shadow-lg flex flex-col transition-all ease-in-out transform scale-100 ${isDropdownOpen ? "fade-in" : "fade-out"}`}>
+            <div
+              ref={dropDownRef}
+              className={`absolute w-[150px] right-[-24px] top-[45px] rounded-sm bg-[#f1eeee] shadow-lg flex flex-col transition-all ease-in-out transform scale-100 ${
+                isDropdownOpen ? "fade-in" : "fade-out"
+              }`}
+            >
               <div
                 className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400  hover:bg-gray-300 cursor-pointer"
                 onClick={() => {
@@ -115,14 +122,14 @@ const Header: React.FC = () => {
               >
                 Personal Information
               </div>
-              <div 
+              {/* <div 
                 onClick={() => {
                   toggleDropdown();
                   setIsSettingPopupOpen(true);
                 }}
               className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400 hover:bg-gray-300 cursor-pointer">
                 Setting
-              </div>
+              </div> */}
               <div
                 className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400 hover:bg-gray-300 cursor-pointer"
                 onClick={handleOnLogout}
@@ -136,8 +143,9 @@ const Header: React.FC = () => {
       {isUpdateStaffInfoPopupOpen && (
         <UpdateStaffInfoPopup staff={user} onClose={onCloseUpdateStaffInfo} />
       )}
-      {isSettingPopupOpen && <SettingPopup onClose={() => setIsSettingPopupOpen(false)}/>}
-      
+      {isSettingPopupOpen && (
+        <SettingPopup onClose={() => setIsSettingPopupOpen(false)} />
+      )}
     </div>
   );
 };

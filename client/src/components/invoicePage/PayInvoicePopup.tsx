@@ -6,11 +6,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import {
-  DataGrid,
-  GridColDef,
-  GridToolbar
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -38,7 +34,7 @@ export default function PayInvoicePopup({
   const [showDataGrid, _setShowDataGrid] = useState<boolean>(true);
   const [rows, setRows] = useState<InvoiceDetailDTO[]>([]);
   const [totalCost, setTotalCost] = useState<number>(0);
-  const[cash, setCash] = useState<number>(0);
+  const [cash, setCash] = useState<number>(0);
 
   //const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState<boolean>(false);
 
@@ -69,11 +65,11 @@ export default function PayInvoicePopup({
       } catch (error) {
         console.error("Error fetching variants:", error);
       }
-    }
+    };
     Promise.all([fetchInvoiceData(), fetchVariants()]);
   }, []);
 
-  if(!selectedInvoice || !variantList) {
+  if (!selectedInvoice || !variantList) {
     return <LoadingProgress />;
   }
 
@@ -84,8 +80,8 @@ export default function PayInvoicePopup({
       toast("Please select payment method", { type: "error" });
       return;
     }
-    if(method === "cash") {
-      if(cash < totalCost) {
+    if (method === "cash") {
+      if (cash < totalCost) {
         toast("Cash is not enough", { type: "error" });
         return;
       }
@@ -93,14 +89,19 @@ export default function PayInvoicePopup({
     let flagStock = true;
     //consider the quantity of each product variant in the invoice is bigger than the available quantity in stock
     rows.forEach((row) => {
-      const consideredVariant = variantList.find((variant) => variant.id === row.id);
+      const consideredVariant = variantList.find(
+        (variant) => variant.id === row.id
+      );
       if (consideredVariant) {
-        if (consideredVariant.Inventories && row.quantity > (consideredVariant.Inventories[0]?.available || 0)) {
+        if (
+          consideredVariant.Inventories &&
+          row.quantity > (consideredVariant.Inventories[0]?.available || 0)
+        ) {
           flagStock = false;
         }
       }
     });
-    if(!flagStock) {
+    if (!flagStock) {
       toast("Not enough quantity in stock", { type: "error" });
       return;
     }
@@ -116,7 +117,7 @@ export default function PayInvoicePopup({
       toast("Payment failed", { type: "error" });
       console.error("Error paying invoice:", error);
     }
-  }
+  };
 
   console.log(rows);
 
@@ -129,8 +130,8 @@ export default function PayInvoicePopup({
       align: "center",
       editable: true,
       valueGetter: (_params, row) => {
-         return row.ProductVariant?.SKU;  
-      }
+        return row.ProductVariant?.SKU;
+      },
     },
     {
       field: "id",
@@ -139,8 +140,8 @@ export default function PayInvoicePopup({
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return row.ProductVariant?.id;  
-     }
+        return row.ProductVariant?.id;
+      },
     },
     {
       field: "name",
@@ -149,8 +150,8 @@ export default function PayInvoicePopup({
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return row.ProductVariant?.size + " " + row.ProductVariant?.color;  
-     }
+        return row.ProductVariant?.size + " " + row.ProductVariant?.color;
+      },
     },
     {
       field: "unitPrice",
@@ -159,8 +160,8 @@ export default function PayInvoicePopup({
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return formatMoney(row.unitPrice.toString());  
-      }
+        return formatMoney(row.unitPrice.toString());
+      },
     },
     {
       field: "discountAmount",
@@ -170,7 +171,7 @@ export default function PayInvoicePopup({
       align: "center",
       valueGetter: (_params, row) => {
         return formatMoney(row.discountAmount.toString());
-      }
+      },
     },
     {
       field: "quantity",
@@ -187,9 +188,9 @@ export default function PayInvoicePopup({
       headerAlign: "center",
       align: "center",
       valueGetter: (_params, row) => {
-        return formatMoney(row.cost.toString());  
-      }
-    }
+        return formatMoney(row.cost.toString());
+      },
+    },
   ];
 
   const handleBankTransfer = async () => {
@@ -205,7 +206,7 @@ export default function PayInvoicePopup({
       toast("Bank transfer failed", { type: "error" });
       console.error("Error bank transfer:", error);
     }
-  }
+  };
 
   console.log(invoice.createdAt);
 
@@ -294,44 +295,50 @@ export default function PayInvoicePopup({
           </div>
           <div className="col-span-2 w-[45%]">
             {method === "cash" ? (
-                <div className="w-full flex flex-col mx-auto gap-2">
-                    <p className="text-[18px] text-[#D91316] font-bold">
-                    Total Cost: {formatMoney(Number(totalCost).toFixed(0))}
-                    </p>
-                    <div className="flex flex-row items-center gap-2">
-                        <span className="text-[18px] font-boldtext-base text-[#000000] block">Cash: </span>
-                        <input
-                            type="number"
-                            className="border border-gray-300 px-2 py-1 rounded-md"
-                            onChange={(e) => {
-                                setCash(Number(e.target.value));
-                            }}/>
-                    </div>
-                    <div>
-                        <span className="text-[18px] font-boldtext-base text-[#000000]">Change: {formatMoney((cash - totalCost).toString())}</span>
-                    </div>
+              <div className="w-full flex flex-col mx-auto gap-2">
+                <p className="text-[18px] text-[#D91316] font-bold">
+                  Total Cost: {formatMoney(Number(totalCost).toFixed(0))}
+                </p>
+                <div className="flex flex-row items-center gap-2">
+                  <span className="text-[18px] font-boldtext-base text-[#000000] block">
+                    Cash:{" "}
+                  </span>
+                  <input
+                    type="number"
+                    className="border border-gray-300 px-2 py-1 rounded-md"
+                    onChange={(e) => {
+                      setCash(Number(e.target.value));
+                    }}
+                  />
                 </div>
-            ): (
-                <div className="w-full flex flex-row items-center gap-4">
-                    <p className="text-[18px] text-[#D91316] font-bold">
-                    Total Cost: {formatMoney(totalCost.toString())}
-                    </p>
-                    <div>
-                        <Button onClick={handleBankTransfer} variant="contained">Bank Transfer</Button>
-                    </div>
+                <div>
+                  <span className="text-[18px] font-boldtext-base text-[#000000]">
+                    Change: {formatMoney((cash - totalCost).toString())}
+                  </span>
                 </div>
+              </div>
+            ) : (
+              <div className="w-full flex flex-row items-center gap-4">
+                <p className="text-[18px] text-[#D91316] font-bold">
+                  Total Cost: {formatMoney(totalCost.toString())}
+                </p>
+                <div>
+                  <Button onClick={handleBankTransfer} variant="contained">
+                    Bank Transfer
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         </div>
 
         <div className="buttons flex flex-row justify-end items-center gap-2">
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             style={{
               textTransform: "none",
               fontSize: "14px",
-              backgroundColor: "#D91316",
             }}
             id=""
             onClick={() => onClose()}
