@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoImg from "../assets/Logo.png"; // Import logo từ thư mục assets
+import StaffAvt from "../assets/StaffAvt.png";
 import { Staff } from "../entities";
 import { sUser } from "../store";
 import LoadingProgress from "./LoadingProgress";
@@ -71,17 +72,8 @@ const Header: React.FC = () => {
         }}
       >
         {/* Logo */}
-        <div className="Logo w-8 h-8">
-          <img
-            className="w-full h-full object-cover"
-            src={logoImg}
-            alt="Logo"
-          />
-        </div>
-
-        {/* Tên cửa hàng */}
-        <div className="StoreName text-[#15191e] text-2xl font-semibold font-['Dancing Script'] leading-[30px]">
-          HOME
+        <div className="Logo w-28">
+          <img className="w-full" src={logoImg} alt="Logo" />
         </div>
       </div>
 
@@ -89,8 +81,8 @@ const Header: React.FC = () => {
         <div className="User flex items-center space-x-3">
           <div className="Avatar rounded-full overflow-hidden w-10 h-10">
             <img
-              className="Image w-full h-full object-cover"
-              src={logoImg}
+              className="Image w-full h-full object-contain"
+              src={StaffAvt}
               alt="Avatar"
             />
           </div>
@@ -122,14 +114,7 @@ const Header: React.FC = () => {
               >
                 Personal Information
               </div>
-              {/* <div 
-                onClick={() => {
-                  toggleDropdown();
-                  setIsSettingPopupOpen(true);
-                }}
-              className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400 hover:bg-gray-300 cursor-pointer">
-                Setting
-              </div> */}
+
               <div
                 className="p-1 text-[14px] border border-b-[1px] border-b-neutral-400 hover:bg-gray-300 cursor-pointer"
                 onClick={handleOnLogout}

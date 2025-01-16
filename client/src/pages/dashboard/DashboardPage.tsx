@@ -12,7 +12,7 @@ import IncomeReport from "../../entities/IncomeReport";
 import { toast } from "react-toastify";
 import formatDate from "../../utils/formatDate";
 import formatMoney from "../../utils/formatMoney";
-        
+
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [selectedFromDate, setSelectedFromDate] = useState(
@@ -54,7 +54,7 @@ export default function DashboardPage() {
     console.log("selectedFromDate", selectedFromDate);
     console.log("selectedToDate", selectedToDate);
     const fetchIncomeReport = async () => {
-      try { 
+      try {
         const response = await reportService.getReprotByDate(
           selectedFromDate,
           selectedToDate
@@ -65,6 +65,7 @@ export default function DashboardPage() {
           console.log("income report", response.data.EM);
         }
       } catch (error) {
+        console.log("error", error);
       }
     };
     const fetchStaffReport = async () => {
@@ -80,12 +81,18 @@ export default function DashboardPage() {
           console.log("staff report", response.data.EM);
         }
       } catch (error) {
+        console.log("error", error);
       }
     };
     Promise.all([fetchIncomeReport(), fetchStaffReport()]);
   }, [selectedFromDate, selectedToDate]);
 
-  if (!reportData || !reportStaffData || !reportIncomeData || !reportData.currentPromotion) {
+  if (
+    !reportData ||
+    !reportStaffData ||
+    !reportIncomeData ||
+    !reportData.currentPromotion
+  ) {
     return <LoadingProgress />;
   }
 
@@ -196,7 +203,7 @@ export default function DashboardPage() {
       align: "center",
       valueGetter: (_, row) => {
         return formatMoney(row.sumtotal.toString());
-      }
+      },
     },
     {
       field: "sumquantity",
@@ -240,7 +247,7 @@ export default function DashboardPage() {
       align: "center",
       valueGetter: (_, row) => {
         return formatMoney(row.importprice.toString());
-      }
+      },
     },
     {
       field: "sumquantity",
@@ -257,7 +264,7 @@ export default function DashboardPage() {
       align: "center",
       valueGetter: (_, row) => {
         return formatMoney(row.sumcost.toString());
-      }
+      },
     },
   ];
   const incomeRows = reportIncomeData.map((income, index) => ({
@@ -268,12 +275,12 @@ export default function DashboardPage() {
     {
       id: 1,
       label: "Cash",
-      value: reportData.paymentMethodStatistic.Cash
+      value: reportData.paymentMethodStatistic.Cash,
     },
     {
       label: "QR",
       id: 2,
-      value: reportData.paymentMethodStatistic.qr
+      value: reportData.paymentMethodStatistic.qr,
     },
   ];
 
@@ -366,7 +373,9 @@ export default function DashboardPage() {
                       color: "gray",
                     },
                     valueFormatter: (value) =>
-                      `${value.label}: ${formatMoney(value.value.toString())} USD`,
+                      `${value.label}: ${formatMoney(
+                        value.value.toString()
+                      )} USD`,
                   },
                 ]}
                 height={230}
@@ -453,10 +462,14 @@ export default function DashboardPage() {
             />
             <p className="font-bold text-[20px] text-end mt-2 text-[#C71026]">
               Total Cost:{" "}
-              {formatMoney(incomeRows.reduce(
-                (acc, row) => acc + parseFloat(row.sumcost.toString()),
-                0
-              ).toString())}
+              {formatMoney(
+                incomeRows
+                  .reduce(
+                    (acc, row) => acc + parseFloat(row.sumcost.toString()),
+                    0
+                  )
+                  .toString()
+              )}
             </p>
           </div>
         </div>
