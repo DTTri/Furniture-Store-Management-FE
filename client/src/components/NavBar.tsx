@@ -4,7 +4,6 @@ import {
   FaChartBar,
   FaFileInvoice,
   FaBoxes,
-  FaShoppingCart,
   FaTag,
   FaTruck,
   FaUsers,
@@ -14,6 +13,8 @@ import {
   FaHammer,
   FaUserEdit,
 } from "react-icons/fa";
+import { MdChair } from "react-icons/md";
+
 import { sUser } from "../store";
 
 const NavBar: React.FC = () => {
@@ -23,7 +24,7 @@ const NavBar: React.FC = () => {
     { name: "Dashboard", icon: <FaChartBar />, path: "/" },
     { name: "Invoice", icon: <FaFileInvoice />, path: "/invoice" },
     { name: "Inventory", icon: <FaBoxes />, path: "/inventory" },
-    { name: "Product", icon: <FaShoppingCart />, path: "/product" },
+    { name: "Product", icon: <MdChair />, path: "/product" },
     { name: "Category", icon: <FaTag />, path: "/category" },
     { name: "Provider", icon: <FaTruck />, path: "/provider" },
     { name: "Customer", icon: <FaUsers />, path: "/customer" },
@@ -55,7 +56,7 @@ const NavBar: React.FC = () => {
     <div className="NavBar w-52 bg-white h-full flex flex-col shadow-md transition-all duration-300">
       <div className="NavItems flex flex-col">
         {menuItems.map((item) => {
-          if (item.name === "Role" && userRole > 1) return;
+          if (item.name === "" && userRole > 1) return;
           return (
             <div
               key={item.name}
