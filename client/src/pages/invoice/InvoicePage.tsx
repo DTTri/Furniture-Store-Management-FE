@@ -57,8 +57,8 @@ export default function InvoicePage() {
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "Index",
-      flex: 0.5,
+      headerName: "#",
+      flex: 0.2,
       headerAlign: "center",
       align: "center",
       width: 15,
@@ -95,7 +95,7 @@ export default function InvoicePage() {
     {
       field: "totalCost",
       headerName: "Total",
-      flex: 0.8,
+      flex: 1,
       headerAlign: "center",
       align: "center",
       valueGetter: (_, row) => {
@@ -105,7 +105,7 @@ export default function InvoicePage() {
     {
       field: "createdAt",
       headerName: "Created Date",
-      flex: 1,
+      flex: 1.2,
       valueFormatter: (params) => {
         const dateTime = format(new Date(params), "dd/MM/yyyy '--' HH:mm:ss");
         return dateTime;

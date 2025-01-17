@@ -100,7 +100,7 @@ export default function RolePage() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-4 max-h-[500px] overflow-y-auto">
+      <div className="grid grid-cols-4 gap-4 h-[420px] max-h-full overflow-y-auto">
         {permissions.map((permission) => (
           <div key={permission.id} className="flex items-center">
             <input

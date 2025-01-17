@@ -29,7 +29,7 @@ export default function CustomersTable({
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "INDEX",
+      headerName: "#",
       flex: 0.5,
       headerAlign: "center",
       align: "center",

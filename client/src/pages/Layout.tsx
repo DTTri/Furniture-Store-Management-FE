@@ -4,7 +4,7 @@ import Header from "../components/header";
 
 export default function Layout() {
   return (
-    <div className="h-screen max-h-screen overflow-hidden flex flex-col">
+    <div className="h-screen max-h-screen overflow-auto flex flex-col">
       <Header />
       <div className="flex flex-1">
         <NavBar />

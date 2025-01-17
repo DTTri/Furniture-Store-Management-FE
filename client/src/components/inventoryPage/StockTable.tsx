@@ -22,7 +22,7 @@ export default function StockTable({ products }: { products: Product[] }) {
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "STT",
+      headerName: "#",
       flex: 0.5,
       headerAlign: "center",
       align: "center",
