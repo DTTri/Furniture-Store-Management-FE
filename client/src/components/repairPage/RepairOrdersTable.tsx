@@ -26,7 +26,7 @@ export default function RepairOrdersTable({
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "INDEX",
+      headerName: "#",
       flex: 0.5,
       headerAlign: "center",
       align: "center",

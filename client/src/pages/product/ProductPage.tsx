@@ -33,7 +33,7 @@ export default function ProductPage() {
 
   const userPermissions = sUser.use((v) => v.permissions);
   return (
-    <div className="w-full h-full flex flex-col p-4 gap-4">
+    <div className="w-full flex flex-col p-4 gap-4">
       <div className="header w-full flex gap-4 justify-between px-4 items-center">
         <h2 className="page-header">Product</h2>
         {userPermissions.includes(5) && (
@@ -50,8 +50,8 @@ export default function ProductPage() {
           </Button>
         )}
       </div>
-      <div className="filter-bar w-full flex gap-4">
-        <div className="search-bar basis-1/4">
+      <div className="filter-bar w-full flex flex-wrap gap-4">
+        <div className="search-bar basis-1/4 min-w-32">
           <input
             type="text"
             placeholder="Search product"
@@ -65,7 +65,7 @@ export default function ProductPage() {
             id="searchProductInput"
           />
         </div>
-        <div className="category-filter basis-1/6">
+        <div className="category-filter basis-1/6 min-w-40">
           <select
             className="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             onChange={(e) => setSelectedCategory(parseInt(e.target.value))}
@@ -83,7 +83,7 @@ export default function ProductPage() {
       {userPermissions.includes(8) && (
         <div
           id="productGallery"
-          className="product-gallery w-full overflow-y-auto max-h-[500px] grid grid-cols-5 gap-y-4 scroll-smooth"
+          className="product-gallery h-[400px] max-h-full w-full overflow-y-auto flex flex-wrap gap-4 scroll-smooth"
         >
           {filteredProducts.map((product) => (
             <ProductCard

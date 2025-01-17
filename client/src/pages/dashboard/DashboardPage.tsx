@@ -337,7 +337,7 @@ export default function DashboardPage() {
 
       {activeTab === 0 && (
         <div className="flex flex-col gap-2">
-          <div className="w-full grid grid-cols-4 gap-2 mb-2">
+          <div className="w-full flex flex-wrap gap-2 mb-2">
             <TotalCard
               isIncrease={true}
               title="Total Sold Product"
@@ -357,8 +357,8 @@ export default function DashboardPage() {
               unit="Dong"
             />
           </div>
-          <div className="charts w-full flex flex-row gap-3">
-            <div className="h-[350px] bg-[#fff] shadow-lg w-[40%] p-2">
+          <div className="charts w-full flex flex-wrap gap-3">
+            <div className="h-[350px] bg-[#fff] shadow-lg md:basis-[40%] sm:flex-1 p-2">
               <p className="text-lg font-semibold text-black mb-3">
                 Order Payment Method
               </p>
@@ -382,7 +382,7 @@ export default function DashboardPage() {
                 width={400}
               />
             </div>
-            <div className=" bg-[#fff] shadow-lg w-[58%] p-2">
+            <div className=" bg-[#fff] shadow-lg md:basis-[55%] sm:flex-1 p-2">
               <p className="text-lg font-semibold text-black">
                 Ongoing Promotion
               </p>

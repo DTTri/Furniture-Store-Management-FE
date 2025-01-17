@@ -26,7 +26,7 @@ export default function CategoryPage() {
   const columns: GridColDef[] = [
     {
       field: "index",
-      headerName: "Index",
+      headerName: "#",
       flex: 0.3,
       headerAlign: "center",
       align: "center",
@@ -96,7 +96,7 @@ export default function CategoryPage() {
   ];
 
   return (
-    <div className="bg-white w-full p-4">
+    <div className="w-full p-4">
       <div className="header flex flex-row justify-between items-center mb-4 px-4">
         <h2 className="page-header">Category</h2>
         {userPermissions.includes(1) && (

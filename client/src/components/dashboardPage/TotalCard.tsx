@@ -14,7 +14,7 @@ export default function TotalCard({
   title: string;
 }) {
   return (
-    <div className="w-[280px]  h-[120px] rounded-[10px] shadow-lg overflow-hidden">
+    <div className="w-[290px]  h-[120px] rounded-[10px] shadow-lg overflow-hidden">
       <div className="flex flex-col bg-[#ffffff] p-2 gap-1 mx-auto">
         <div className="flex flex-row items-center">
           <p className="text-[20px] text-[#343434] font-semibold mr-2">
@@ -38,7 +38,9 @@ export default function TotalCard({
             </div>
           )}
         </div>
-        <div className="text-[24px] font-bold text-[#232323]">{unit === 'Dong' ? formatMoney(totalCost.toString()) : totalCost}</div>
+        <div className="text-[24px] font-bold text-[#232323]">
+          {unit === "Dong" ? formatMoney(totalCost.toString()) : totalCost}
+        </div>
         <div className="text-[14px] text-[#949494]">{unit}</div>
       </div>
     </div>
