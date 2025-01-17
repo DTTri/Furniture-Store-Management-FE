@@ -178,7 +178,7 @@ export default function AddProductPopup({
           {product ? "Update" : "Add new"} product
         </h2>
         <hr className="w-full border-[#E1E8F1] border-t-2" />
-        <div className="container w-full flex justify-around gap-4 mb-4">
+        <div className="container w-full flex justify-center gap-4 mb-4">
           <div className="image-container basis-[45%] flex flex-col justify-center items-center gap-4 overflow-hidden ">
             <img
               src={image !== "" ? image : "/images/chair.jpg"}
@@ -195,6 +195,7 @@ export default function AddProductPopup({
                   setSelectedFile(file);
                 }
               }}
+              className="mx-auto w-2/3 text-sm"
             />
           </div>
           <div className="add-product-information-container basis-1/2 flex flex-col gap-4">
