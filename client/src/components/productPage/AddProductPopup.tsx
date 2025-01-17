@@ -27,7 +27,7 @@ export default function AddProductPopup({
   const [warranty, setWarranty] = useState(product?.warranty || 0);
 
   useEffect(() => {
-    if (catalogues.length > 0) {
+    if (catalogues.length > 0 && !product) {
       setCatalogueId(catalogues[0].id);
     }
   }, [catalogues]);

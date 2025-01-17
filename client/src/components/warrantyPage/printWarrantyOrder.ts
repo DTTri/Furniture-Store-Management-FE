@@ -51,7 +51,7 @@ function printWarrantyOrder(warrantyOrder: WarrantyOrder) {
       </head>
       <body>
         <div class="warranty-order-header">
-          <div class="company-name">FURNITURE KING</div>
+          <div class="company-name">MODULO FURNITURE</div>
           <div class="details">
             Address: Thu Duc district, Ho Chi Minh city<br>
             Phone: 0(028) 372 52002<br>
