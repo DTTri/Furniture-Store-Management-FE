@@ -195,7 +195,7 @@ export default function AddProductPopup({
                   setSelectedFile(file);
                 }
               }}
-              className="mx-auto w-2/3 text-sm"
+              className="mx-auto w-2/3 max-w-48 text-sm"
             />
           </div>
           <div className="add-product-information-container basis-1/2 flex flex-col gap-4">
