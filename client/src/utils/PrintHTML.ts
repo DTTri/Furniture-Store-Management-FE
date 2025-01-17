@@ -6,7 +6,11 @@ function printHTML(className: string, data: any[]) {
     printWindow.document.write(`
       <html>
       <head>
-        <title>${Object.keys(data[0] || {}).includes('Discounted %') ? 'Print Invoice' : 'Print Warranty'}</title>
+        <title>${
+          Object.keys(data[0] || {}).includes("Discounted %")
+            ? "Print Invoice"
+            : "Print Warranty"
+        }</title>
         <style>
           body {
             font-family: Arial, sans-serif;
@@ -64,14 +68,18 @@ function printHTML(className: string, data: any[]) {
       </head>
       <body>
         <div class="invoice-header">
-          <div class="company-name">FURNITURE KING</div>
+          <div class="company-name">MODULO FURNITURE</div>
           <div class="details">
             Address: Thu Duc district, Ho Chi Minh city<br>
             Phone: 0(028) 372 52002<br>
             * Mobile: 0128.258.603<br>
           </div>
           <div class="title">
-          ${Object.keys(data[0] || {}).includes('Discounted %') ? 'Invoice Order' : 'Warranty Order'}
+          ${
+            Object.keys(data[0] || {}).includes("Discounted %")
+              ? "Invoice Order"
+              : "Warranty Order"
+          }
           </div>
           <div class="sub-title">
             RETAIL FURNITURE STORE 
