@@ -136,7 +136,7 @@ export default function InvoiceDetailTable({
         </IconButton>
         <div className="header w-full flex flex-col gap-2 justify-between">
           <h2 className="text-xl text-[#383E49] font-bold flex-1">
-            Create goods receipt
+            Invoice Detail
           </h2>
           <hr className="w-full border-[#E1E8F1] border-t-2" />
         </div>
